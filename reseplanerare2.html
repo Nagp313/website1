@@ -1,0 +1,2760 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reseplanerare</title>
+    <link rel="stylesheet" href="chatbot.css">
+    <style>
+        /* All styles remain the same as provided */
+        :root {
+            --primary-color: #374760;
+            --background-color: #374760;
+            --text-color: #333;
+        }        
+        
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            margin-bottom: 10px;
+        }
+
+/* Budget section styling */
+.budget-container {
+    padding: 15px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.budget-input-group {
+    flex: 1;
+    min-width: 300px;
+}
+
+.budget-field {
+    position: relative;
+    display: flex;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.budget-field:focus-within {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(55, 71, 96, 0.15);
+}
+
+.budget-input {
+    flex: 1;
+    padding: 15px;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--primary-color);
+    border: none;
+    outline: none;
+    background-color: white;
+    text-align: right;
+    -moz-appearance: textfield;
+}
+
+.budget-input::-webkit-inner-spin-button,
+.budget-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.currency-select {
+    width: 80px;
+    padding: 0 10px;
+    border: none;
+    border-left: 2px solid #e0e0e0;
+    background-color: #f8f9fa;
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s;
+}
+
+.currency-select:hover, 
+.currency-select:focus {
+    background-color: #e9ecef;
+}
+
+.budget-info {
+    margin-top: 15px;
+    padding: 12px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    color: #666;
+}
+
+.budget-info p {
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+#perDayCost {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.budget-tips {
+    flex: 1;
+    min-width: 300px;
+    background-color: #f2f5f9;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.budget-tips h4 {
+    color: var(--primary-color);
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+}
+
+.budget-tips ul {
+    padding-left: 20px;
+}
+
+.budget-tips li {
+    margin-bottom: 10px;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+    .budget-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .budget-input-group, 
+    .budget-tips {
+        min-width: 100%;
+    }
+}
+
+        .value-display {
+            margin-top: 10px;
+            font-size: 1.1em;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="number"] {
+            width: 120px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .destination-container {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .options-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .option-button {
+            padding: 8px 16px;
+            border: 2px solid var(--primary-color);
+            border-radius: 20px;
+            background: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option-button.selected {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .add-button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .remove-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 10px;
+            background-color: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .activity-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .activities-list {
+            margin-top: 10px;
+        }
+
+        .activity-item {
+            background: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .delete-activity {
+            background: none;
+            border: none;
+            color: #dc2626;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        .insurance-option {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .insurance-option input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .tip-card {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .tip-title {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .custom-input {
+            padding: 8px 16px;
+            border: 1px solid var(--primary-color);
+            border-radius: 20px;
+            width: 200px;
+        }
+        .accommodation-list {
+            margin-top: 10px;
+        }
+
+        .accommodation-item {
+            background: white;
+            padding: 12px;
+            border-radius: 4px;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .accommodation-details {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .accommodation-actions {
+            display: flex;
+            gap: 10px;
+        }
+.accommodation-details {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.accommodation-type {
+    min-width: 100px;
+}
+
+.booking-link-input {
+    flex-grow: 1;
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 200px;
+}
+.accommodation-details {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.accommodation-type {
+    min-width: 100px;
+}
+
+.booking-link-input {
+    flex-grow: 1;
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 200px;
+}
+
+.days-input {
+    width: 60px;
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.days-input-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.days-label {
+    color: var(--text-color);
+    white-space: nowrap;
+}
+
+/* Uppdatera CSS-stilarna */
+.header {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    backdrop-filter: blur(8px);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Justera container och huvudrubrik */
+.container {
+    padding-top: 100px; /* Ökat padding-top för mer utrymme */
+    max-width: 800px;
+    margin: 0 auto;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 30px;
+    font-size: 2rem;
+}
+
+/* Mobilanpassad design */
+@media (max-width: 768px) {
+    .header {
+        padding: 0.5rem;
+    }
+
+    .nav-container {
+        padding: 0 1rem;
+    }
+
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    .nav-links {
+        gap: 0.5rem;
+    }
+
+    .nav-link {
+        font-size: 0.9rem;
+        padding: 0.3rem 0.8rem;
+    }
+
+    /* Justera container och huvudrubrik för mobil */
+    .container {
+        padding-top: 70px; /* Mindre padding på mobil */
+    }
+
+    h1 {
+        font-size: 1.7rem; /* Lite mindre rubrikstorlek på mobil */
+        margin-top: 0; /* Ta bort topp-margin */
+        margin-bottom: 20px; /* Mindre margin under */
+    }
+}
+
+.insurance-input-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: start;
+}
+
+.insurance-input-container input {
+    flex: 1;
+    min-width: 200px;
+}
+
+.insurance-details {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+}
+
+.insurance-details span {
+    min-width: 150px;
+}
+
+.insurance-details .booking-link-input {
+    flex: 1;
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 200px;
+}
+
+.transport-section {
+    margin-top: 15px;
+}
+
+.booking-link-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.transport-section {
+    margin-top: 15px;
+}
+
+.transports-list {
+    margin-top: 10px;
+}
+
+.transport-item {
+    background: white;
+    padding: 12px;
+    border-radius: 4px;
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.transport-details {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.transport-type {
+    min-width: 60px;
+    font-weight: 500;
+}
+
+.booking-link-input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 200px;
+}
+
+.delete-transport {
+    background: none;
+    border: none;
+    color: #dc2626;
+    cursor: pointer;
+    padding: 4px 8px;
+    font-size: 1.2rem;
+}
+
+.option-button {
+    padding: 8px 16px;
+    border: 2px solid var(--primary-color);
+    border-radius: 20px;
+    background: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.option-button:hover {
+    background-color: rgba(var(--primary-color), 0.1);
+}
+
+.profile-nav-link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+    }
+
+    .profile-nav-pic {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid white;
+    }
+
+    /* Adjust the existing nav-link styles */
+    .nav-link {
+        color: white;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+
+    .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-link.active {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .save-trip-button {
+    position: fixed;
+    bottom: 30px;
+    right: 120px; /* Placerad bredvid chatbot-bubblan */
+    background-color: white;
+    color: #374760;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.save-trip-button:hover {
+    transform: translateY(-2px); /* Lätt lyft-effekt */
+    box-shadow: 0 4px 12px rgba(55, 71, 96, 0.2); /* Subtil skugga i samma blå nyans */
+}
+
+.save-trip-button:active {
+    transform: translateY(0);
+}
+
+/* Toast notification styling */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background-color: #374760;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1001;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+/* Förbättrad hover-effekt för spara-knappen */
+.save-trip-button:hover {
+    background-color: #374760;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(55, 71, 96, 0.2);
+}
+/* för nummer 1 datum*/
+.date-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.date-group {
+    flex: 1;
+}
+
+.date-group label {
+    display: block;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.date-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    color: var(--text-color);
+}
+
+.date-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.days-result {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 5px;
+    text-align: center;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.days-value {
+    font-size: 1.2em;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.destination-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+/* Förbättrad hantering av expanderbara sektioner */
+.trip-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: height 0.5s ease-out, opacity 0.3s ease;
+    opacity: 0;
+    height: auto;  /* Viktig för korrekt mätning */
+}
+
+.trip-content.expanded {
+    height: auto !important; /* Tillåt obegränsad höjd */
+    max-height: none !important; /* Viktig överskrivning */
+    opacity: 1;
+    overflow: visible;
+    transition: opacity 0.5s ease;
+}
+
+/* Förbättrade tab-stilar för bättre synlighet */
+.tab-content {
+    min-height: auto;
+    position: relative;
+    overflow: visible;
+}
+
+.tab-pane {
+    display: none;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease;
+}
+
+.tab-pane.active {
+    display: block;
+    opacity: 1;
+    height: auto;
+    overflow: visible;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Förbättrad synlighet för boendekort */
+.accommodation-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    width: 100%;
+    margin-bottom: 15px;
+    overflow: visible;
+}
+
+/* Budget toggle switch */
+.budget-tracker {
+    margin-top: 20px;
+}
+
+.budget-toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+    background-color: #28a745; /* Grön färg för aktiverad toggle */
+}
+input:checked + .toggle-slider:before {
+    transform: translateX(26px);
+}
+
+.toggle-label {
+    font-weight: 500;
+    color: #555;
+}
+
+/* Budget progress bar */
+.budget-status {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.budget-status.hidden {
+    display: none;
+}
+
+.budget-status.warning {
+    background-color: #fff3cd;
+}
+
+.budget-status.danger {
+    background-color: #f8d7da;
+}
+
+.budget-progress {
+    height: 8px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.budget-progress-bar {
+    height: 100%;
+    background-color: #28a745;
+    width: 0%;
+    transition: width 0.5s ease;
+    border-radius: 4px;
+}
+
+.budget-progress-bar.warning {
+    background-color: #ffc107;
+}
+
+.budget-progress-bar.danger {
+    background-color: #dc3545;
+}
+
+.budget-info {
+    font-size: 0.95rem;
+    text-align: center;
+    color: #555;
+}
+
+/* Cost inputs for all sections */
+.cost-input-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.cost-input {
+    width: 120px;
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: right;
+}
+
+.cost-currency {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.cost-alert {
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: none;
+}
+
+.cost-alert.visible {
+    display: block;
+}
+
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="nav-container">
+            <a href="home.html" class="logo">TravelBuddy</a>
+            <nav class="nav-links">
+                <a href="home.html" class="nav-link">Hem</a>
+                <a href="reseplanerare2.html" class="nav-link active">Reseplanerare</a>
+                <a href="tips2.html" class="nav-link">Tips</a>
+                <a href="events2.html" class="nav-link">Events</a>
+                <a href="Skapa-event.html" class="nav-link">Skapa Event</a>
+                <a href="#" class="nav-link" onclick="handleLogout()">Logga ut</a>
+                <a href="profil2.html" class="profile-nav-link">
+                    <img id="navProfilePic" src="..." alt="Profil" class="profile-nav-pic">
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Reseplanerare</h1>
+
+        <div class="card">
+            <h2>1. Välj datum för din resa</h2>
+            <div class="date-container">
+                <div class="date-group">
+                    <label>Avresedatum</label>
+                    <input type="date" id="startDate" class="date-input">
+                </div>
+                <div class="date-group">
+                    <label>Hemresedatum</label>
+                    <input type="date" id="endDate" class="date-input">
+                </div>
+            </div>
+            <div class="days-result">
+                <span>Antal resdagar: </span>
+                <span id="calculatedDays" class="days-value">0</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>2. Budget</h2>
+            <div class="budget-container">
+                <div class="budget-input-group">
+                    <div class="budget-field">
+                        <input type="number" id="budgetInput" min="0" max="1000000" value="0" step="100" class="budget-input">
+                        <select id="currencySelect" class="currency-select">
+                            <option value="SEK" selected>SEK</option>
+                            <option value="EUR">EUR</option>
+                            <option value="USD">USD</option>
+                            <option value="GBP">GBP</option>
+                            <option value="DKK">DKK</option>
+                            <option value="NOK">NOK</option>
+                        </select>
+                    </div>
+                    <div class="budget-tracker">
+                        <div class="budget-toggle-container">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="budgetTrackerToggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="toggle-label">Budgetspårning</span>
+                        </div>
+                        <div id="budgetStatus" class="budget-status hidden">
+                            <div class="budget-progress">
+                                <div id="budgetProgressBar" class="budget-progress-bar"></div>
+                            </div>
+                            <div class="budget-info">
+                                <span>Använt: <strong id="usedBudget">0</strong> av <strong id="totalBudget">0</strong> <span id="currencyDisplay">SEK</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="budget-tips">
+                    <h4>Tips för din budget</h4>
+                    <ul>
+                        <li>Aktivera budgetspårning för att hålla koll på kostnaderna</li>
+                        <li>Inkludera kostnader för transport, boende, mat, aktiviteter och shopping</li>
+                        <li>Räkna med en buffert för oförutsedda utgifter</li>
+                        <li>Tänk på eventuella valutaväxlingsavgifter</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Destinations Section -->
+        <div class="card">
+            <h2>3. Destinationer & Transport</h2>
+            <div id="destinationsContainer"></div>
+            <button class="add-button" onclick="addDestination()">Lägg till destination</button>
+            
+        </div>
+        
+
+        <!-- Accommodation Section -->
+        <div class="card">
+            <h2>4. Boende</h2>
+            <div id="accommodationContainer"></div>
+        </div>
+        
+
+        <!-- Activities Section -->
+<!-- Activities Section -->
+<div class="card">
+    <h2>5. Aktiviteter</h2>
+    <div id="activitiesContainer">
+        <!-- Kategoriknapparna -->
+        <div class="options-container">
+            <button class="option-button" onclick="selectCategory(this, '#f3e8ff', 'Kultur')">Kultur</button>
+            <button class="option-button" onclick="selectCategory(this, '#dbeafe', 'Sport')">Sport</button>
+            <button class="option-button" onclick="selectCategory(this, '#dcfce7', 'Mat & Dryck')">Mat & Dryck</button>
+            <button class="option-button" onclick="selectCategory(this, '#d1fae5', 'Natur')">Natur</button>
+            <button class="option-button" onclick="selectCategory(this, '#fce7f3', 'Shopping')">Shopping</button>
+            <button class="option-button" onclick="selectCategory(this, '#fef3c7', 'Underhållning')">Underhållning</button>
+        </div>
+
+        <!-- Input-fälten -->
+        <div style="display: flex; gap: 10px; margin: 15px 0;">
+            <select id="activityDestination" class="destination-input" style="flex: 1;">
+                <option value="">Välj destination</option>
+            </select>
+            <input type="text" id="activityInput" placeholder="Aktivitet" class="destination-input" style="flex: 2;">
+            <input type="date" id="activityDate" class="destination-input" style="flex: 1;">
+            <input type="time" id="activityTime" class="destination-input" style="flex: 1;" step="600">
+            <input type="number" id="activityCost" placeholder="Kostnad (SEK)" class="destination-input" style="flex: 1;">
+            <button onclick="addActivity()" class="add-button">+</button>
+        </div>
+
+        <!-- Lista för aktiviteter - Viktigt att detta id finns! -->
+        <div id="activitiesList" class="activities-list"></div>
+    </div>
+</div>
+
+        <!-- Insurance Section -->
+        <div class="card">
+            <h2>6. Reseförsäkring</h2>
+            <div class="insurance-options">
+                <div class="insurance-option">
+                
+                    <label for="insurance1">Sjukvård och olycksfall</label>
+                </div>
+                <div class="insurance-option">
+                 
+                    <label for="insurance2">Avbeställningsskydd</label>
+                </div>
+                <div class="insurance-option">
+                 
+                    <label for="insurance3">Bagageskydd</label>
+                </div>
+                <div class="insurance-option">
+                
+                    <label for="insurance4">Ansvarsskydd</label>
+                </div>
+                <div class="insurance-option">
+                    
+                    <label for="insurance5">Rättsskydd</label>
+                </div>
+                <div class="insurance-option">
+                 
+                    <label for="insurance6">Förseningsskydd</label>
+                </div>
+                <div class="insurance-option">
+                
+                    <label for="insurance7">Hemtransport och evakuering</label>
+                </div>
+                <div class="insurance-option">
+                
+                    <label for="insurance8">Reseavbrott</label>
+                </div>
+                <div class="insurance-option">
+                 
+                    <label for="insurance9">Egendomsskydd</label>
+                </div>
+                <div class="insurance-option">
+                    
+                    <label for="insurance10">Personligt stöd</label>
+                </div>
+                <div>
+                    <a href="https://www.erv.se/privat/vara-reseforsakringar/?_gl=1*1r1m275*_up*MQ..&gclid=EAIaIQobChMIhvbHga2iigMVOVORBR23biFhEAAYAyAAEgLHy_D_BwE">Boka försäkring här</a>
+                </div>
+                <div style="margin-top: 10px;">
+                    <div class="insurance-input-container">
+                        <input type="text" 
+                               placeholder="Skriv in din valda försäkring här" 
+                               class="destination-input" 
+                               id="insuranceInput">
+                        <input type="url" 
+                               placeholder="Länk till försäkringen" 
+                               class="destination-input" 
+                               id="insuranceLinkInput">
+                        <button class="add-button" onclick="addInsurance()">Lägg till försäkring</button>
+                    </div>
+                    <div id="selectedInsurances" class="activities-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tips Section -->
+        <div class="card">
+            <h2>7. Tips inför resan</h2>
+            <div class="tip-card">
+                <span class="tip-title">Vaccinationer: </span>
+                <span>Kontrollera vilka vaccinationer som krävs för din destination. Besök gärna vaccinationscentral i god tid innan avresa för rådgivning.</span>
+            </div>
+            <div class="tip-card">
+                <span class="tip-title">Valuta: </span>
+                <span>Växla pengar eller se till att dina kort fungerar på destinationen. Kontrollera eventuella avgifter för kortanvändning utomlands.</span>
+            </div>
+            <div class="tip-card">
+                <span class="tip-title">Kommunikation: </span>
+                <span>Kontrollera att din mobiloperatör har täckning och fungerar vid vald destination. Se över eventuella roamingavgifter och paket för utlandsanvändning.</span>
+            </div>
+        </div>
+
+        <button class="save-trip-button" onclick="saveEditedTrip()">
+            Spara Resa
+        </button>
+    </div>
+<!-- Förbättrad chatbot HTML att lägga in före </body> i alla dina TravelBuddy-sidor -->
+<div class="chat-bubble" onclick="toggleChat()">
+    <i>💬</i>
+</div>
+
+<div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+        <span>TravelBuddy Assistent</span>
+        <button class="chat-close" onclick="toggleChat()">×</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+        <!-- Meddelandena kommer att läggas till här -->
+    </div>
+    <div class="typing-indicator" id="typingIndicator">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+    </div>
+    <div class="chat-input-container">
+        <button id="reset-chat">Ny konversation</button>
+        <input type="text" class="chat-input" id="chatInput" placeholder="Ställ en fråga...">
+        <button class="chat-send" onclick="sendChatMessage()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+        </button>
+    </div>
+</div>
+<span id="perDayCost"></span>
+
+    <script>
+        
+        // Globala variabler - Lägg till dessa FÖRST i script-taggen
+// Globala variabler
+let selectedCategory = '';
+let selectedCategoryColor = '';
+let destinations = [];
+let destinationCount = 0;
+
+// Budget tracking functionality
+let isBudgetTrackingEnabled = false;
+let totalBudgetAmount = 0;
+let currentCurrency = 'SEK';
+
+// När dokumentet har laddats
+document.addEventListener('DOMContentLoaded', function() {
+    // Budget tracking elements
+    const budgetInput = document.getElementById('budgetInput');
+    const currencySelect = document.getElementById('currencySelect');
+    const budgetTrackerToggle = document.getElementById('budgetTrackerToggle');
+    const budgetStatus = document.getElementById('budgetStatus');
+    const currencyDisplay = document.getElementById('currencyDisplay');
+    const totalBudget = document.getElementById('totalBudget');
+    const usedBudget = document.getElementById('usedBudget');
+    const budgetProgressBar = document.getElementById('budgetProgressBar');
+    
+    // Initialize budget tracking
+    budgetTrackerToggle.addEventListener('change', function() {
+        isBudgetTrackingEnabled = this.checked;
+        if (isBudgetTrackingEnabled) {
+            // Omvandla formaterad sträng till tal om nödvändigt
+            const rawValue = budgetInput.value.replace(/\s/g, '');
+            totalBudgetAmount = parseInt(rawValue) || 0;
+            currentCurrency = currencySelect.value;
+            budgetStatus.classList.remove('hidden');
+            totalBudget.textContent = totalBudgetAmount.toLocaleString('sv-SE');
+            updateAllCurrencyDisplays(currentCurrency);
+            updateBudgetStatus();
+            // Disable changing budget or currency when tracking is enabled
+            budgetInput.disabled = true;
+            currencySelect.disabled = true;
+        } else {
+            budgetStatus.classList.add('hidden');
+            // Re-enable budget inputs
+            budgetInput.disabled = false;
+            currencySelect.disabled = false;
+            resetCostWarnings();
+        }
+    });
+    
+    // Update currency throughout the form
+    currencySelect.addEventListener('change', function() {
+        currentCurrency = this.value;
+        updateAllCurrencyDisplays(currentCurrency);
+    });
+    
+    // Update budget amount
+    budgetInput.addEventListener('change', function() {
+        const rawValue = this.value.replace(/\s/g, '');
+        totalBudgetAmount = parseInt(rawValue) || 0;
+        if (totalBudget) {
+            totalBudget.textContent = totalBudgetAmount.toLocaleString('sv-SE');
+        }
+    });
+});
+
+// Update all currency displays
+function updateAllCurrencyDisplays(currency) {
+    document.querySelectorAll('.cost-currency').forEach(el => {
+        el.textContent = currency;
+    });
+    const currencyDisplay = document.getElementById('currencyDisplay');
+    if (currencyDisplay) {
+        currencyDisplay.textContent = currency;
+    }
+}
+
+// Calculate total costs across all sections
+function calculateTotalCosts() {
+    console.log("Beräknar totala kostnader...");
+    let totalCost = 0;
+    
+    // Summera transportkostnader
+    destinations.forEach((dest, destIndex) => {
+        console.log(`Kontrollerar kostnader för destination ${destIndex + 1}: ${dest.name}`);
+        
+        // Transportkostnader
+        if (dest.transports && dest.transports.length > 0) {
+            dest.transports.forEach((transport, i) => {
+                const cost = parseInt(transport.cost) || 0;
+                totalCost += cost;
+                console.log(`  Transport ${i+1}: ${transport.type}, kostnad: ${cost}`);
+            });
+        }
+        
+        // Boendekostnader
+        if (dest.accommodations && dest.accommodations.length > 0) {
+            dest.accommodations.forEach((acc, i) => {
+                const cost = parseInt(acc.cost) || 0;
+                totalCost += cost;
+                console.log(`  Boende ${i+1}: ${acc.type}, kostnad: ${cost}`);
+            });
+        }
+        
+        // Aktivitetskostnader
+        if (dest.activities && dest.activities.length > 0) {
+            dest.activities.forEach((activity, i) => {
+                const cost = parseInt(activity.cost) || 0;
+                totalCost += cost;
+                console.log(`  Aktivitet ${i+1}: ${activity.name}, kostnad: ${cost}`);
+            });
+        }
+    });
+    
+    // Försäkringskostnader
+    const insuranceCostInputs = document.querySelectorAll('.insurance-cost-input');
+    insuranceCostInputs.forEach((input, i) => {
+        const cost = parseInt(input.value) || 0;
+        totalCost += cost;
+        console.log(`Försäkring ${i+1}, kostnad: ${cost}`);
+    });
+    
+    console.log(`Total beräknad kostnad: ${totalCost}`);
+    return totalCost;
+}
+
+// Update budget status display
+function updateBudgetStatus() {
+    if (!isBudgetTrackingEnabled) return;
+    
+    console.log("Uppdaterar budgetstatus...");
+    const totalCost = calculateTotalCosts();
+    const budgetStatus = document.getElementById('budgetStatus');
+    const usedBudget = document.getElementById('usedBudget');
+    const budgetProgressBar = document.getElementById('budgetProgressBar');
+    
+    if (!budgetStatus || !usedBudget || !budgetProgressBar) {
+        console.error("Saknar budgetstatus-element");
+        return;
+    }
+    
+    // Update used amount
+    usedBudget.textContent = totalCost.toLocaleString('sv-SE');
+    
+    // Calculate percentage
+    const percentage = totalBudgetAmount > 0 ? (totalCost / totalBudgetAmount) * 100 : 0;
+    console.log(`Budgetanvändning: ${percentage.toFixed(1)}% (${totalCost} av ${totalBudgetAmount})`);
+    
+    // Update progress bar
+    budgetProgressBar.style.width = Math.min(100, percentage) + '%';
+    
+    // Update status colors
+    if (percentage >= 100) {
+        budgetStatus.classList.add('danger');
+        budgetStatus.classList.remove('warning');
+        budgetProgressBar.classList.add('danger');
+        budgetProgressBar.classList.remove('warning');
+    } else if (percentage >= 80) {
+        budgetStatus.classList.add('warning');
+        budgetStatus.classList.remove('danger');
+        budgetProgressBar.classList.add('warning');
+        budgetProgressBar.classList.remove('danger');
+    } else {
+        budgetStatus.classList.remove('warning', 'danger');
+        budgetProgressBar.classList.remove('warning', 'danger');
+    }
+}
+
+// Show warnings for over budget
+function showOverBudgetWarnings() {
+    const alerts = document.createElement('div');
+    alerts.className = 'budget-alert';
+    alerts.innerHTML = `
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-text">Du har överskridit din budget!</div>
+    `;
+    
+    // Add alert to budget status if not already present
+    const budgetStatus = document.getElementById('budgetStatus');
+    if (budgetStatus && !budgetStatus.querySelector('.budget-alert')) {
+        budgetStatus.appendChild(alerts);
+    }
+}
+
+// Reset cost warnings
+function resetCostWarnings() {
+    // Remove budget alerts
+    document.querySelectorAll('.budget-alert').forEach(el => el.remove());
+    
+    // Hide all cost alerts
+    document.querySelectorAll('.cost-alert').forEach(el => {
+        el.classList.remove('visible');
+    });
+}
+
+// Update transport cost
+function updateTransportCost(destId, transportIndex, cost) {
+    const destination = destinations.find(d => d.id === destId);
+    if (destination && destination.transports) {
+        destination.transports[transportIndex].cost = parseInt(cost) || 0;
+        if (isBudgetTrackingEnabled) {
+            updateBudgetStatus();
+        }
+    }
+}
+
+// Update accommodation cost
+function updateAccommodationCost(destId, accIndex, cost) {
+    const destination = destinations.find(d => d.id === destId);
+    if (destination && destination.accommodations) {
+        destination.accommodations[accIndex].cost = parseInt(cost) || 0;
+        if (isBudgetTrackingEnabled) {
+            updateBudgetStatus();
+        }
+    }
+}
+
+// Uppdatera aktivitetskostnad
+function updateActivityCost(destId, activityId, cost) {
+    const destination = destinations.find(d => d.id === destId);
+    if (destination && destination.activities) {
+        const activity = destination.activities.find(a => a.id === activityId);
+        if (activity) {
+            activity.cost = parseInt(cost) || 0;
+            if (isBudgetTrackingEnabled) {
+                updateBudgetStatus();
+            }
+        }
+    }
+}
+
+// Uppdatera saveEditedTrip() för att inkludera kostnadsspårning
+function saveEditedTrip() {
+    try {
+        console.log("Sparar redigerad resa...");
+        
+        // Hämta original trip ID från URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const editTripId = urlParams.get('edit');
+        
+        if (!editTripId) {
+            console.log("Ingen edit-parameter hittades, sparar som ny resa");
+            saveTrip();
+            return;
+        }
+        
+        const tripId = parseInt(editTripId);
+        
+        // Verifiera att alla nödvändiga data finns
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        
+        if (!startDate || !endDate) {
+            showToast('Välj start- och slutdatum för resan!');
+            return;
+        }
+        
+        if (window.destinations.length === 0 || !window.destinations.some(d => d.name)) {
+            showToast('Lägg till minst en destination!');
+            return;
+        }
+        
+        // Samla försäkringar
+        const selectedInsurances = [];
+        const insuranceItems = document.querySelectorAll('#selectedInsurances .activity-item');
+        
+        insuranceItems.forEach(item => {
+            const name = item.querySelector('.insurance-details span')?.textContent || '';
+            const link = item.querySelector('.booking-link-input')?.value || '';
+            const cost = parseInt(item.querySelector('.insurance-cost-input')?.value) || 0;
+            
+            selectedInsurances.push({
+                name: name,
+                link: link,
+                cost: cost
+            });
+        });
+        
+        console.log("Samlade försäkringar:", selectedInsurances);
+        
+        // Skapa uppdaterad resa
+        const updatedTrip = {
+            id: tripId,
+            date: new Date().toLocaleDateString('sv-SE'),
+            startDate: startDate,
+            endDate: endDate,
+            days: parseInt(document.getElementById('calculatedDays').textContent) || 0,
+            budget: {
+                amount: parseInt(document.getElementById('budgetInput').value.replace(/\s/g, '')) || 0,
+                currency: document.getElementById('currencySelect').value,
+                trackingEnabled: document.getElementById('budgetTrackerToggle').checked
+            },
+            destinations: window.destinations.map(dest => ({
+                name: dest.name || '',
+                transports: (dest.transports || []).map(t => ({
+                    type: t.type || '',
+                    bookingLink: t.bookingLink || '',
+                    cost: parseInt(t.cost) || 0
+                })),
+                accommodations: (dest.accommodations || []).map(a => ({
+                    type: a.type || '',
+                    days: parseInt(a.days) || 1,
+                    bookingLink: a.bookingLink || '',
+                    cost: parseInt(a.cost) || 0
+                })),
+                activities: (dest.activities || []).map(act => ({
+                    id: act.id || Date.now(),
+                    name: act.name || '',
+                    category: act.category || '',
+                    date: act.date || '',
+                    time: act.time || '',
+                    cost: parseInt(act.cost) || 0
+                }))
+            })),
+            insurances: selectedInsurances
+        };
+        
+        console.log("Uppdaterad resa att spara:", updatedTrip);
+        
+        // Hämta alla resor
+        const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+        const tripIndex = savedTrips.findIndex(trip => trip.id === tripId);
+        
+        if (tripIndex === -1) {
+            // Resan finns inte, lägg till som ny
+            console.log("Resan hittades inte bland befintliga, lägger till som ny");
+            savedTrips.push(updatedTrip);
+        } else {
+            // Uppdatera befintlig resa
+            console.log("Uppdaterar befintlig resa på position", tripIndex);
+            savedTrips[tripIndex] = updatedTrip;
+        }
+        
+        // Spara alla resor
+        localStorage.setItem('savedTrips', JSON.stringify(savedTrips));
+        
+        // Rensa tillfällig data
+        localStorage.removeItem('tripToEdit');
+        
+        // Bekräfta och navigera tillbaka
+        showToast('Resan har sparats!');
+        
+        setTimeout(() => {
+            window.location.href = 'profil2.html';
+        }, 1500);
+        
+    } catch (error) {
+        console.error("Fel vid sparande av resa:", error);
+        showToast('Kunde inte spara resan: ' + error.message);
+    }
+}
+// Om saveTrip funktionen finns behöver vi uppdatera även den
+function saveTrip() {
+    // Samla all information om resan
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    
+    if (!startDate || !endDate) {
+        showToast('Välj start- och slutdatum för resan!');
+        return;
+    }
+    
+    if (destinations.length === 0 || !destinations.some(d => d.name)) {
+        showToast('Lägg till minst en destination!');
+        return;
+    }
+    
+    // Samla alla valda försäkringar
+    const selectedInsurances = Array.from(document.getElementById('selectedInsurances')?.children || []).map(insuranceItem => {
+        const insuranceName = insuranceItem.querySelector('.insurance-details span')?.textContent || '';
+        const insuranceLink = insuranceItem.querySelector('.booking-link-input')?.value || '';
+        const insuranceCost = parseInt(insuranceItem.querySelector('.insurance-cost-input')?.value) || 0;
+        return {
+            name: insuranceName,
+            link: insuranceLink,
+            cost: insuranceCost
+        };
+    });
+    
+    // Skapa rese-objekt
+    const tripData = {
+        id: Date.now(),  // Unikt ID baserat på nuvarande tidsstämpel
+        date: new Date().toLocaleDateString('sv-SE'),
+        startDate: startDate,
+        endDate: endDate,
+        days: parseInt(document.getElementById('calculatedDays').textContent),
+        budget: {
+            amount: parseInt(document.getElementById('budgetInput').value.replace(/\s/g, '')) || 0,
+            currency: document.getElementById('currencySelect').value,
+            trackingEnabled: document.getElementById('budgetTrackerToggle').checked
+        },
+        destinations: destinations.map(dest => ({
+            name: dest.name || '',
+            transports: (dest.transports || []).map(t => ({
+                type: t.type,
+                bookingLink: t.bookingLink || '',
+                cost: t.cost || 0
+            })),
+            accommodations: (dest.accommodations || []).map(a => ({
+                type: a.type,
+                days: a.days || 1,
+                bookingLink: a.bookingLink || '',
+                cost: a.cost || 0
+            })),
+            activities: (dest.activities || []).map(act => ({
+                id: act.id,
+                name: act.name,
+                category: act.category,
+                date: act.date || '',
+                time: act.time || '',
+                cost: act.cost || 0
+            }))
+        })),
+        insurances: selectedInsurances
+    };
+    
+    // Spara till localStorage
+    const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+    savedTrips.push(tripData);
+    localStorage.setItem('savedTrips', JSON.stringify(savedTrips));
+    
+    // Visa bekräftelse till användaren
+    showToast('Resan sparad!');
+    
+    // Omdirigera till profilsidan efter en kort fördröjning
+    setTimeout(() => {
+        window.location.href = 'profil2.html';
+    }, 1500);
+}
+
+// Aktivitetsfunktioner
+document.addEventListener('DOMContentLoaded', function() {
+    // Hantera kategoriknapparna
+    const buttons = document.querySelectorAll('.option-button');
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Återställ alla knappar
+            buttons.forEach(btn => {
+                btn.style.backgroundColor = 'transparent';
+                btn.style.color = '#374760';
+            });
+            
+            // Markera vald knapp
+            this.style.backgroundColor = '#374760';
+            this.style.color = 'white';
+            selectedCategory = this.textContent;
+            selectedCategoryColor = this.dataset.color;
+        });
+    });
+
+    // Hantera lägg till-knappen
+    const addButton = document.getElementById('addActivityBtn');
+    if (addButton) {
+        addButton.addEventListener('click', addActivity);
+    }
+});
+
+// Uppdaterad funktion för addActivity
+function addActivity() {
+    const destinationSelect = document.getElementById('activityDestination');
+    const nameInput = document.getElementById('activityInput');
+    const dateInput = document.getElementById('activityDate');
+    const timeInput = document.getElementById('activityTime');
+    const costInput = document.getElementById('activityCost');
+    const activitiesList = document.getElementById('activitiesList');
+    
+    if (!destinationSelect.value) {
+        alert('Välj en destination');
+        return;
+    }
+
+    if (!nameInput.value || !selectedCategory) {
+        alert('Välj en kategori och ange aktivitetens namn');
+        return;
+    }
+
+    const destId = parseInt(destinationSelect.value);
+    const destination = destinations.find(d => d.id === destId);
+    if (!destination) return;
+
+    // Skapa aktivitets-objekt
+    const activity = {
+        id: Date.now(),
+        name: nameInput.value,
+        category: selectedCategory,
+        date: dateInput.value,
+        time: timeInput.value,
+        cost: costInput.value ? parseInt(costInput.value) || 0 : 0
+    };
+
+    // Lägg till aktiviteten i destinationen
+    destination.activities = destination.activities || [];
+    destination.activities.push(activity);
+
+    const activityDiv = document.createElement('div');
+    activityDiv.className = 'activity-item';
+    activityDiv.style.backgroundColor = selectedCategoryColor;
+    
+    const dateTimeText = dateInput.value ? 
+        `${new Date(dateInput.value).toLocaleDateString('sv-SE')} ${timeInput.value}` : '';
+    const costText = costInput.value ? `${costInput.value} ${currentCurrency}` : '';
+
+    activityDiv.innerHTML = `
+        <div>
+            <strong>${nameInput.value}</strong>
+            <div style="font-size: 0.9em; color: #666;">
+                ${destination.name} | ${selectedCategory}
+                ${dateTimeText ? ` | ${dateTimeText}` : ''}
+                ${costText ? ` | ${costText}` : ''}
+            </div>
+        </div>
+        <button onclick="removeActivityFromUI(this, ${destId}, ${activity.id})" class="delete-activity">×</button>
+    `;
+
+    activitiesList.appendChild(activityDiv);
+
+    // Uppdatera budget om budget tracking är aktiverad
+    if (isBudgetTrackingEnabled) {
+        updateBudgetStatus();
+    }
+
+    // Återställ formuläret
+    nameInput.value = '';
+    dateInput.value = '';
+    timeInput.value = '';
+    costInput.value = '';
+    destinationSelect.value = '';
+
+    // Återställ kategoriknapparna
+    document.querySelectorAll('.option-button').forEach(btn => {
+        btn.style.backgroundColor = 'transparent';
+        btn.style.color = '#374760';
+    });
+    selectedCategory = '';
+    selectedCategoryColor = '';
+}
+// Funktion för att hämta kategorifärg
+function getCategoryColor(category) {
+    if (!category) return '#f8f9fa'; // Default ljusgrå om ingen kategori
+    
+    const colorMap = {
+        'Kultur': '#f3e8ff',
+        'Sport': '#dbeafe',
+        'Mat & Dryck': '#dcfce7',
+        'Natur': '#d1fae5',
+        'Shopping': '#fce7f3',
+        'Underhållning': '#fef3c7',
+        'Event': '#ffedd5'  // Lagt till en färg för Event-kategorin
+    };
+    
+    return colorMap[category] || '#f8f9fa';
+}
+
+// Funktion för att ta bort aktivitet från UI och data
+function removeActivityFromUI(button, destId, activityId) {
+    const destination = destinations.find(d => d.id === destId);
+    if (destination && destination.activities) {
+        destination.activities = destination.activities.filter(a => a.id !== activityId);
+        button.closest('.activity-item').remove();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Navigationsfunktionalitet
+    const navLinks = document.querySelector('.nav-links');
+    const links = document.querySelectorAll('.nav-link');
+    
+    // Datumfunktionalitet
+    const startDate = document.getElementById('startDate');
+    const endDate = document.getElementById('endDate');
+    const calculatedDays = document.getElementById('calculatedDays');
+    
+    // Sätt minimidatum till dagens datum
+    const today = new Date().toISOString().split('T')[0];
+    startDate.min = today;
+    
+    function calculateDays() {
+        if (startDate.value && endDate.value) {
+            const start = new Date(startDate.value);
+            const end = new Date(endDate.value);
+            
+            // Justera för tidszon
+            start.setHours(0, 0, 0, 0);
+            end.setHours(0, 0, 0, 0);
+            
+            const diffTime = end - start;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            calculatedDays.textContent = diffDays;
+        }
+    }
+    
+    startDate.addEventListener('input', calculateDays);
+    endDate.addEventListener('input', calculateDays);
+    
+    startDate.addEventListener('change', function() {
+        endDate.min = this.value;
+        if (endDate.value && endDate.value < this.value) {
+            endDate.value = this.value;
+        }
+        calculateDays();
+    });
+
+    // Navigationshantering för mobil
+    links.forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                navLinks.classList.toggle('show');
+            }
+        });
+    });
+
+    // Ladda profilbild
+    loadProfilePicture();
+
+    loadTripToEdit();
+});
+
+// Budget input handling
+const budgetInput = document.getElementById('budgetInput');
+
+budgetInput.addEventListener('input', function() {
+    // Begränsa värdet
+    let value = parseInt(this.value) || 0;
+    value = Math.min(1000000, Math.max(0, value));
+    
+    // Formatera med tusentalsavgränsare när användaren är klar med inmatningen
+    this.value = value;
+});
+
+budgetInput.addEventListener('blur', function() {
+    // Formatera värdet när användaren lämnar fältet
+    const value = parseInt(this.value) || 0;
+    this.value = value.toLocaleString('sv-SE').replace(/\s/g, '');
+});
+
+// Ta bort formatering när användaren klickar i fältet
+budgetInput.addEventListener('focus', function() {
+    const value = parseInt(this.value.replace(/\s/g, '')) || 0;
+    this.value = value;
+});
+
+       // Destination functionality
+// Destination functionality
+// Först, definiera dessa variabler globalt (utanför alla funktioner)
+
+// Funktion för att lägga till destination
+function addDestination() {
+    console.log('Adding destination...'); // Debug
+    destinationCount++;
+    
+    // Skapa destination-objekt
+    const destination = {
+        id: destinationCount,
+        name: '',
+        transports: [],
+        activities: []
+    };
+    destinations.push(destination);
+
+    // Skapa destination-element
+    const destinationDiv = document.createElement('div');
+    destinationDiv.className = 'destination-container';
+    destinationDiv.id = `destination-${destinationCount}`;
+    
+    // Sätt HTML-innehåll
+    destinationDiv.innerHTML = `
+        <button class="remove-button" onclick="removeDestination(${destinationCount})">Ta bort</button>
+        <h3>Destination ${destinationCount}</h3>
+        <input type="text" 
+               placeholder="Stad, Land" 
+               class="destination-input" 
+               onchange="updateDestinationName(${destinationCount}, this.value)">
+        <div class="transport-section">
+            <div class="options-container">
+                ${['Flyg', 'Tåg', 'Bil', 'Buss', 'Båt'].map(transport => `
+                    <button type="button" class="option-button" onclick="selectTransport(this, ${destinationCount}, '${transport}')">${transport}</button>
+                `).join('')}
+            </div>
+            <div class="transports-list" id="transports-list-${destinationCount}"></div>
+        </div>
+    `;
+
+    // Lägg till elementet i containern
+    const container = document.getElementById('destinationsContainer');
+    if (container) {
+        container.appendChild(destinationDiv);
+        updateAccommodationContainer();
+        updateDestinationSelect(); // Lägg till denna rad
+        updateActivitiesContainer();
+        console.log('Destination added successfully'); // Debug
+    } else {
+        console.error('Destinations container not found!'); // Debug
+    }
+}
+
+// Funktion för att ta bort destination
+function removeDestination(id) {
+    const element = document.getElementById(`destination-${id}`);
+    if (element) {
+        element.remove();
+        destinations = destinations.filter(d => d.id !== id);
+        updateAccommodationContainer();
+        updateDestinationSelect(); // Lägg till denna rad
+        updateActivitiesContainer();
+    }
+}
+
+// Funktion för att uppdatera destinationsnamn
+function updateDestinationName(id, name) {
+    const destination = destinations.find(d => d.id === id);
+    if (destination) {
+        destination.name = name;
+        console.log(`Updated destination ${id} name to: ${name}`); // Debug
+    }
+}
+
+// Uppdaterad funktion för att lägga till transport
+function selectTransport(button, destId, transportType) {
+    const destination = destinations.find(d => d.id === destId);
+    if (destination) {
+        destination.transports = destination.transports || [];
+        destination.transports.push({
+            type: transportType,
+            bookingLink: '',
+            cost: 0 // Lägg till kostnadsfält
+        });
+        updateTransportsList(destId);
+
+        const buttons = button.parentNode.querySelectorAll('.option-button');
+        buttons.forEach(btn => btn.classList.remove('selected'));
+        button.classList.add('selected');
+    }
+}
+
+        function updateTransportLink(destId, transportIndex, link) {
+        const destination = destinations.find(d => d.id === destId);
+        if (destination && destination.transports) {
+        destination.transports[transportIndex].bookingLink = link;
+        }
+}
+
+
+
+
+// Uppdaterad funktion för att uppdatera transportlistan
+function updateTransportsList(destId) {
+    const destination = destinations.find(d => d.id === destId);
+    const transportsList = document.getElementById(`transports-list-${destId}`);
+    
+    if (destination && transportsList) {
+        transportsList.innerHTML = (destination.transports || []).map((transport, index) => `
+            <div class="transport-item">
+                <div class="transport-details">
+                    <span class="transport-type">${transport.type}</span>
+                    <input type="url" 
+                           class="booking-link-input" 
+                           value="${transport.bookingLink || ''}"
+                           placeholder="Klistra in bokningslänk här"
+                           onchange="updateTransportLink(${destId}, ${index}, this.value)">
+                </div>
+                <div class="cost-input-container transport-cost">
+                    <input type="number" 
+                           class="cost-input transport-cost-input" 
+                           value="${transport.cost || ''}"
+                           placeholder="Kostnad" 
+                           min="0" 
+                           onchange="updateTransportCost(${destId}, ${index}, this.value)">
+                    <span class="cost-currency" id="transportCurrency${destId}-${index}">${currentCurrency}</span>
+                </div>
+                <button class="delete-transport" onclick="removeTransport(${destId}, ${index})">×</button>
+            </div>
+        `).join('');
+    }
+}
+
+// Lägg till ny funktion för att ta bort transport
+        function removeTransport(destId, transportIndex) {
+        const destination = destinations.find(d => d.id === destId);
+        if (destination && destination.transports) {
+        destination.transports.splice(transportIndex, 1);
+        updateTransportsList(destId);
+    }
+}
+
+
+// Uppdaterad funktion för att uppdatera accommodationContainer
+// Ersätt din befintliga updateAccommodationContainer-funktion med denna:
+function updateAccommodationContainer() {
+    console.log("Uppdaterar boendebehållaren");
+    
+    const container = document.getElementById('accommodationContainer');
+    if (!container) {
+        console.error("Hittar inte accommodationContainer");
+        return;
+    }
+    
+    container.innerHTML = destinations.map(dest => {
+        if (!dest.name) return '';
+        
+        // Kontrollera om denna destination har boenden
+        const hasAccommodations = dest.accommodations && dest.accommodations.length > 0;
+        console.log(`Destination ${dest.id} (${dest.name}) har ${hasAccommodations ? dest.accommodations.length : 0} boenden`);
+        
+        return `
+            <div class="destination-container">
+                <h3>${dest.name}</h3>
+                <div class="options-container">
+                    ${['Hotell', 'Villa', 'Lägenhet', 'Vandrarhem'].map(acc => `
+                        <button class="option-button" onclick="selectAccommodation(this, ${dest.id}, '${acc}')">${acc}</button>
+                    `).join('')}
+                    <input type="text" 
+                           placeholder="Eget alternativ" 
+                           class="custom-input" 
+                           onkeypress="handleCustomAccommodation(event, ${dest.id}, this)">
+                </div>
+                <div class="accommodation-list" id="accommodation-list-${dest.id}">
+                    ${(dest.accommodations || []).map((acc, index) => `
+                        <div class="accommodation-item">
+                            <div class="accommodation-details">
+                                <span class="accommodation-type">${acc.type || ''}</span>
+                                <div class="days-input-container">
+                                    <input type="number" 
+                                           class="days-input" 
+                                           value="${acc.days || 1}"
+                                           min="1"
+                                           onchange="updateAccommodationDays(${dest.id}, ${index}, this.value)"
+                                           placeholder="Antal">
+                                    <span class="days-label">dagar</span>
+                                </div>
+                                <input type="url" 
+                                       class="booking-link-input" 
+                                       value="${acc.bookingLink || ''}"
+                                       onchange="updateBookingLink(${dest.id}, ${index}, this.value)"
+                                       placeholder="Klistra in bokningslänk här">
+                            </div>
+                            <div class="cost-input-container accommodation-cost">
+                                <input type="number" 
+                                       class="cost-input accommodation-cost-input" 
+                                       value="${acc.cost || 0}"
+                                       placeholder="Kostnad" 
+                                       min="0" 
+                                       onchange="updateAccommodationCost(${dest.id}, ${index}, this.value)">
+                                <span class="cost-currency" id="accommodationCurrency${dest.id}-${index}">${window.currentCurrency || 'SEK'}</span>
+                            </div>
+                            <button class="delete-activity" onclick="removeAccommodation(${dest.id}, ${index})">×</button>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function selectAccommodation(button, destId, accommodation) {
+    console.log(`Väljer boende: ${accommodation} för destination ${destId}`);
+    
+    const destination = destinations.find(d => d.id === destId);
+    if (destination) {
+        // Säkerställ att accommodations-arrayen finns
+        destination.accommodations = destination.accommodations || [];
+        
+        // Lägg till nytt boende
+        destination.accommodations.push({
+            type: accommodation,
+            days: 1,
+            bookingLink: '',
+            cost: 0
+        });
+        
+        // Uppdatera UI
+        updateAccommodationContainer();
+        console.log(`Boende tillagt: ${accommodation}. Destination har nu ${destination.accommodations.length} boenden.`);
+    } else {
+        console.error(`Kunde inte hitta destination med ID ${destId}`);
+    }
+}
+
+// Uppdaterad funktion för att lägga till egen accommodation
+function handleCustomAccommodation(event, destId, input) {
+    if (event.key === 'Enter' && input.value.trim()) {
+        const destination = destinations.find(d => d.id === destId);
+        if (destination) {
+            destination.accommodations = destination.accommodations || [];
+            destination.accommodations.push({
+                type: input.value.trim(),
+                days: 1,
+                bookingLink: '',
+                cost: 0 // Lägg till kostnadsfält
+            });
+            input.value = '';
+            updateAccommodationContainer();
+        }
+    }
+}
+
+function updateBookingLink(destId, accIndex, link) {
+    const destination = destinations.find(d => d.id === destId);
+    if (destination && destination.accommodations) {
+        destination.accommodations[accIndex].bookingLink = link;
+    }
+}
+
+function updateAccommodationDays(destId, accIndex, days) {
+    const destination = destinations.find(d => d.id === destId);
+    if (destination && destination.accommodations) {
+        destination.accommodations[accIndex].days = parseInt(days) || 1;
+    }
+}
+
+function removeAccommodation(destId, accIndex) {
+    console.log(`Tar bort boende: index ${accIndex} från destination ${destId}`);
+    
+    const destination = destinations.find(d => d.id === destId);
+    if (destination && destination.accommodations) {
+        const removedAcc = destination.accommodations[accIndex];
+        destination.accommodations.splice(accIndex, 1);
+        console.log(`Boende borttaget: ${removedAcc?.type}. Destination har nu ${destination.accommodations.length} boenden.`);
+        updateAccommodationContainer();
+    } else {
+        console.error(`Kunde inte hitta destination eller boenden för ID ${destId}`);
+    }
+}
+
+function updateActivitiesContainer() {
+    const container = document.getElementById('activitiesContainer');
+    
+    if (!container.querySelector('.options-container')) {
+        container.innerHTML = `
+            <!-- Kategoriknapparna -->
+            <div class="options-container">
+                <button type="button" class="option-button" data-color="#f3e8ff">Kultur</button>
+                <button type="button" class="option-button" data-color="#dbeafe">Sport</button>
+                <button type="button" class="option-button" data-color="#dcfce7">Mat & Dryck</button>
+                <button type="button" class="option-button" data-color="#d1fae5">Natur</button>
+                <button type="button" class="option-button" data-color="#fce7f3">Shopping</button>
+                <button type="button" class="option-button" data-color="#fef3c7">Underhållning</button>
+            </div>
+
+            <!-- Input-fälten -->
+            <div style="display: flex; gap: 10px; margin: 15px 0;">
+                <select id="activityDestination" class="destination-input" style="flex: 1;">
+                    <option value="">Välj destination</option>
+                    ${destinations.map(dest => dest.name ? `
+                        <option value="${dest.id}">${dest.name}</option>
+                    ` : '').join('')}
+                </select>
+                <input type="text" id="activityInput" placeholder="Aktivitet" class="destination-input" style="flex: 2;">
+                <input type="date" id="activityDate" class="destination-input" style="flex: 1;">
+                <input type="time" id="activityTime" class="destination-input" style="flex: 1;">
+                <input type="number" id="activityCost" placeholder="Kostnad (SEK)" class="destination-input" style="flex: 1;">
+                <button id="addActivityBtn" class="add-button">+</button>
+            </div>
+
+            <!-- Aktivitetslistan -->
+            <div id="activitiesList"></div>
+        `;
+
+
+        // Återanslut händelsehanterarna
+        const buttons = container.querySelectorAll('.option-button');
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                buttons.forEach(btn => {
+                    btn.style.backgroundColor = 'transparent';
+                    btn.style.color = '#374760';
+                });
+                
+                this.style.backgroundColor = '#374760';
+                this.style.color = 'white';
+                selectedCategory = this.textContent;
+                selectedCategoryColor = this.dataset.color;
+            });
+        });
+
+        const addButton = container.querySelector('#addActivityBtn');
+        if (addButton) {
+            addButton.addEventListener('click', addActivity);
+        }
+    }
+}
+
+function handleActivityInput(event, destId, input) {
+    if (event.key === 'Enter' && input.value.trim()) {
+        const destination = destinations.find(d => d.id === destId);
+        if (destination) {
+            destination.activities = destination.activities || [];
+            destination.activities.push(input.value.trim());
+            input.value = '';
+            updateActivitiesContainer();
+        }
+    }
+}
+
+function removeActivity(destId, activityIndex) {
+    const destination = destinations.find(d => d.id === destId);
+    if (destination && destination.activities) {
+        destination.activities.splice(activityIndex, 1);
+        updateActivitiesContainer();
+    }
+}
+
+
+// Uppdatera addInsurance för att stödja kostnadsinput
+function addInsurance() {
+    const insuranceInput = document.getElementById('insuranceInput');
+    const insuranceLinkInput = document.getElementById('insuranceLinkInput');
+    const selectedInsurances = document.getElementById('selectedInsurances');
+    
+    if (insuranceInput.value.trim()) {
+        const insuranceItem = document.createElement('div');
+        insuranceItem.className = 'activity-item';
+        insuranceItem.innerHTML = `
+            <div class="insurance-details">
+                <span>${insuranceInput.value}</span>
+                <input type="url" 
+                       class="booking-link-input" 
+                       value="${insuranceLinkInput.value}"
+                       placeholder="Länk till försäkring"
+                       onchange="updateInsuranceLink(this)">
+            </div>
+            <div class="cost-input-container">
+                <input type="number" 
+                       class="cost-input insurance-cost-input" 
+                       placeholder="Kostnad" 
+                       min="0" 
+                       onchange="updateInsuranceCost(this)">
+                <span class="cost-currency">${currentCurrency}</span>
+            </div>
+            <button class="delete-activity" onclick="removeInsurance(this)">×</button>
+        `;
+        
+        selectedInsurances.appendChild(insuranceItem);
+        insuranceInput.value = '';
+        insuranceLinkInput.value = '';
+        
+        // Uppdatera budget om budget tracking är aktiverad
+        if (isBudgetTrackingEnabled) {
+            updateBudgetStatus();
+        }
+    }
+}
+
+function removeInsurance(button) {
+    button.closest('.activity-item').remove();
+}
+
+function updateInsuranceLink(input) {
+    // Sparar länken när den ändras
+    // Du kan lägga till validering här om du vill
+}
+
+// När användaren sparar en redigerad resa
+function saveEditedTrip() {
+    // Hämta original trip ID från URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const editTripId = urlParams.get('edit');
+    
+    if (!editTripId) {
+        // Om ingen edit-parameter finns, spara som en ny resa
+        saveTrip();
+        return;
+    }
+    
+    const tripId = parseInt(editTripId);
+    const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+    const tripIndex = savedTrips.findIndex(trip => trip.id === tripId);
+    
+    if (tripIndex === -1) {
+        showToast('Kunde inte hitta ursprunglig resa. Sparar som ny resa istället.');
+        saveTrip();
+        return;
+    }
+    
+    // Samla alla valda försäkringar
+    const selectedInsurances = Array.from(document.getElementById('selectedInsurances')?.children || []).map(insuranceItem => {
+        const insuranceName = insuranceItem.querySelector('.insurance-details span')?.textContent || '';
+        const insuranceLink = insuranceItem.querySelector('.booking-link-input')?.value || '';
+        return {
+            name: insuranceName,
+            link: insuranceLink
+        };
+    });
+
+    // Funktion för att uppdatera försäkringskostnad
+function updateInsuranceCost(input) {
+    // Uppdatera budget om budget tracking är aktiverad
+    if (isBudgetTrackingEnabled) {
+        updateBudgetStatus();
+    }
+}
+
+// Funktion för att hämta kategorifärg (om den inte redan finns)
+function getCategoryColor(category) {
+    const colorMap = {
+        'Kultur': '#f3e8ff',
+        'Sport': '#dbeafe',
+        'Mat & Dryck': '#dcfce7',
+        'Natur': '#d1fae5',
+        'Shopping': '#fce7f3',
+        'Underhållning': '#fef3c7'
+    };
+    return colorMap[category] || '#f1f5f9';
+}
+    
+    // Samla all uppdaterad information om resan
+    const updatedTripData = {
+        id: tripId, // Behåll samma ID
+        date: new Date().toLocaleDateString('sv-SE'), // Uppdatera redigeringsdatum
+        startDate: document.getElementById('startDate').value,
+        endDate: document.getElementById('endDate').value,
+        days: parseInt(document.getElementById('calculatedDays').textContent),
+        
+        budget: {
+            amount: parseInt(document.getElementById('budgetInput').value) || 0,
+            currency: document.getElementById('currencySelect').value
+        },
+        destinations: destinations.map(dest => ({
+            name: dest.name || '',
+            transports: dest.transports || [],
+            accommodations: dest.accommodations || [],
+            activities: dest.activities || []
+        })),
+        insurances: selectedInsurances
+    };
+    
+    // Uppdatera resan i arrayen
+    savedTrips[tripIndex] = updatedTripData;
+    
+    // Spara tillbaka till localStorage
+    localStorage.setItem('savedTrips', JSON.stringify(savedTrips));
+    
+    // Ta bort tillfällig data
+    localStorage.removeItem('tripToEdit');
+    
+    // Visa bekräftelse till användaren
+    showToast('Ändringar sparade!');
+    
+    // Omdirigera till profilsidan efter en kort fördröjning
+    setTimeout(() => {
+        window.location.href = 'profil2.html';
+    }, 1500);
+}
+// Toast notification funktion om den inte redan finns
+function showToast(message, duration = 3000) {
+    let toast = document.querySelector('.toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'toast';
+        document.body.appendChild(toast);
+    }
+    
+    toast.textContent = message;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, duration);
+}
+
+
+    // Load profile picture from localStorage
+    function loadProfilePicture() {
+        const savedProfilePic = localStorage.getItem('profilePic');
+        const navProfilePic = document.getElementById('navProfilePic');
+        if (savedProfilePic && navProfilePic) {
+            navProfilePic.src = savedProfilePic;
+        }
+    }
+
+    // Load profile picture when page loads (kanske ta bort)
+
+    function updateDestinationSelect() {
+    const select = document.getElementById('activityDestination');
+    if (select) {
+        select.innerHTML = '<option value="">Välj destination</option>';
+        destinations.forEach(dest => {
+            if (dest.name) {
+                select.innerHTML += `<option value="${dest.id}">${dest.name}</option>`;
+            }
+        });
+    }
+}
+
+function loadTripToEdit() {
+    try {
+        // Kontrollera om det finns en edit-parameter i URL:en
+        const urlParams = new URLSearchParams(window.location.search);
+        const editTripId = urlParams.get('edit');
+        
+        if (!editTripId) {
+            console.log("Ingen redigering begärd (ingen edit parameter)");
+            return; 
+        }
+        
+        console.log("Laddar resa med ID:", editTripId);
+        
+        // Hämta sparad resa från localStorage
+        const tripDataString = localStorage.getItem('tripToEdit');
+        if (!tripDataString) {
+            showToast('Kunde inte hitta resan för redigering');
+            return;
+        }
+        
+        const tripData = JSON.parse(tripDataString);
+        console.log("Hämtad resa för redigering:", tripData);
+        
+        // 1. Fyll i datumen
+        document.getElementById('startDate').value = tripData.startDate || '';
+        document.getElementById('endDate').value = tripData.endDate || '';
+        
+        // Trigga en manuell beräkning av dagar
+        if (tripData.startDate && tripData.endDate) {
+            const start = new Date(tripData.startDate);
+            const end = new Date(tripData.endDate);
+            const diffTime = end - start;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            document.getElementById('calculatedDays').textContent = diffDays;
+        }
+        
+        // 2. Ställ in budget
+        const budgetInput = document.getElementById('budgetInput');
+        if (budgetInput) {
+            if (typeof tripData.budget === 'object') {
+                budgetInput.value = tripData.budget.amount || 0;
+                
+                // Sätt valuta
+                const currencySelect = document.getElementById('currencySelect');
+                if (currencySelect && tripData.budget.currency) {
+                    currencySelect.value = tripData.budget.currency;
+                    window.currentCurrency = tripData.budget.currency;
+                }
+                
+                // Aktivera budget tracking om det var aktiverat
+                const budgetTrackerToggle = document.getElementById('budgetTrackerToggle');
+                if (budgetTrackerToggle && tripData.budget.trackingEnabled) {
+                    budgetTrackerToggle.checked = true;
+                    
+                    // Uppdatera UIn för budget tracking
+                    window.isBudgetTrackingEnabled = true;
+                    window.totalBudgetAmount = tripData.budget.amount || 0;
+                    
+                    const budgetStatus = document.getElementById('budgetStatus');
+                    if (budgetStatus) budgetStatus.classList.remove('hidden');
+                    
+                    const totalBudget = document.getElementById('totalBudget');
+                    if (totalBudget) totalBudget.textContent = totalBudgetAmount.toLocaleString('sv-SE');
+                    
+                    updateAllCurrencyDisplays(window.currentCurrency);
+                }
+            } else {
+                budgetInput.value = tripData.budget || 0;
+            }
+        }
+        
+        // 3. Ställ in destinationer - rensa först
+        window.destinations = [];
+        window.destinationCount = 0;
+        
+        // Rensa containern
+        const destinationsContainer = document.getElementById('destinationsContainer');
+        if (destinationsContainer) {
+            destinationsContainer.innerHTML = '';
+        }
+        
+        // Lägg till destinationer
+        if (tripData.destinations && tripData.destinations.length > 0) {
+            tripData.destinations.forEach(dest => {
+                if (dest.name) {
+                    // Öka räknaren
+                    window.destinationCount++;
+                    
+                    // Skapa ett nytt destinationsobjekt
+                    const newDest = {
+                        id: window.destinationCount,
+                        name: dest.name,
+                        transports: dest.transports || [],
+                        accommodations: dest.accommodations || [],
+                        activities: dest.activities || []
+                    };
+                    
+                    // Lägg till i globala arrayen
+                    window.destinations.push(newDest);
+                    
+                    // Skapa HTML för destinationen
+                    const destinationDiv = document.createElement('div');
+                    destinationDiv.className = 'destination-container';
+                    destinationDiv.id = `destination-${window.destinationCount}`;
+                    
+                    destinationDiv.innerHTML = `
+                        <button class="remove-button" onclick="removeDestination(${window.destinationCount})">Ta bort</button>
+                        <h3>Destination ${window.destinationCount}</h3>
+                        <input type="text" 
+                               value="${dest.name}" 
+                               placeholder="Stad, Land" 
+                               class="destination-input" 
+                               onchange="updateDestinationName(${window.destinationCount}, this.value)">
+                        <div class="transport-section">
+                            <div class="options-container">
+                                ${['Flyg', 'Tåg', 'Bil', 'Buss', 'Båt'].map(transport => `
+                                    <button type="button" class="option-button" onclick="selectTransport(this, ${window.destinationCount}, '${transport}')">${transport}</button>
+                                `).join('')}
+                            </div>
+                            <div class="transports-list" id="transports-list-${window.destinationCount}"></div>
+                        </div>
+                    `;
+                    
+                    destinationsContainer.appendChild(destinationDiv);
+                    
+                    // Lägg till transporter
+                    if (dest.transports && dest.transports.length > 0) {
+                        const transportsList = document.getElementById(`transports-list-${window.destinationCount}`);
+                        if (transportsList) {
+                            transportsList.innerHTML = dest.transports.map((transport, tIndex) => `
+                                <div class="transport-item">
+                                    <div class="transport-details">
+                                        <span class="transport-type">${transport.type || ''}</span>
+                                        <input type="url" 
+                                               class="booking-link-input" 
+                                               value="${transport.bookingLink || ''}"
+                                               placeholder="Klistra in bokningslänk här"
+                                               onchange="updateTransportLink(${window.destinationCount}, ${tIndex}, this.value)">
+                                    </div>
+                                    <div class="cost-input-container transport-cost">
+                                        <input type="number" 
+                                               class="cost-input transport-cost-input" 
+                                               value="${transport.cost || 0}"
+                                               placeholder="Kostnad" 
+                                               min="0" 
+                                               onchange="updateTransportCost(${window.destinationCount}, ${tIndex}, this.value)">
+                                        <span class="cost-currency" id="transportCurrency${window.destinationCount}-${tIndex}">${window.currentCurrency || 'SEK'}</span>
+                                    </div>
+                                    <button class="delete-transport" onclick="removeTransport(${window.destinationCount}, ${tIndex})">×</button>
+                                </div>
+                            `).join('');
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Uppdatera container för alla delar
+        updateAccommodationContainer();
+        updateDestinationSelect();
+        updateActivitiesContainer();
+        
+        // 4. Uppdatera aktiviteter
+        const activitiesList = document.getElementById('activitiesList');
+        if (activitiesList) {
+            activitiesList.innerHTML = '';
+            
+            // Loopa genom alla destinationer och hitta aktiviteter
+            window.destinations.forEach(dest => {
+                if (dest.activities && dest.activities.length > 0) {
+                    dest.activities.forEach(activity => {
+                        const categoryColor = getCategoryColor(activity.category);
+                        
+                        const activityItem = document.createElement('div');
+                        activityItem.className = 'activity-item';
+                        activityItem.style.backgroundColor = categoryColor;
+                        
+                        const dateTimeText = activity.date ? 
+                            `${new Date(activity.date).toLocaleDateString('sv-SE')} ${activity.time || ''}` : '';
+                        const costText = activity.cost ? `${activity.cost} ${window.currentCurrency || 'SEK'}` : '';
+                        
+                        activityItem.innerHTML = `
+                            <div>
+                                <strong>${activity.name || ''}</strong>
+                                <div style="font-size: 0.9em; color: #666;">
+                                    ${dest.name || ''} | ${activity.category || ''}
+                                    ${dateTimeText ? ` | ${dateTimeText}` : ''}
+                                    ${costText ? ` | ${costText}` : ''}
+                                </div>
+                            </div>
+                            <button onclick="removeActivityFromUI(this, ${dest.id}, ${activity.id || 0})" class="delete-activity">×</button>
+                        `;
+                        
+                        activitiesList.appendChild(activityItem);
+                    });
+                }
+            });
+        }
+        
+        // 5. Uppdatera försäkringar
+        const selectedInsurances = document.getElementById('selectedInsurances');
+        if (selectedInsurances && tripData.insurances && tripData.insurances.length > 0) {
+            selectedInsurances.innerHTML = '';
+            
+            tripData.insurances.forEach(insurance => {
+                const insuranceItem = document.createElement('div');
+                insuranceItem.className = 'activity-item';
+                insuranceItem.innerHTML = `
+                    <div class="insurance-details">
+                        <span>${insurance.name || ''}</span>
+                        <input type="url" 
+                               class="booking-link-input" 
+                               value="${insurance.link || ''}"
+                               placeholder="Länk till försäkring"
+                               onchange="updateInsuranceLink(this)">
+                    </div>
+                    <div class="cost-input-container">
+                        <input type="number" 
+                               class="cost-input insurance-cost-input" 
+                               value="${insurance.cost || 0}"
+                               placeholder="Kostnad" 
+                               min="0" 
+                               onchange="updateInsuranceCost(this)">
+                        <span class="cost-currency">${window.currentCurrency || 'SEK'}</span>
+                    </div>
+                    <button class="delete-activity" onclick="removeInsurance(this)">×</button>
+                `;
+                
+                selectedInsurances.appendChild(insuranceItem);
+            });
+        }
+        
+        // Uppdatera budget tracking om aktiverat
+        if (window.isBudgetTrackingEnabled) {
+            updateBudgetStatus();
+        }
+        
+        // Allt klart!
+        showToast('Resa laddad för redigering');
+        
+    } catch (error) {
+        console.error('Fel vid laddning av resa:', error);
+        showToast('Kunde inte ladda resan: ' + error.message);
+    }
+}
+
+// Hjälpfunktion för att hämta kategorifärg
+function getCategoryColor(category) {
+    if (!category) return '#f8f9fa'; // Default ljusgrå om ingen kategori
+    
+    const colorMap = {
+        'Kultur': '#f3e8ff',
+        'Sport': '#dbeafe',
+        'Mat & Dryck': '#dcfce7',
+        'Natur': '#d1fae5',
+        'Shopping': '#fce7f3',
+        'Underhållning': '#fef3c7',
+        'Event': '#ffedd5'
+    };
+    
+    return colorMap[category] || '#f8f9fa';
+}
+
+// Hjälpfunktion för att skapa ett aktivitetsobjekt
+function createActivityItem(destId, activity) {
+    console.log("Skapar aktivitetsitem:", activity);
+    
+    const activityDiv = document.createElement('div');
+    activityDiv.className = 'activity-item';
+    
+    // Hitta rätt färg för kategorin
+    const categoryColor = getCategoryColor(activity.category);
+    activityDiv.style.backgroundColor = categoryColor;
+    
+    const destination = window.destinations.find(d => d.id === destId);
+    const destName = destination ? destination.name : 'Okänd destination';
+    
+    const dateTimeText = activity.date ? 
+        `${new Date(activity.date).toLocaleDateString('sv-SE')} ${activity.time || ''}` : '';
+    const costText = activity.cost ? `${activity.cost} ${window.currentCurrency || 'SEK'}` : '';
+    
+    activityDiv.innerHTML = `
+        <div>
+            <strong>${activity.name || 'Okänd aktivitet'}</strong>
+            <div style="font-size: 0.9em; color: #666;">
+                ${destName} | ${activity.category || 'Okänd kategori'}
+                ${dateTimeText ? ` | ${dateTimeText}` : ''}
+                ${costText ? ` | ${costText}` : ''}
+            </div>
+        </div>
+        <button onclick="removeActivityFromUI(this, ${destId}, ${activity.id})" class="delete-activity">×</button>
+    `;
+    
+    return activityDiv;
+}
+// Budget functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const budgetInput = document.getElementById('budgetInput');
+    const currencySelect = document.getElementById('currencySelect');
+    const currencyDisplay = document.getElementById('currencyDisplay');
+    const perDayCost = document.getElementById('perDayCost');
+    const calculatedDays = document.getElementById('calculatedDays');
+    
+    // Uppdatera valutavisning
+    currencySelect.addEventListener('change', function() {
+        currencyDisplay.textContent = this.value;
+        updatePerDayCost();
+    });
+    
+    // Uppdatera per-dag-kostnad när budget ändras
+    budgetInput.addEventListener('input', updatePerDayCost);
+    
+    // Uppdatera per-dag-kostnad när antal dagar ändras
+    if (calculatedDays) {
+        const observer = new MutationObserver(updatePerDayCost);
+        observer.observe(calculatedDays, { childList: true, characterData: true, subtree: true });
+    }
+    
+    function updatePerDayCost() {
+        const budget = parseInt(budgetInput.value) || 0;
+        const days = parseInt(calculatedDays.textContent) || 1;
+        const dailyCost = days > 0 ? Math.round(budget / days) : 0;
+        
+        perDayCost.textContent = dailyCost.toLocaleString('sv-SE');
+    }
+    
+    // Formatering för budgetfältet
+    budgetInput.addEventListener('blur', function() {
+        const value = parseInt(this.value) || 0;
+        this.value = value.toLocaleString('sv-SE').replace(/\s/g, '');
+        updatePerDayCost();
+    });
+    
+    // Rensa formatering när användaren klickar i fältet
+    budgetInput.addEventListener('focus', function() {
+        const value = parseInt(this.value.replace(/\s/g, '')) || 0;
+        this.value = value;
+    });
+});
+
+// Identifiera aktiviteter från evenemang
+function isEventActivity(activity) {
+    return activity && activity.eventId && activity.category === "Event";
+}
+
+// Visa särskild formatering för Event-aktiviteter 
+function displayActivityDetails(activity) {
+    let detailsHTML = `
+        <div class="activity-item ${isEventActivity(activity) ? 'event-activity' : ''}" data-id="${activity.id}">
+            <strong>${activity.name}</strong>
+            <div class="activity-details">
+                <span>${activity.category}</span>
+                ${activity.date ? `<span>${formatDate(activity.date)}</span>` : ''}
+                ${activity.time ? `<span>${activity.time}</span>` : ''}
+                ${activity.cost ? `<span>${activity.cost} SEK</span>` : ''}
+            </div>
+    `;
+    
+    if (isEventActivity(activity)) {
+        detailsHTML += `<div class="event-badge">Evenemang</div>`;
+    }
+    
+    detailsHTML += `<button class="delete-activity" onclick="removeActivity(${activity.id})">×</button></div>`;
+    
+    return detailsHTML;
+}
+</script>
+
+<script src="chatbot.js"></script>
+<script>
+    function handleLogout() {
+        localStorage.removeItem('currentUser');
+        window.location.href = 'index.html';
+    }
+    
+    // Uppdatera profil namn om inloggad
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (currentUser) {
+            // Uppdatera profilnamn i headern
+            const profileNameElements = document.querySelectorAll('.profile-name, #displayName');
+            profileNameElements.forEach(element => {
+                if (element) {
+                    element.textContent = currentUser.username;
+                }
+            });
+            
+            // Omdirigera till login om inte inloggad och inte på login-sidan
+            if (!currentUser && !window.location.pathname.includes('index.html')) {
+                window.location.href = 'index.html';
+            }
+        }
+    });
+    </script>
+
+</body>
+</html>
+
+

@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skapa Event - TravelBuddy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="chatbot.css">
+    <style>
+        :root {
+            --primary-color: #374760;
+            --background-color: #374760;
+            --text-color: #333;
+        }
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+
+        .header {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+        }
+
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+
+        .logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+
+        .profile-nav-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+
+        .profile-nav-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 100px 20px 20px;
+        }
+
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(55, 71, 96, 0.2);
+        }
+
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+
+        .submit-btn:hover {
+            background-color: #2a3649;
+            transform: translateY(-2px);
+        }
+
+
+        .required-label::after {
+            content: " *";
+            color: #dc3545;
+        }
+
+
+        .help-text {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+
+        .form-section {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+
+        .form-section-title {
+            font-size: 18px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+
+        .preview-container {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+
+        .preview-title {
+            font-size: 18px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+
+        .event-preview {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+
+        .preview-item {
+            margin-bottom: 10px;
+        }
+
+
+        .preview-label {
+            font-weight: 500;
+            color: #495057;
+        }
+
+
+        .preview-value {
+            color: #212529;
+        }
+
+
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+
+        /* Toast */
+        .toast-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #374760;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1001;
+        }
+
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.5rem;
+            }
+
+
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+
+            .nav-links {
+                gap: 0.5rem;
+            }
+
+
+            .nav-link {
+                font-size: 0.9rem;
+                padding: 0.3rem 0.8rem;
+            }
+
+
+            .container {
+                padding-top: 70px;
+            }
+
+
+            h1 {
+                font-size: 1.7rem;
+                margin-bottom: 20px;
+            }
+
+
+            .form-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+
+        /* Image upload styling */
+        .image-upload-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+
+        .file-input {
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+
+        .upload-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+
+        .upload-placeholder:hover {
+            border-color: var(--primary-color);
+            background-color: #f0f4f8;
+        }
+
+
+        .upload-placeholder i {
+            font-size: 30px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+
+        .upload-placeholder span {
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+
+        .image-preview-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+
+        .image-preview {
+            width: 100%;
+            height: auto;
+            max-height: 300px;
+            object-fit: cover;
+            display: block;
+        }
+
+
+        .remove-image-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+
+        .remove-image-btn:hover {
+            background-color: #fff;
+            transform: scale(1.1);
+        }
+
+
+        .remove-image-btn i {
+            color: #dc3545;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="nav-container">
+            <a href="home.html" class="logo">TravelBuddy</a>
+            <nav class="nav-links">
+                <a href="home.html" class="nav-link">Hem</a>
+                <a href="reseplanerare2.html" class="nav-link">Reseplanerare</a>
+                <a href="tips2.html" class="nav-link">Tips</a>
+                <a href="events2.html" class="nav-link">Events</a>
+                <a href="Skapa-event.html" class="nav-link active">Skapa Event</a>
+                <a href="#" class="nav-link" onclick="handleLogout()">Logga ut</a>
+                <a href="profil2.html" class="profile-nav-link">
+                    <img id="navProfilePic" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 24 24'%3E%3Cpath fill='%23666' d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4-4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Profil" class="profile-nav-pic">
+                </a>
+            </nav>
+        </div>
+    </header>
+
+
+    <div class="container">
+        <h1>Skapa Event</h1>
+
+
+        <div class="card">
+            <div id="successMessage" class="success-message">
+                Ditt event har skapats och publicerats!
+            </div>
+           
+            <div id="errorMessage" class="error-message">
+                Det gick inte att skapa eventet. Kontrollera alla fält och försök igen.
+            </div>
+           
+            <form id="createEventForm">
+                <div class="form-section">
+                    <h2 class="form-section-title">Grundläggande information</h2>
+                   
+                    <div class="form-group">
+                        <label for="eventTitle" class="required-label">Eventtitel</label>
+                        <input type="text" id="eventTitle" class="form-control" required>
+                        <p class="help-text">Ge ditt event en kort men beskrivande titel</p>
+                    </div>
+                   
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eventStartDate" class="required-label">Startdatum</label>
+                            <input type="date" id="eventStartDate" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventEndDate" class="required-label">Slutdatum</label>
+                            <input type="date" id="eventEndDate" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+               
+                <div class="form-section">
+                    <h2 class="form-section-title">Plats</h2>
+                   
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eventCountry" class="required-label">Land</label>
+                            <select id="eventCountry" class="form-control" required>
+                                <option value="">Välj land</option>
+                                <option value="Sverige">Sverige</option>
+                                <option value="Norge">Norge</option>
+                                <option value="Danmark">Danmark</option>
+                                <option value="Finland">Finland</option>
+                                <option value="Tyskland">Tyskland</option>
+                                <option value="Frankrike">Frankrike</option>
+                                <option value="Italien">Italien</option>
+                                <option value="Spanien">Spanien</option>
+                                <option value="Storbritannien">Storbritannien</option>
+                                <option value="USA">USA</option>
+                                <option value="Annat">Annat</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventCity" class="required-label">Stad</label>
+                            <input type="text" id="eventCity" class="form-control" required>
+                        </div>
+                    </div>
+                   
+                    <div class="form-group" id="otherCountryGroup" style="display: none;">
+                        <label for="otherCountry" class="required-label">Ange land</label>
+                        <input type="text" id="otherCountry" class="form-control">
+                    </div>
+                   
+                    <div class="form-group">
+                        <label for="eventVenue">Plats/Lokal</label>
+                        <input type="text" id="eventVenue" class="form-control" placeholder="T.ex. Globen, Centralparken, etc.">
+                    </div>
+                </div>
+               
+                <div class="form-section">
+                    <h2 class="form-section-title">Bild</h2>
+                   
+                    <div class="form-group">
+                        <label for="eventImage">Ladda upp bild (valfritt)</label>
+                        <div class="image-upload-container">
+                            <input type="file" id="eventImage" class="form-control file-input" accept="image/*">
+                            <div class="image-preview-container" id="imagePreviewContainer" style="display: none;">
+                                <img id="imagePreview" src="#" alt="Förhandsgranskning" class="image-preview">
+                                <button type="button" id="removeImageBtn" class="remove-image-btn">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="upload-placeholder" id="uploadPlaceholder">
+                                <i class="fas fa-upload"></i>
+                                <span>Klicka för att välja en bild</span>
+                                <p class="help-text">Rekommenderad storlek: 800x400 pixlar. Max 5MB.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-section">
+                    <h2 class="form-section-title">Beskrivning och detaljer</h2>
+                   
+                    <div class="form-group">
+                        <label for="eventDescription" class="required-label">Beskrivning</label>
+                        <textarea id="eventDescription" class="form-control" required></textarea>
+                        <p class="help-text">Beskriv eventet i detalj. Vad kan besökare förvänta sig?</p>
+                    </div>
+                   
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eventCategory">Kategori</label>
+                            <select id="eventCategory" class="form-control">
+                                <option value="">Välj kategori</option>
+                                <option value="Kultur">Kultur</option>
+                                <option value="Sport">Sport</option>
+                                <option value="Musik">Musik</option>
+                                <option value="Mat & Dryck">Mat & Dryck</option>
+                                <option value="Natur">Natur</option>
+                                <option value="Festival">Festival</option>
+                                <option value="Marknad">Marknad</option>
+                                <option value="Utställning">Utställning</option>
+                                <option value="Annat">Annat</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventPrice">Ungefärligt pris (SEK)</label>
+                            <input type="number" id="eventPrice" class="form-control" min="0" placeholder="Lämna tomt om gratis">
+                        </div>
+                    </div>
+                   
+                    <div class="form-group">
+                        <label for="eventOrganizer">Arrangör</label>
+                        <input type="text" id="eventOrganizer" class="form-control">
+                    </div>
+                   
+                    <div class="form-group">
+                        <label for="eventWebsite">Webbplats</label>
+                        <input type="url" id="eventWebsite" class="form-control" placeholder="https://example.com">
+                    </div>
+                </div>
+               
+                <button type="submit" class="submit-btn">Publicera Event</button>
+            </form>
+           
+            <div class="preview-container" id="previewContainer" style="display: none;">
+                <h2 class="preview-title">Förhandsgranskning av Event</h2>
+                <div class="event-preview" id="eventPreview">
+                    <!-- Event preview will be populated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast-notification"></div>
+
+
+    <!-- Chatbot -->
+    <div class="chat-bubble" onclick="toggleChat()">
+        <i>💬</i>
+    </div>
+
+
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <span>TravelBuddy Assistent</span>
+            <button class="chat-close" onclick="toggleChat()">×</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <!-- Messages will be added here -->
+        </div>
+        <div class="typing-indicator" id="typingIndicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+        </div>
+        <div class="chat-input-container">
+            <button id="reset-chat">Ny konversation</button>
+            <input type="text" class="chat-input" id="chatInput" placeholder="Ställ en fråga...">
+            <button class="chat-send" onclick="sendChatMessage()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+
+    <script>
+        // Current events data
+        let currentEventId = 1;
+       
+        // DOM Elements
+        const createEventForm = document.getElementById('createEventForm');
+        const eventCountry = document.getElementById('eventCountry');
+        const otherCountryGroup = document.getElementById('otherCountryGroup');
+        const otherCountry = document.getElementById('otherCountry');
+        const previewContainer = document.getElementById('previewContainer');
+        const eventPreview = document.getElementById('eventPreview');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const toast = document.getElementById('toast');
+       
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load profile picture
+            loadProfilePicture();
+           
+            // Set current date as default for event start date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('eventStartDate').value = today;
+            document.getElementById('eventEndDate').value = today;
+           
+            // Load current event ID from localStorage
+            const events = JSON.parse(localStorage.getItem('events') || '[]');
+            if (events.length > 0) {
+                currentEventId = Math.max(...events.map(e => e.id)) + 1;
+            }
+           
+            // Initialize form event handlers
+            initializeFormHandlers();
+        });
+       
+        // Initialize form handlers
+        function initializeFormHandlers() {
+            // Show "Other country" field when "Other" is selected
+            eventCountry.addEventListener('change', () => {
+                if (eventCountry.value === 'Annat') {
+                    otherCountryGroup.style.display = 'block';
+                    otherCountry.required = true;
+                } else {
+                    otherCountryGroup.style.display = 'none';
+                    otherCountry.required = false;
+                }
+            });
+           
+            // Real-time preview generation
+            const formInputs = createEventForm.querySelectorAll('input, textarea, select');
+            formInputs.forEach(input => {
+                input.addEventListener('input', updateEventPreview);
+            });
+           
+            // Form submission
+            createEventForm.addEventListener('submit', handleFormSubmit);
+        }
+       
+        // Update event preview
+        function updateEventPreview() {
+            const title = document.getElementById('eventTitle').value;
+            const startDate = document.getElementById('eventStartDate').value;
+            const endDate = document.getElementById('eventEndDate').value;
+            const country = eventCountry.value === 'Annat' ? otherCountry.value : eventCountry.value;
+            const city = document.getElementById('eventCity').value;
+            const venue = document.getElementById('eventVenue').value;
+            const description = document.getElementById('eventDescription').value;
+            const category = document.getElementById('eventCategory').value;
+            const price = document.getElementById('eventPrice').value;
+            const organizer = document.getElementById('eventOrganizer').value;
+            const website = document.getElementById('eventWebsite').value;
+           
+            // Only show preview if there's at least a title
+            if (title) {
+                previewContainer.style.display = 'block';
+               
+                const location = [city, country].filter(Boolean).join(', ');
+                const dateRange = startDate && endDate ? formatDateRange(startDate, endDate) : '';
+               
+                eventPreview.innerHTML = `
+                    <div class="preview-item">
+                        <h3 style="color: var(--primary-color); margin-bottom: 10px;">${title}</h3>
+                    </div>
+                    ${dateRange ? `
+                    <div class="preview-item">
+                        <span class="preview-label">Datum:</span>
+                        <span class="preview-value">${dateRange}</span>
+                    </div>
+                    ` : ''}
+                    ${location ? `
+                    <div class="preview-item">
+                        <span class="preview-label">Plats:</span>
+                        <span class="preview-value">${location}${venue ? ` (${venue})` : ''}</span>
+                    </div>
+                    ` : ''}
+                    ${description ? `
+                    <div class="preview-item">
+                        <span class="preview-label">Beskrivning:</span>
+                        <div class="preview-value" style="margin-top: 5px;">${description}</div>
+                    </div>
+                    ` : ''}
+                    <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 15px;">
+                        ${category ? `
+                        <div class="preview-item" style="flex: 1; min-width: 150px;">
+                            <span class="preview-label">Kategori:</span>
+                            <span class="preview-value">${category}</span>
+                        </div>
+                        ` : ''}
+                        ${price ? `
+                        <div class="preview-item" style="flex: 1; min-width: 150px;">
+                            <span class="preview-label">Pris:</span>
+                            <span class="preview-value">${price} SEK</span>
+                        </div>
+                        ` : ''}
+                        ${organizer ? `
+                        <div class="preview-item" style="flex: 1; min-width: 150px;">
+                            <span class="preview-label">Arrangör:</span>
+                            <span class="preview-value">${organizer}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                    ${website ? `
+                    <div class="preview-item" style="margin-top: 15px;">
+                        <span class="preview-label">Webbplats:</span>
+                        <a href="${website}" target="_blank" class="preview-value" style="color: var(--primary-color);">${website}</a>
+                    </div>
+                    ` : ''}
+                `;
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        }
+       
+        // Handle form submission
+        function handleFormSubmit(e) {
+            e.preventDefault();
+           
+            // Basic validation
+            const title = document.getElementById('eventTitle').value.trim();
+            const startDate = document.getElementById('eventStartDate').value;
+            const endDate = document.getElementById('eventEndDate').value;
+            const country = eventCountry.value === 'Annat' ? otherCountry.value.trim() : eventCountry.value;
+            const city = document.getElementById('eventCity').value.trim();
+            const description = document.getElementById('eventDescription').value.trim();
+           
+            if (!title || !startDate || !endDate || !country || !city || !description) {
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+                return;
+            }
+           
+            // Create event object
+            const venue = document.getElementById('eventVenue').value.trim();
+            const category = document.getElementById('eventCategory').value;
+            const price = document.getElementById('eventPrice').value;
+            const organizer = document.getElementById('eventOrganizer').value.trim();
+            const website = document.getElementById('eventWebsite').value.trim();
+           
+            const newEvent = {
+                id: currentEventId++,
+                title: title,
+                description: description,
+                startDate: startDate,
+                endDate: endDate,
+                country: country,
+                city: city,
+                location: `${city}, ${country}`,
+                venue: venue,
+                category: category,
+                price: price ? parseInt(price) : 0,
+                organizer: organizer,
+                website: website
+            };
+           
+            // Save to localStorage
+            const events = JSON.parse(localStorage.getItem('events') || '[]');
+            events.push(newEvent);
+            localStorage.setItem('events', JSON.stringify(events));
+           
+            // Show success message
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+           
+            // Show toast
+            showToast('Event har skapats och publicerats!');
+           
+            // Reset form
+            createEventForm.reset();
+            previewContainer.style.display = 'none';
+           
+            // Redirect to events page after short delay
+            setTimeout(() => {
+                window.location.href = 'events2.html';
+            }, 2000);
+        }
+       
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+           
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+       
+        // Format date range
+        function formatDateRange(startDate, endDate) {
+            if (!startDate || !endDate) return '';
+           
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+           
+            if (startDate === endDate) {
+                return start.toLocaleDateString('sv-SE');
+            }
+           
+            return `${start.toLocaleDateString('sv-SE')} - ${end.toLocaleDateString('sv-SE')}`;
+        }
+       
+        // Function to load profile picture
+        function loadProfilePicture() {
+            const savedProfilePic = localStorage.getItem('profilePic');
+            const navProfilePic = document.getElementById('navProfilePic');
+            if (savedProfilePic && navProfilePic) {
+                navProfilePic.src = savedProfilePic;
+            }
+        }
+    </script>
+   
+    <script src="chatbot.js"></script>
+   
+    <!-- Include this simple script to initialize the chatbot -->
+    <script>
+        // Check if chatbot initialization function exists
+        if (typeof initializeChatbot === 'function') {
+            document.addEventListener('DOMContentLoaded', function() {
+                initializeChatbot();
+            });
+        }
+
+
+    // Lägg till dessa funktioner till Skapa-event.html för att stödja redigering av event
+
+
+// Funktion för att läsa in och visa event som ska redigeras
+function loadEventToEdit() {
+    // Kontrollera om det finns en edit-parameter i URL:en
+    const urlParams = new URLSearchParams(window.location.search);
+    const editEventId = urlParams.get('edit');
+   
+    if (!editEventId) return; // Ingen redigering begärd
+   
+    // Hämta event från localStorage
+    const eventDataString = localStorage.getItem('eventToEdit');
+    if (!eventDataString) {
+        // Om inget event finns i localStorage, hämta från events-listan baserat på ID
+        const events = JSON.parse(localStorage.getItem('events') || '[]');
+        const event = events.find(e => e.id === parseInt(editEventId));
+       
+        if (!event) {
+            showToast('Kunde inte hitta eventet för redigering');
+            return;
+        }
+       
+        localStorage.setItem('eventToEdit', JSON.stringify(event));
+    }
+   
+    try {
+        const eventData = JSON.parse(localStorage.getItem('eventToEdit'));
+       
+        // Fyll i formuläret med event-data
+        document.getElementById('event-title').value = eventData.title || '';
+        document.getElementById('event-start-date').value = eventData.startDate || '';
+        document.getElementById('event-end-date').value = eventData.endDate || '';
+        document.getElementById('event-country').value = eventData.country || '';
+       
+        // Hantera "Annat" land
+        if (eventData.country && document.getElementById('event-country').value === '') {
+            document.getElementById('event-country').value = 'Annat';
+            document.getElementById('otherCountryGroup').style.display = 'block';
+            document.getElementById('otherCountry').value = eventData.country || '';
+        }
+       
+        document.getElementById('event-city').value = eventData.city || '';
+        document.getElementById('event-venue').value = eventData.venue || '';
+        document.getElementById('event-description').value = eventData.description || '';
+        document.getElementById('event-category').value = eventData.category || '';
+        document.getElementById('event-price').value = eventData.price || '';
+        document.getElementById('event-organizer').value = eventData.organizer || '';
+        document.getElementById('event-website').value = eventData.website || '';
+       
+        // Uppdatera formulärrubrik och knapptext
+        document.querySelector('.modal-title').textContent = 'Redigera Event';
+        document.querySelector('button[type="submit"]').textContent = 'Uppdatera Event';
+       
+        // Uppdatera "success message" text
+        document.getElementById('successMessage').textContent = 'Ditt event har uppdaterats!';
+       
+        // Visa förhandsgranskning
+        updateEventPreview();
+       
+        // Visa meddelande
+        showToast('Event laddad för redigering');
+    } catch (error) {
+        console.error('Fel vid laddning av event:', error);
+        showToast('Kunde inte ladda eventet');
+    }
+}
+
+
+// Uppdatera handleFormSubmit funktionen för att stödja redigering
+function handleFormSubmit(e) {
+    e.preventDefault();
+   
+    // Grundläggande validering
+    const title = document.getElementById('event-title').value.trim();
+    const startDate = document.getElementById('event-start-date').value;
+    const endDate = document.getElementById('event-end-date').value;
+    const country = eventCountry.value === 'Annat' ? otherCountry.value.trim() : eventCountry.value;
+    const city = document.getElementById('event-city').value.trim();
+    const description = document.getElementById('event-description').value.trim();
+   
+    if (!title || !startDate || !endDate || !country || !city || !description) {
+        errorMessage.style.display = 'block';
+        successMessage.style.display = 'none';
+        return;
+    }
+   
+    // Skapa event-objekt
+    const venue = document.getElementById('event-venue').value.trim();
+    const category = document.getElementById('event-category').value;
+    const price = document.getElementById('event-price').value;
+    const organizer = document.getElementById('event-organizer').value.trim();
+    const website = document.getElementById('event-website').value.trim();
+   
+    // Kontrollera om det finns en edit-parameter i URL:en
+    const urlParams = new URLSearchParams(window.location.search);
+    const editEventId = urlParams.get('edit');
+   
+    // Hämta alla events
+    const events = JSON.parse(localStorage.getItem('events') || '[]');
+   
+    if (editEventId) {
+        // Redigering av befintlig event
+        const eventIndex = events.findIndex(event => event.id === parseInt(editEventId));
+       
+        if (eventIndex !== -1) {
+            // Uppdatera event med nya värden
+            events[eventIndex] = {
+                ...events[eventIndex],
+                title: title,
+                description: description,
+                startDate: startDate,
+                endDate: endDate,
+                country: country,
+                city: city,
+                location: `${city}, ${country}`,
+                venue: venue,
+                category: category,
+                price: price ? parseInt(price) : 0,
+                organizer: organizer,
+                website: website
+            };
+           
+            // Spara uppdaterade events
+            localStorage.setItem('events', JSON.stringify(events));
+           
+            // Visa framgångsmeddelande
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+           
+            // Visa toast
+            showToast('Event har uppdaterats!');
+           
+            // Ta bort temporär data
+            localStorage.removeItem('eventToEdit');
+           
+            // Omdirigera till events-sidan efter kort fördröjning
+            setTimeout(() => {
+                window.location.href = 'events2.html';
+            }, 2000);
+        } else {
+            // Event hittades inte
+            showToast('Kunde inte hitta eventet för uppdatering');
+        }
+    } else {
+        // Skapa nytt event
+        const newEvent = {
+            id: currentEventId++,
+            title: title,
+            description: description,
+            startDate: startDate,
+            endDate: endDate,
+            country: country,
+            city: city,
+            location: `${city}, ${country}`,
+            venue: venue,
+            category: category,
+            price: price ? parseInt(price) : 0,
+            organizer: organizer,
+            website: website
+        };
+       
+        // Spara till localStorage
+        events.push(newEvent);
+        localStorage.setItem('events', JSON.stringify(events));
+       
+        // Visa framgångsmeddelande
+        successMessage.style.display = 'block';
+        errorMessage.style.display = 'none';
+       
+        // Visa toast
+        showToast('Event har skapats och publicerats!');
+       
+        // Återställ formuläret
+        createEventForm.reset();
+        previewContainer.style.display = 'none';
+       
+        // Omdirigera till events-sidan efter kort fördröjning
+        setTimeout(() => {
+            window.location.href = 'events2.html';
+        }, 2000);
+    }
+}
+
+
+// Lägg till detta i initialize/DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Befintlig kod
+    // ...
+   
+    // Uppdatera handleFormSubmit för att hantera både nya och redigerade event
+    createEventForm.removeEventListener('submit', handleFormSubmit);
+    createEventForm.addEventListener('submit', handleFormSubmit);
+   
+    // Ladda event för redigering om det finns
+    loadEventToEdit();
+});
+
+
+// Image handling functionality
+let imageDataURL = null;
+
+
+function initializeImageUpload() {
+    const eventImage = document.getElementById('eventImage');
+    const imagePreview = document.getElementById('imagePreview');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+    const removeImageBtn = document.getElementById('removeImageBtn');
+   
+    // Handle image selection
+    eventImage.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+       
+        if (!file) return;
+       
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            showToast('Bilden är för stor. Max storlek är 5MB.');
+            eventImage.value = '';
+            return;
+        }
+       
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+            showToast('Endast JPG, PNG, GIF och WEBP-bilder stöds.');
+            eventImage.value = '';
+            return;
+        }
+       
+        const reader = new FileReader();
+       
+        reader.onload = function(event) {
+            imageDataURL = event.target.result;
+            imagePreview.src = imageDataURL;
+            imagePreviewContainer.style.display = 'block';
+            uploadPlaceholder.style.display = 'none';
+            updateEventPreview();
+        };
+       
+        reader.readAsDataURL(file);
+    });
+   
+    // Remove image button
+    removeImageBtn.addEventListener('click', function() {
+        imageDataURL = null;
+        imagePreview.src = '#';
+        imagePreviewContainer.style.display = 'none';
+        uploadPlaceholder.style.display = 'flex';
+        eventImage.value = '';
+        updateEventPreview();
+    });
+   
+    // Check if we're editing an event with an image
+    const urlParams = new URLSearchParams(window.location.search);
+    const editEventId = urlParams.get('edit');
+   
+    if (editEventId) {
+        const eventDataString = localStorage.getItem('eventToEdit');
+        if (eventDataString) {
+            try {
+                const eventData = JSON.parse(eventDataString);
+               
+                if (eventData.imageData) {
+                    imageDataURL = eventData.imageData;
+                    imagePreview.src = imageDataURL;
+                    imagePreviewContainer.style.display = 'block';
+                    uploadPlaceholder.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error loading event image data:', error);
+            }
+        }
+    }
+}
+
+
+// Update the handleFormSubmit function to include image data
+function handleFormSubmit(e) {
+    e.preventDefault();
+   
+    // Basic validation
+    const title = document.getElementById('eventTitle').value.trim();
+    const startDate = document.getElementById('eventStartDate').value;
+    const endDate = document.getElementById('eventEndDate').value;
+    const country = eventCountry.value === 'Annat' ? otherCountry.value.trim() : eventCountry.value;
+    const city = document.getElementById('eventCity').value.trim();
+    const description = document.getElementById('eventDescription').value.trim();
+   
+    if (!title || !startDate || !endDate || !country || !city || !description) {
+        errorMessage.style.display = 'block';
+        successMessage.style.display = 'none';
+        return;
+    }
+   
+    // Create event object
+    const venue = document.getElementById('eventVenue').value.trim();
+    const category = document.getElementById('eventCategory').value;
+    const price = document.getElementById('eventPrice').value;
+    const organizer = document.getElementById('eventOrganizer').value.trim();
+    const website = document.getElementById('eventWebsite').value.trim();
+   
+    // Kontrollera om det finns en edit-parameter i URL:en
+    const urlParams = new URLSearchParams(window.location.search);
+    const editEventId = urlParams.get('edit');
+   
+    // Hämta alla events
+    const events = JSON.parse(localStorage.getItem('events') || '[]');
+   
+    if (editEventId) {
+        // Redigering av befintlig event
+        const eventIndex = events.findIndex(event => event.id === parseInt(editEventId));
+       
+        if (eventIndex !== -1) {
+            // Uppdatera event med nya värden
+            events[eventIndex] = {
+                ...events[eventIndex],
+                title: title,
+                description: description,
+                startDate: startDate,
+                endDate: endDate,
+                country: country,
+                city: city,
+                location: `${city}, ${country}`,
+                venue: venue,
+                category: category,
+                price: price ? parseInt(price) : 0,
+                organizer: organizer,
+                website: website,
+                imageData: imageDataURL // Include image data
+            };
+           
+            // Spara uppdaterade events
+            localStorage.setItem('events', JSON.stringify(events));
+           
+            // Visa framgångsmeddelande
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+           
+            // Visa toast
+            showToast('Event har uppdaterats!');
+           
+            // Ta bort temporär data
+            localStorage.removeItem('eventToEdit');
+           
+            // Omdirigera till events-sidan efter kort fördröjning
+            setTimeout(() => {
+                window.location.href = 'events2.html';
+            }, 2000);
+        } else {
+            // Event hittades inte
+            showToast('Kunde inte hitta eventet för uppdatering');
+        }
+    } else {
+        // Skapa nytt event
+        const newEvent = {
+            id: currentEventId++,
+            title: title,
+            description: description,
+            startDate: startDate,
+            endDate: endDate,
+            country: country,
+            city: city,
+            location: `${city}, ${country}`,
+            venue: venue,
+            category: category,
+            price: price ? parseInt(price) : 0,
+            organizer: organizer,
+            website: website,
+            imageData: imageDataURL // Include image data
+        };
+       
+        // Spara till localStorage
+        events.push(newEvent);
+        localStorage.setItem('events', JSON.stringify(events));
+       
+        // Visa framgångsmeddelande
+        successMessage.style.display = 'block';
+        errorMessage.style.display = 'none';
+       
+        // Visa toast
+        showToast('Event har skapats och publicerats!');
+       
+        // Återställ formuläret
+        createEventForm.reset();
+        previewContainer.style.display = 'none';
+       
+        // Reset image preview
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+        if (imagePreviewContainer && uploadPlaceholder) {
+            imagePreviewContainer.style.display = 'none';
+            uploadPlaceholder.style.display = 'flex';
+            imageDataURL = null;
+        }
+       
+        // Omdirigera till events-sidan efter kort fördröjning
+        setTimeout(() => {
+            window.location.href = 'events2.html';
+        }, 2000);
+    }
+}
+
+
+// Update event preview function to include image preview
+function updateEventPreview() {
+    const title = document.getElementById('eventTitle').value;
+    const startDate = document.getElementById('eventStartDate').value;
+    const endDate = document.getElementById('eventEndDate').value;
+    const country = eventCountry.value === 'Annat' ? otherCountry.value : eventCountry.value;
+    const city = document.getElementById('eventCity').value;
+    const venue = document.getElementById('eventVenue').value;
+    const description = document.getElementById('eventDescription').value;
+    const category = document.getElementById('eventCategory').value;
+    const price = document.getElementById('eventPrice').value;
+    const organizer = document.getElementById('eventOrganizer').value;
+    const website = document.getElementById('eventWebsite').value;
+   
+    // Only show preview if there's at least a title
+    if (title) {
+        previewContainer.style.display = 'block';
+       
+        const location = [city, country].filter(Boolean).join(', ');
+        const dateRange = startDate && endDate ? formatDateRange(startDate, endDate) : '';
+       
+        eventPreview.innerHTML = `
+            ${imageDataURL ? `
+            <div class="preview-item" style="margin-bottom: 15px;">
+                <img src="${imageDataURL}" alt="${title}" style="max-width: 100%; border-radius: 8px; max-height: 200px; object-fit: cover;">
+            </div>
+            ` : ''}
+            <div class="preview-item">
+                <h3 style="color: var(--primary-color); margin-bottom: 10px;">${title}</h3>
+            </div>
+            ${dateRange ? `
+            <div class="preview-item">
+                <span class="preview-label">Datum:</span>
+                <span class="preview-value">${dateRange}</span>
+            </div>
+            ` : ''}
+            ${location ? `
+            <div class="preview-item">
+                <span class="preview-label">Plats:</span>
+                <span class="preview-value">${location}${venue ? ` (${venue})` : ''}</span>
+            </div>
+            ` : ''}
+            ${description ? `
+            <div class="preview-item">
+                <span class="preview-label">Beskrivning:</span>
+                <div class="preview-value" style="margin-top: 5px;">${description}</div>
+            </div>
+            ` : ''}
+            <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 15px;">
+                ${category ? `
+                <div class="preview-item" style="flex: 1; min-width: 150px;">
+                    <span class="preview-label">Kategori:</span>
+                    <span class="preview-value">${category}</span>
+                </div>
+                ` : ''}
+                ${price ? `
+                <div class="preview-item" style="flex: 1; min-width: 150px;">
+                    <span class="preview-label">Pris:</span>
+                    <span class="preview-value">${price} SEK</span>
+                </div>
+                ` : ''}
+                ${organizer ? `
+                <div class="preview-item" style="flex: 1; min-width: 150px;">
+                    <span class="preview-label">Arrangör:</span>
+                    <span class="preview-value">${organizer}</span>
+                </div>
+                ` : ''}
+            </div>
+            ${website ? `
+            <div class="preview-item" style="margin-top: 15px;">
+                <span class="preview-label">Webbplats:</span>
+                <a href="${website}" target="_blank" class="preview-value" style="color: var(--primary-color);">${website}</a>
+            </div>
+            ` : ''}
+        `;
+    } else {
+        previewContainer.style.display = 'none';
+    }
+}
+
+
+// Add to initializeFormHandlers or document.addEventListener('DOMContentLoaded', ...)
+document.addEventListener('DOMContentLoaded', () => {
+    // Existing initialization code...
+   
+    // Initialize image upload functionality
+    initializeImageUpload();
+   
+   
+});
+    </script>
+    <script>
+        function handleLogout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+       
+        // Uppdatera profil namn om inloggad
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser) {
+                // Uppdatera profilnamn i headern
+                const profileNameElements = document.querySelectorAll('.profile-name, #displayName');
+                profileNameElements.forEach(element => {
+                    if (element) {
+                        element.textContent = currentUser.username;
+                    }
+                });
+               
+                // Omdirigera till login om inte inloggad och inte på login-sidan
+                if (!currentUser && !window.location.pathname.includes('index.html')) {
+                    window.location.href = 'index.html';
+                }
+            }
+        });
+        </script>
+</body>
+</html>
+

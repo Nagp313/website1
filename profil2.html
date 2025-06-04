@@ -1,0 +1,5354 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Min Profil</title>
+    
+    
+    <style>
+:root {
+    --primary-color: #374760;
+    --background-color: #374760;
+    --text-color: #333;
+    --error-color: #dc2626;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.header {
+        background-color: rgba(0, 0, 0, 0.2);
+        padding: 1rem;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        backdrop-filter: blur(8px);
+    }
+
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    .nav-link {
+        color: white;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+
+    .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-link.active {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 20px;
+}
+
+.container {
+    padding-top: 80px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.profile-header {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.profile-name {
+    font-size: 24px;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+.button {
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.button:hover {
+    background-color: #2c3a4f;
+    transform: translateY(-2px);
+}
+
+.button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.tag {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.tag button {
+    background: none;
+    border: none;
+    color: white;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.saved-trips {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.trip-card {
+    background: #f8f8f8;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s;
+    border: 1px solid rgba(55, 71, 96, 0.1);
+}
+
+.trip-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.trip-date {
+    color: var(--primary-color);
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--primary-color);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Form styling improvements */
+.form-group {
+    margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--primary-color);
+}
+
+.interest-level {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #f8f8f8;
+    border-radius: 5px;
+}
+
+.interest-level label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+.interest-level input[type="radio"] {
+    margin-right: 8px;
+}
+
+/* Navigation button styling */
+.nav-buttons {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .header {
+            padding: 0.5rem;
+        }
+
+        .nav-container {
+            padding: 0 1rem;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+        }
+
+        .nav-links {
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            font-size: 0.9rem;
+            padding: 0.3rem 0.8rem;
+        }
+    }
+
+    .profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #ddd;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    border: 3px solid var(--primary-color);
+}
+
+.profile-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-picture:hover::after {
+    content: 'Ändra bild';
+    position: absolute;
+    background: rgba(55, 71, 96, 0.8);
+    color: white;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Dölj file input */
+#profilePicInput {
+    display: none;
+}
+
+/* Styles för sparade resor */
+.saved-trips {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px 0;
+}
+
+
+.trip-header {
+    padding: 15px 20px;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.trip-header:hover {
+    background: #f8f9fa;
+}
+
+.trip-header.active {
+    border-bottom-color: #eee;
+}
+
+.trip-title {
+    font-size: 1.1em;
+    font-weight: 500;
+    color: var(--primary-color);
+}
+
+.trip-date {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.trip-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.trip-content.expanded {
+    max-height: 2000px;
+    transition: max-height 0.5s ease-in;
+}
+
+.trip-details {
+    padding: 20px;
+}
+
+.trip-section {
+    margin-bottom: 20px;
+}
+
+.trip-section-title {
+    font-weight: 500;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    font-size: 1.05em;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.detail-item {
+    background: #f8f9fa;
+    padding: 10px 15px;
+    border-radius: 6px;
+}
+
+.detail-label {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.detail-value {
+    font-weight: 500;
+}
+
+.destinations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.destination-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+}
+
+.destination-name {
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+.transport-items, .accommodation-items, .activities-items {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.delete-trip-btn {
+    background: var(--error-color);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    margin-top: 15px;
+}
+
+.delete-trip-btn:hover {
+    background: #b91c1c;
+}
+
+.no-trips {
+    text-align: center;
+    color: #666;
+    padding: 20px;
+}
+
+.insurance-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.detail-link {
+    margin-top: 5px;
+    font-size: 0.9em;
+}
+
+.detail-link a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.detail-link a:hover {
+    text-decoration: underline;
+}
+
+.trip-dates {
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.trip-duration {
+    color: var(--primary-color);
+    font-weight: 500;
+    margin-left: 8px;
+}
+
+.trip-header {
+    padding: 15px 20px;
+    cursor: pointer;
+}
+
+.trip-title {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.activity-item-display {
+    padding: 8px;
+    margin: 4px 0;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.activity-details {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 4px;
+}
+/*Improved saved trips styling*/
+/* Enhanced Saved Trips Styling */
+
+/* Overall container styles */
+.saved-trips {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px 0;
+}
+
+/* Empty state styling */
+.empty-trips-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 20px;
+    text-align: center;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    border: 1px dashed #ddd;
+}
+
+.empty-trips-container svg {
+    margin-bottom: 20px;
+    opacity: 0.7;
+}
+
+.empty-trips-container .no-trips {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.create-trip-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.create-trip-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Summary section styles */
+.trips-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.summary-item {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+}
+
+.summary-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.summary-value {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.summary-label {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Trip card styling */
+.trips-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.trip-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+    position: relative;
+    transition: box-shadow 0.3s ease;
+}
+
+.trip-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.trip-status {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    z-index: 2;
+}
+
+.status-upcoming {
+    background-color: #e6f4ff;
+    color: #1677ff;
+}
+
+.status-active {
+    background-color: #f6ffed;
+    color: #52c41a;
+}
+
+.status-completed {
+    background-color: #f5f5f5;
+    color: #8c8c8c;
+}
+
+/* Trip header styles */
+.trip-header {
+    padding: 20px;
+    cursor: pointer;
+    background: white;
+    transition: background-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    position: relative;
+}
+
+.trip-header:hover {
+    background-color: #f9f9f9;
+}
+
+.trip-header.active {
+    background-color: #f5f7fa;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.trip-header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.trip-title-container {
+    flex: 1;
+}
+
+.trip-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.trip-subtitle {
+    color: #666;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.transport-icon {
+    font-style: normal;
+}
+
+.trip-days-badge {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* Trip dates styling */
+.trip-dates {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.date-badge {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 8px 15px;
+    text-align: center;
+    min-width: 80px;
+}
+
+.date-month {
+    font-size: 0.8rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.date-day {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.date-arrow {
+    color: #999;
+    font-size: 1.2rem;
+}
+
+/* Trip content styles */
+.trip-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
+}
+
+.trip-content.expanded {
+    max-height: 2000px;
+    transition: max-height 0.8s ease-in;
+}
+
+.trip-details {
+    padding: 0 20px 20px;
+}
+
+/* Quick info bar */
+.trip-quick-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 20px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+}
+
+.info-item svg {
+    color: var(--primary-color);
+}
+
+/* Tabs styling */
+.trip-tabs {
+    margin-top: 20px;
+}
+
+.tab-headers {
+    display: flex;
+    overflow-x: auto;
+    gap: 5px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 1px;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    border: none;
+    background: none;
+    color: #666;
+    font-size: 0.95rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+    font-weight: 500;
+}
+
+.tab-btn:hover {
+    color: var(--primary-color);
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.tab-content {
+    min-height: 200px;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.empty-tab-message {
+    padding: 40px 20px;
+    text-align: center;
+    color: #999;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    font-style: italic;
+}
+
+/* Destinations timeline */
+.destinations-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.timeline-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    position: relative;
+}
+
+.timeline-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 25px;
+    top: 100%;
+    height: 20px;
+    border-left: 2px dashed #ddd;
+    z-index: 1;
+}
+
+.timeline-marker {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.timeline-content {
+    flex: 1;
+}
+
+.destination-name {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.transport-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.transport-chip {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    background-color: white;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    border: 1px solid #eee;
+}
+
+.booking-link {
+    display: inline-flex;
+    margin-left: 5px;
+    color: var(--primary-color);
+}
+
+.booking-link:hover {
+    opacity: 0.8;
+}
+
+/* Accommodations styling */
+.accommodations-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.accommodation-section {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.accommodation-location {
+    font-weight: 500;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-size: 1.05rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+.accommodation-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.accommodation-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    gap: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.accommodation-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.accommodation-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.accommodation-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.accommodation-type {
+    font-weight: 500;
+    color: #333;
+}
+
+.accommodation-days {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.booking-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 5px;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.booking-button:hover {
+    text-decoration: underline;
+}
+
+/* Activities timeline */
+.activities-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.timeline-date {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.date-marker {
+    width: 12px;
+    height: 12px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+}
+
+.date-label {
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.timeline-activities {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    padding-left: 20px;
+}
+
+.activity-card {
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid;
+    position: relative;
+    transition: transform 0.2s ease;
+}
+
+.activity-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.activity-category-tag {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 12px;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.activity-name {
+    font-weight: 500;
+    font-size: 1.05rem;
+    margin-bottom: 12px;
+    padding-right: 80px; /* Space for category tag */
+}
+
+.activity-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.85rem;
+}
+
+.activity-location, .activity-time, .activity-cost {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Insurance cards */
+.insurances-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.insurance-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.insurance-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+}
+
+.insurance-card svg {
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.insurance-name {
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.insurance-link {
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+}
+
+.insurance-link:hover {
+    text-decoration: underline;
+}
+
+/* Trip action buttons */
+.trip-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.edit-trip-btn, .export-trip-btn, .delete-trip-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.edit-trip-btn {
+    background-color: #f0f9ff;
+    color: #1677ff;
+}
+
+.edit-trip-btn:hover {
+    background-color: #e6f4ff;
+}
+
+.export-trip-btn {
+    background-color: #f6ffed;
+    color: #52c41a;
+}
+
+.export-trip-btn:hover {
+    background-color: #edfed6;
+}
+
+.delete-trip-btn {
+    background-color: #fff1f0;
+    color: #ff4d4f;
+    margin-left: auto;
+}
+
+.delete-trip-btn:hover {
+    background-color: #ffccc7;
+}
+
+/* Delete confirmation modal */
+.delete-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.delete-modal-content {
+    background-color: white;
+    border-radius: 12px;
+    padding: 25px;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.delete-modal h3 {
+    color: #ff4d4f;
+    margin-bottom: 15px;
+}
+
+.delete-modal p {
+    margin-bottom: 25px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.delete-modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.cancel-button, .confirm-button {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.cancel-button {
+    background-color: #f5f5f5;
+    color: #666;
+}
+
+.cancel-button:hover {
+    background-color: #e8e8e8;
+}
+
+.confirm-button {
+    background-color: #ff4d4f;
+    color: white;
+}
+
+.confirm-button:hover {
+    background-color: #cf1322;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    .trip-header-main {
+        flex-direction: column;
+    }
+    
+    .trip-days-badge {
+        align-self: flex-start;
+        margin-top: 10px;
+    }
+    
+    .trip-dates {
+        margin-top: 5px;
+    }
+    
+    .timeline-activities {
+        grid-template-columns: 1fr;
+    }
+    
+    .tab-headers {
+        padding-bottom: 0;
+    }
+    
+    .tab-btn {
+        padding: 8px 15px;
+        font-size: 0.85rem;
+    }
+    
+    .trip-actions {
+        flex-wrap: wrap;
+    }
+    
+    .delete-trip-btn {
+        margin-left: 0;
+        width: 100%;
+        order: -1;
+        margin-bottom: 10px;
+    }
+    
+    .edit-trip-btn, .export-trip-btn {
+        flex: 1;
+    }
+}
+
+/* Budget tracking styles för profil.html */
+.budget-tracking-badge {
+    background-color: #374760;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+/* Budget overview styles */
+.budget-overview {
+    padding: 15px 0;
+}
+
+.budget-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.budget-item {
+    text-align: center;
+}
+
+.budget-label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.budget-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #374760;
+}
+
+.budget-value.negative {
+    color: #dc3545;
+}
+
+/* Budget progress bar */
+.budget-progress-container {
+    margin-bottom: 30px;
+}
+
+.budget-progress {
+    height: 10px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.budget-progress-bar {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.3s ease;
+}
+
+.budget-progress-bar.success {
+    background-color: #28a745;
+}
+
+.budget-progress-bar.warning {
+    background-color: #ffc107;
+}
+
+.budget-progress-bar.danger {
+    background-color: #dc3545;
+}
+
+.budget-progress-label {
+    font-size: 0.9rem;
+    text-align: right;
+}
+
+.budget-progress-label.success {
+    color: #28a745;
+}
+
+.budget-progress-label.warning {
+    color: #ffc107;
+}
+
+.budget-progress-label.danger {
+    color: #dc3545;
+}
+
+/* Expense breakdown */
+.expense-breakdown {
+    margin-top: 20px;
+}
+
+.expense-breakdown h4 {
+    font-size: 1.1rem;
+    color: #374760;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.expense-category {
+    margin-bottom: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.expense-category-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 15px;
+    background-color: #eef2f7;
+    border-bottom: 1px solid #e0e6ed;
+}
+
+.expense-category-name {
+    font-weight: 500;
+    color: #374760;
+}
+
+.expense-category-value {
+    font-weight: 600;
+    color: #374760;
+}
+
+.cost-items {
+    padding: 10px 15px;
+}
+
+.cost-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.cost-item:last-child {
+    border-bottom: none;
+}
+
+.cost-item-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2px;
+}
+
+.cost-item-name {
+    color: #333;
+}
+
+.cost-item-value {
+    color: #666;
+    font-weight: 500;
+}
+
+.cost-item-category {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.no-costs {
+    padding: 15px;
+    text-align: center;
+    color: #999;
+    font-style: italic;
+}
+
+/* Activity display with cost */
+.activity-card {
+    position: relative;
+}
+
+.activity-cost {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Insurance card with cost */
+.insurance-cost {
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+/* Transport chip with cost */
+.transport-chip {
+    position: relative;
+}
+
+.transport-cost {
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+/* Accommodation display with cost */
+.accommodation-card .accommodation-cost {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 3px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .budget-summary {
+        grid-template-columns: 1fr;
+    }
+    
+    .expense-category-header {
+        flex-direction: column;
+    }
+    
+    .cost-item-details {
+        flex-direction: column;
+    }
+    
+    .cost-item-value {
+        margin-top: 5px;
+    }
+}
+
+/* Stilar för publicerade event-sektion */
+
+/* Event-lista */
+.events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px 0;
+}
+
+/* Event-kort */
+.event-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+    position: relative;
+    transition: box-shadow 0.3s ease;
+}
+
+.event-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+/* Event status */
+.event-status {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    z-index: 2;
+}
+
+/* Event header */
+.event-header {
+    padding: 20px;
+    cursor: pointer;
+    background: white;
+    transition: background-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    position: relative;
+}
+
+.event-header:hover {
+    background-color: #f9f9f9;
+}
+
+.event-header.active {
+    background-color: #f5f7fa;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.event-header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.event-title-container {
+    flex: 1;
+}
+
+.event-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.event-subtitle {
+    color: #666;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.event-category {
+    background-color: #f0f4f8;
+    color: var(--primary-color);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin-left: 8px;
+}
+
+/* Event content */
+.event-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
+}
+
+.event-content.expanded {
+    max-height: 2000px;
+    transition: max-height 0.8s ease-in;
+}
+
+.event-details {
+    padding: 0 20px 20px;
+}
+
+.event-description,
+.event-location-details,
+.event-organizer-details,
+.event-price-details,
+.event-website-details {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.event-description h4,
+.event-location-details h4,
+.event-organizer-details h4,
+.event-price-details h4,
+.event-website-details h4 {
+    color: var(--primary-color);
+    margin-bottom: 8px;
+    font-size: 1.05rem;
+}
+
+.event-description p,
+.event-location-details p,
+.event-organizer-details p,
+.event-price-details p,
+.event-website-details p {
+    color: #555;
+    line-height: 1.5;
+}
+
+.event-website-details a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.event-website-details a:hover {
+    text-decoration: underline;
+}
+
+/* Event actions */
+.event-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.edit-event-btn,
+.delete-event-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.edit-event-btn {
+    background-color: #f0f9ff;
+    color: #1677ff;
+}
+
+.edit-event-btn:hover {
+    background-color: #e6f4ff;
+}
+
+.delete-event-btn {
+    background-color: #fff1f0;
+    color: #ff4d4f;
+    margin-left: auto;
+}
+
+.delete-event-btn:hover {
+    background-color: #ffccc7;
+}
+
+/* Responsiv anpassning */
+@media (max-width: 768px) {
+    .event-header-main {
+        flex-direction: column;
+    }
+    
+    .event-actions {
+        flex-wrap: wrap;
+    }
+    
+    .delete-event-btn {
+        margin-left: 0;
+        width: 100%;
+        order: -1;
+        margin-bottom: 10px;
+    }
+    
+    .edit-event-btn {
+        flex: 1;
+    }
+}
+
+
+
+    </style>
+</head>
+<link rel="stylesheet" href="chatbot.css">
+<body>
+    <header class="header">
+        <div class="nav-container">
+            <a href="home.html" class="logo">TravelBuddy</a>
+            <nav class="nav-links">
+                <a href="home.html" class="nav-link">Hem</a>
+                <a href="reseplanerare2.html" class="nav-link">Reseplanerare</a>
+                <a href="tips2.html" class="nav-link">Tips</a>
+                <a href="events2.html" class="nav-link">Events</a>
+                <a href="Skapa-event.html" class="nav-link">Skapa Event</a>
+                <a href="#" class="nav-link" onclick="handleLogout()">Logga ut</a>
+                <a href="profil2.html" class="nav-link active">Profil</a>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+
+        <div class="profile-header">
+<input type="file" id="profilePicInput" accept="image/*">
+<div class="profile-picture" onclick="document.getElementById('profilePicInput').click()">
+    <img id="profilePic" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 24 24'%3E%3Cpath fill='%23666' d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4-4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Profilbild">
+</div>
+            <h1 class="profile-name" id="displayName">Mitt Namn</h1>
+        </div>
+
+        <div class="card">
+            <h2>Personlig Information</h2>
+            <form id="personalInfoForm">
+                <div class="form-group">
+                    <label for="name">Namn</label>
+                    <input type="text" id="name" placeholder="Ditt namn" required>
+                    <div class="error-message" id="nameError">Vänligen ange ditt namn</div>
+                </div>
+                <div class="form-group">
+                    <label for="age">Ålder</label>
+                    <input type="number" id="age" placeholder="Din ålder" required min="15" max="120">
+                    <div class="error-message" id="ageError">Vänligen ange en giltig ålder (15-120 år)</div>
+                </div>
+                <div class="form-group">
+                    <label for="email">E-post</label>
+                    <input type="email" id="email" placeholder="din.epost@exempel.se" required>
+                    <div class="error-message" id="emailError">Vänligen ange en giltig e-postadress</div>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Telefon</label>
+                    <input type="tel" id="phone" placeholder="0701234567" pattern="[0-9]{10}" required>
+                    <div class="error-message" id="phoneError">Vänligen ange ett giltigt telefonnummer (10 siffror)</div>
+                </div>
+                <button type="submit" class="button">Spara ändringar</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Sparade Resor</h2>
+            <div class="saved-trips" id="savedTrips">
+                <!-- Trips will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Publicerade Event</h2>
+            <div class="saved-trips" id="publishedEvents">
+                <!-- Events kommer att fyllas i av JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+
+    
+    <div class="toast" id="toast"></div>
+    
+<!-- Förbättrad chatbot HTML att lägga in före </body> i alla dina TravelBuddy-sidor -->
+<div class="chat-bubble" onclick="toggleChat()">
+    <i>💬</i>
+</div>
+
+<div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+        <span>TravelBuddy Assistent</span>
+        <button class="chat-close" onclick="toggleChat()">×</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+        <!-- Meddelandena kommer att läggas till här -->
+    </div>
+    <div class="typing-indicator" id="typingIndicator">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+    </div>
+    <div class="chat-input-container">
+        <button id="reset-chat">Ny konversation</button>
+        <input type="text" class="chat-input" id="chatInput" placeholder="Ställ en fråga...">
+        <button class="chat-send" onclick="sendChatMessage()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+        </button>
+    </div>
+</div>
+
+    <script>
+// Utility functions
+function showToast(message, duration = 3000) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), duration);
+}
+
+function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function validatePhone(phone) {
+    return /^[0-9]{10}$/.test(phone);
+}
+
+// Load saved personal information
+function loadPersonalInfo() {
+    const savedInfo = JSON.parse(localStorage.getItem('personalInfo') || '{}');
+    
+    // Load into form fields
+    document.getElementById('name').value = savedInfo.name || '';
+    document.getElementById('age').value = savedInfo.age || '';
+    document.getElementById('email').value = savedInfo.email || '';
+    document.getElementById('phone').value = savedInfo.phone || '';
+    
+    // Update display name if exists
+    if (savedInfo.name) {
+        document.getElementById('displayName').textContent = savedInfo.name;
+    }
+}
+
+// Profile picture handling
+// Profile picture handling
+const profilePicInput = document.getElementById('profilePicInput');
+const profilePic = document.getElementById('profilePic');
+const navProfilePic = document.getElementById('navProfilePic');
+
+// Load profile picture from localStorage
+function loadProfilePicture() {
+    const savedProfilePic = localStorage.getItem('profilePic');
+    if (savedProfilePic) {
+        if (profilePic) profilePic.src = savedProfilePic;
+        if (navProfilePic) navProfilePic.src = savedProfilePic;
+    }
+}
+
+// Handle profile picture change
+if (profilePicInput) {
+    profilePicInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            if (file.type.startsWith('image/')) {  // Kontrollera att det är en bildfil
+                if (file.size <= 5000000) {  // 5MB gräns
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const imageData = e.target.result;
+                        localStorage.setItem('profilePic', imageData);
+                        
+                        // Uppdatera bildvisningen
+                        if (profilePic) profilePic.src = imageData;
+                        if (navProfilePic) navProfilePic.src = imageData;
+                        
+                        showToast('Profilbild uppdaterad!');
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    showToast('Bilden är för stor. Max storlek är 5MB.');
+                }
+            } else {
+                showToast('Vänligen välj en giltig bildfil.');
+            }
+        }
+    });
+}
+
+// Load profile picture when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadProfilePicture();
+});
+// Hjälpfunktion för att visa meddelanden
+function showToast(message, duration = 3000) {
+  let toast = document.querySelector('.toast');
+  if (!toast) {
+      toast = document.createElement('div');
+      toast.className = 'toast';
+      document.body.appendChild(toast);
+  }
+  
+  toast.textContent = message;
+  toast.classList.add('show');
+  
+  setTimeout(() => {
+      toast.classList.remove('show');
+  }, duration);
+}
+
+// Personal information form handling
+const personalInfoForm = document.getElementById('personalInfoForm');
+
+personalInfoForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('name');
+    const age = document.getElementById('age');
+    const email = document.getElementById('email');
+    const phone = document.getElementById('phone');
+    
+    let isValid = true;
+    
+    // Validate name
+    if (!name.value.trim()) {
+        document.getElementById('nameError').style.display = 'block';
+        isValid = false;
+    } else {
+        document.getElementById('nameError').style.display = 'none';
+    }
+    
+    // Validate age
+    if (!age.value || age.value < 18 || age.value > 120) {
+        document.getElementById('ageError').style.display = 'block';
+        isValid = false;
+    } else {
+        document.getElementById('ageError').style.display = 'none';
+    }
+    
+    // Validate email
+    if (!validateEmail(email.value)) {
+        document.getElementById('emailError').style.display = 'block';
+        isValid = false;
+    } else {
+        document.getElementById('emailError').style.display = 'none';
+    }
+    
+    // Validate phone
+    if (!validatePhone(phone.value)) {
+        document.getElementById('phoneError').style.display = 'block';
+        isValid = false;
+    } else {
+        document.getElementById('phoneError').style.display = 'none';
+    }
+    
+    if (isValid) {
+        // Save to localStorage
+        const personalInfo = {
+            name: name.value,
+            age: age.value,
+            email: email.value,
+            phone: phone.value
+        };
+        
+        localStorage.setItem('personalInfo', JSON.stringify(personalInfo));
+        
+        // Update display name
+        document.getElementById('displayName').textContent = name.value;
+        
+        // Show success message
+        showToast('Personlig information sparad!');
+    }
+});
+
+// Global languages array
+let languages = [];
+
+// Load saved travel profile information
+function loadTravelProfile() {
+    const savedProfile = JSON.parse(localStorage.getItem('travelProfile') || '{}');
+    
+    // Load dropdown selections
+    document.getElementById('travelExperience').value = savedProfile.travelExperience || '';
+    document.getElementById('travelStyle').value = savedProfile.travelStyle || '';
+    
+    // Load interest levels
+    if (savedProfile.interests) {
+        // Set culture radio buttons
+        if (savedProfile.interests.culture) {
+            const cultureRadio = document.querySelector(`input[name="culture"][value="${savedProfile.interests.culture}"]`);
+            if (cultureRadio) cultureRadio.checked = true;
+        }
+        // Set adventure radio buttons
+        if (savedProfile.interests.adventure) {
+            const adventureRadio = document.querySelector(`input[name="adventure"][value="${savedProfile.interests.adventure}"]`);
+            if (adventureRadio) adventureRadio.checked = true;
+        }
+        // Set relaxation radio buttons
+        if (savedProfile.interests.relaxation) {
+            const relaxationRadio = document.querySelector(`input[name="relaxation"][value="${savedProfile.interests.relaxation}"]`);
+            if (relaxationRadio) relaxationRadio.checked = true;
+        }
+    }
+    
+    // Load text areas
+    document.getElementById('specialRequirements').value = savedProfile.specialRequirements || '';
+    document.getElementById('description').value = savedProfile.description || '';
+    
+    // Load languages
+    if (savedProfile.languages && Array.isArray(savedProfile.languages)) {
+        languages = savedProfile.languages;
+        updateLanguageDisplay();
+    }
+}
+
+// Language handling
+const languageInput = document.getElementById('languageInput');
+const languageTagsContainer = document.getElementById('languageTags');
+
+function addLanguageTag(language) {
+    if (!languages.includes(language)) {
+        languages.push(language);
+        updateLanguageDisplay();
+    }
+}
+
+function removeLanguage(language) {
+    languages = languages.filter(lang => lang !== language);
+    updateLanguageDisplay();
+}
+
+function updateLanguageDisplay() {
+    const container = document.getElementById('languageTags');
+    container.innerHTML = '';
+    languages.forEach(language => {
+        const tag = document.createElement('div');
+        tag.className = 'tag';
+        tag.innerHTML = `
+            ${language}
+            <button type="button" onclick="removeLanguage('${language}')">&times;</button>
+        `;
+        container.appendChild(tag);
+    });
+}
+
+languageInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        const language = this.value.trim();
+        if (language) {
+            addLanguageTag(language);
+            this.value = '';
+        }
+    }
+});
+
+// Travel profile form handling
+const travelProfileForm = document.getElementById('travelProfileForm');
+
+travelProfileForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const travelProfile = {
+        travelExperience: document.getElementById('travelExperience').value,
+        travelStyle: document.getElementById('travelStyle').value,
+        interests: {
+            culture: document.querySelector('input[name="culture"]:checked')?.value,
+            adventure: document.querySelector('input[name="adventure"]:checked')?.value,
+            relaxation: document.querySelector('input[name="relaxation"]:checked')?.value
+        },
+        specialRequirements: document.getElementById('specialRequirements').value,
+        description: document.getElementById('description').value,
+        languages: languages
+    };
+    
+    localStorage.setItem('travelProfile', JSON.stringify(travelProfile));
+    showToast('Resprofil sparad!');
+});
+
+// Load all saved information when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadPersonalInfo();
+    loadTravelProfile();
+    displaySavedTrips(); // Lägg till denna rad
+    loadProfilePicture();
+});
+
+
+function deleteTrip(tripId) {
+    if (confirm('Är du säker på att du vill ta bort denna resa?')) {
+        const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+        const updatedTrips = savedTrips.filter(trip => trip.id !== tripId);
+        localStorage.setItem('savedTrips', JSON.stringify(updatedTrips));
+        displaySavedTrips();
+        showToast('Resan har tagits bort');
+    }
+}
+
+// Improved function to display saved trips with better styling and organization
+function displaySavedTrips() {
+    const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+    const savedTripsContainer = document.getElementById('savedTrips');
+    
+    if (savedTrips.length === 0) {
+        savedTripsContainer.innerHTML = `
+            <div class="empty-trips-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#374760" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="12" y1="18" x2="12" y2="12"></line>
+                    <line x1="9" y1="15" x2="15" y2="15"></line>
+                </svg>
+                <p class="no-trips">Inga sparade resor ännu</p>
+                <a href="reseplanerare2.html" class="create-trip-btn">Skapa din första resa</a>
+            </div>`;
+        return;
+    }
+    
+    savedTripsContainer.innerHTML = `
+        <div class="trips-summary">
+            <div class="summary-item">
+                <span class="summary-value">${savedTrips.length}</span>
+                <span class="summary-label">Sparade resor</span>
+            </div>
+        </div>
+        <div class="trips-list">
+            ${savedTrips.map((trip, index) => generateTripCard(trip, index)).join('')}
+        </div>`;
+        
+    // Initialize trip cards after they're added to DOM
+    initializeTripCards();
+
+    setTimeout(() => {
+        initializeTripTabs();
+    }, 100);
+}
+
+// Helper function to calculate total trip days
+function calculateTotalDays(trips) {
+    return trips.reduce((total, trip) => total + (trip.days || 0), 0);
+}
+
+// Helper function to count unique destinations
+function calculateTotalDestinations(trips) {
+    const uniqueDestinations = new Set();
+    trips.forEach(trip => {
+        trip.destinations.forEach(dest => {
+            if (dest.name) uniqueDestinations.add(dest.name);
+        });
+    });
+    return uniqueDestinations.size;
+}
+
+// Generate HTML for a single trip card
+function generateTripCard(trip, index) {
+    const destinations = trip.destinations.filter(d => d.name).map(d => d.name);
+    const mainDestination = destinations.length > 0 ? destinations[0] : 'Okänd destination';
+    const destinationCount = destinations.length;
+    const destinationList = destinations.join(' → ');
+    
+    // Calculate upcoming status
+    const today = new Date();
+    const startDate = new Date(trip.startDate);
+    const endDate = new Date(trip.endDate);
+    let tripStatus = '';
+    let statusClass = '';
+    
+    if (today < startDate) {
+        const daysUntil = Math.ceil((startDate - today) / (1000 * 60 * 60 * 24));
+        tripStatus = `Startar om ${daysUntil} dagar`;
+        statusClass = 'status-upcoming';
+    } else if (today <= endDate) {
+        tripStatus = 'Pågående resa';
+        statusClass = 'status-active';
+    } else {
+        tripStatus = 'Genomförd';
+        statusClass = 'status-completed';
+    }
+    
+    // Find main transport type if available
+    let mainTransport = '';
+    let transportIcon = '';
+    
+    if (trip.destinations[0]?.transports?.length > 0) {
+        mainTransport = trip.destinations[0].transports[0].type;
+        switch (mainTransport.toLowerCase()) {
+            case 'flyg':
+                transportIcon = '<i class="transport-icon">✈️</i>';
+                break;
+            case 'tåg':
+                transportIcon = '<i class="transport-icon">🚄</i>';
+                break;
+            case 'bil':
+                transportIcon = '<i class="transport-icon">🚗</i>';
+                break;
+            case 'buss':
+                transportIcon = '<i class="transport-icon">🚌</i>';
+                break;
+            case 'båt':
+                transportIcon = '<i class="transport-icon">🚢</i>';
+                break;
+            default:
+                transportIcon = '';
+        }
+    }
+    
+    // Count activities if any
+    const activitiesCount = trip.destinations.reduce((count, dest) => 
+        count + (dest.activities?.length || 0), 0);
+    
+    return `
+    <div class="trip-card" data-trip-id="${trip.id}">
+        <div class="trip-status ${statusClass}">${tripStatus}</div>
+        <div class="trip-header" onclick="toggleTripDetails(${trip.id})">
+            <div class="trip-header-main">
+                <div class="trip-title-container">
+                    <div class="trip-title">${destinationList}</div>
+                    <div class="trip-subtitle">
+                        ${transportIcon}
+                        ${destinationCount > 1 ? `${destinationCount} destinationer` : '1 destination'}
+                        ${activitiesCount > 0 ? ` • ${activitiesCount} aktiviteter` : ''}
+                    </div>
+                </div>
+                <div class="trip-days-badge">${trip.days} dagar</div>
+            </div>
+            <div class="trip-dates">
+                <div class="date-badge">
+                    <div class="date-month">${formatDateMonth(trip.startDate)}</div>
+                    <div class="date-day">${formatDateDay(trip.startDate)}</div>
+                </div>
+                <div class="date-arrow">→</div>
+                <div class="date-badge">
+                    <div class="date-month">${formatDateMonth(trip.endDate)}</div>
+                    <div class="date-day">${formatDateDay(trip.endDate)}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="trip-content" id="trip-content-${trip.id}">
+            <div class="trip-details">
+                <div class="trip-quick-info">
+                    <div class="info-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                        </svg>
+                        <span>Budget: <strong>${formatCurrency(trip.budget)}</strong></span>
+                    </div>
+                    ${trip.insurances && trip.insurances.length > 0 ? `
+                    <div class="info-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <span>${trip.insurances.length} försäkringar</span>
+                    </div>
+                    ` : ''}
+                </div>
+                
+                <div class="trip-tabs">
+                    <div class="tab-headers">
+                        <button class="tab-btn active" data-tab="destinations-${trip.id}">Destinationer</button>
+                        <button class="tab-btn" data-tab="accommodations-${trip.id}">Boende</button>
+                        <button class="tab-btn" data-tab="activities-${trip.id}">Aktiviteter</button>
+                        <button class="tab-btn" data-tab="insurances-${trip.id}">Försäkringar</button>
+                    </div>
+                    
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="destinations-${trip.id}">
+                            <div class="destinations-timeline">
+                                ${trip.destinations.map((dest, i) => 
+                                    dest.name ? `
+                                    <div class="timeline-item">
+                                        <div class="timeline-marker">${i + 1}</div>
+                                        <div class="timeline-content">
+                                            <div class="destination-name">${dest.name}</div>
+                                            
+                                            ${dest.transports && dest.transports.length > 0 ? `
+                                            <div class="transport-info">
+                                                ${dest.transports.map(transport => `
+                                                    <div class="transport-chip">
+                                                        ${getTransportIcon(transport.type)}
+                                                        <span>${transport.type}</span>
+                                                        ${transport.bookingLink ? `
+                                                            <a href="${transport.bookingLink}" target="_blank" class="booking-link">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                                                    <polyline points="15 3 21 3 21 9"></polyline>
+                                                                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                                                                </svg>
+                                                            </a>
+                                                        ` : ''}
+                                                    </div>
+                                                `).join('')}
+                                            </div>` : ''}
+                                        </div>
+                                    </div>` : ''
+                                ).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane" id="accommodations-${trip.id}">
+                            ${trip.destinations.some(d => d.accommodations && d.accommodations.length > 0) ? 
+                                generateAccommodationsContent(trip) : 
+                                '<div class="empty-tab-message">Inga boenden tillagda</div>'}
+                        </div>
+                        
+                        <div class="tab-pane" id="activities-${trip.id}">
+                            ${trip.destinations.some(d => d.activities && d.activities.length > 0) ? 
+                                generateActivitiesContent(trip) : 
+                                '<div class="empty-tab-message">Inga aktiviteter tillagda</div>'}
+                        </div>
+                        
+                        <div class="tab-pane" id="insurances-${trip.id}">
+                            ${trip.insurances && trip.insurances.length > 0 ? `
+                                <div class="insurances-grid">
+                                    ${trip.insurances.map(insurance => `
+                                        <div class="insurance-card">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                                <path d="M8 11l3 3 6-6"></path>
+                                            </svg>
+                                            <div class="insurance-name">${insurance.name}</div>
+                                            ${insurance.link ? `
+                                                <a href="${insurance.link}" target="_blank" class="insurance-link">
+                                                    Visa försäkringsdetaljer
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                                        <polyline points="15 3 21 3 21 9"></polyline>
+                                                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                                                    </svg>
+                                                </a>
+                                            ` : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : '<div class="empty-tab-message">Inga försäkringar tillagda</div>'}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="trip-actions">
+                    <button class="edit-trip-btn" onclick="editTrip(${trip.id})">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path>
+                            <polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon>
+                        </svg>
+                        Redigera
+                    </button>
+                    <button class="export-trip-btn" onclick="exportTrip(${trip.id})">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Exportera
+                    </button>
+                    <button class="delete-trip-btn" onclick="confirmDeleteTrip(${trip.id})">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                        Ta bort
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
+
+// Helper function to format currency
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('sv-SE', { 
+        style: 'currency', 
+        currency: 'SEK',
+        maximumFractionDigits: 0 
+    }).format(amount);
+}
+
+// Helper functions to format date components
+function formatDateMonth(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('sv-SE', { month: 'short' }).toUpperCase();
+}
+
+function formatDateDay(dateString) {
+    const date = new Date(dateString);
+    return date.getDate();
+}
+
+// Get appropriate icon for transport type
+function getTransportIcon(type) {
+    const iconMap = {
+        'flyg': '✈️',
+        'tåg': '🚄',
+        'bil': '🚗',
+        'buss': '🚌',
+        'båt': '🚢'
+    };
+    
+    return iconMap[type.toLowerCase()] || '🧳';
+}
+
+// Generate accommodations content
+function generateAccommodationsContent(trip) {
+    let content = '<div class="accommodations-container">';
+    
+    trip.destinations.forEach(dest => {
+        if (dest.name && dest.accommodations && dest.accommodations.length > 0) {
+            content += `
+                <div class="accommodation-section">
+                    <div class="accommodation-location">${dest.name}</div>
+                    <div class="accommodation-cards">
+                        ${dest.accommodations.map(acc => `
+                            <div class="accommodation-card">
+                                <div class="accommodation-icon">
+                                    ${getAccommodationIcon(acc.type)}
+                                </div>
+                                <div class="accommodation-details">
+                                    <div class="accommodation-type">${acc.type}</div>
+                                    <div class="accommodation-days">${acc.days} ${acc.days === 1 ? 'dag' : 'dagar'}</div>
+                                    ${acc.bookingLink ? `
+                                        <a href="${acc.bookingLink}" target="_blank" class="booking-button">
+                                            Visa bokning
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                                <polyline points="15 3 21 3 21 9"></polyline>
+                                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                                            </svg>
+                                        </a>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+    });
+    
+    content += '</div>';
+    return content;
+}
+
+// Get appropriate icon for accommodation type
+function getAccommodationIcon(type) {
+    const iconMap = {
+        'hotell': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#374760" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16"></path><path d="M1 21h22"></path><path d="M8 21v-4h8v4"></path><path d="M10 9h4"></path><path d="M8 17h8"></path><path d="M10 5h4"></path></svg>',
+        'lägenhet': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#374760" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="11" width="20" height="10" rx="2"></rect><path d="M17 6v-1a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v1"></path><path d="M21 21v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2"></path><line x1="8" y1="11" x2="8" y2="14"></line><line x1="16" y1="11" x2="16" y2="14"></line><line x1="12" y1="11" x2="12" y2="14"></line></svg>',
+        'villa': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#374760" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>',
+        'vandrarhem': '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#374760" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 8h12"></path><path d="M20.5 17.5L22 22H2l1.5-4.5a2 2 0 0 1 2-1.5h13a2 2 0 0 1 2 1.5z"></path></svg>'
+    };
+    
+    // Convert type to lowercase and remove any accents
+    const normalizedType = type.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    
+    if (iconMap[normalizedType]) {
+        return iconMap[normalizedType];
+    }
+    
+    // Default icon
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#374760" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>';
+}
+
+// Generate activities content
+function generateActivitiesContent(trip) {
+    if (!trip.destinations.some(d => d.activities && d.activities.length > 0)) {
+        return '<div class="empty-tab-message">Inga aktiviteter planerade</div>';
+    }
+    
+    // Group activities by date if available
+    const activitiesByDate = {};
+    const activitiesNoDate = [];
+    
+    trip.destinations.forEach(dest => {
+        if (dest.activities && dest.activities.length > 0) {
+            dest.activities.forEach(activity => {
+                activity.destination = dest.name; // Add destination name to activity
+                
+                if (activity.date) {
+                    if (!activitiesByDate[activity.date]) {
+                        activitiesByDate[activity.date] = [];
+                    }
+                    activitiesByDate[activity.date].push(activity);
+                } else {
+                    activitiesNoDate.push(activity);
+                }
+            });
+        }
+    });
+    
+    // Sort dates
+    const sortedDates = Object.keys(activitiesByDate).sort();
+    
+    let content = '<div class="activities-timeline">';
+    
+    // Add activities with dates
+    sortedDates.forEach(date => {
+        const formattedDate = new Date(date).toLocaleDateString('sv-SE', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        content += `
+            <div class="timeline-date">
+                <div class="date-marker"></div>
+                <div class="date-label">${formattedDate}</div>
+            </div>
+            <div class="timeline-activities">
+                ${activitiesByDate[date].map(activity => generateActivityCard(activity)).join('')}
+            </div>
+        `;
+    });
+    
+    // Add activities without dates
+    if (activitiesNoDate.length > 0) {
+        content += `
+            <div class="timeline-date">
+                <div class="date-marker"></div>
+                <div class="date-label">Odaterade aktiviteter</div>
+            </div>
+            <div class="timeline-activities">
+                ${activitiesNoDate.map(activity => generateActivityCard(activity)).join('')}
+            </div>
+        `;
+    }
+    
+    content += '</div>';
+    return content;
+}
+
+// Generate single activity card
+function generateActivityCard(activity) {
+    // Get color based on category
+    const categoryColors = {
+        'Kultur': '#f3e8ff',
+        'Sport': '#dbeafe',
+        'Mat & Dryck': '#dcfce7',
+        'Natur': '#d1fae5',
+        'Shopping': '#fce7f3',
+        'Underhållning': '#fef3c7'
+    };
+    
+    const backgroundColor = categoryColors[activity.category] || '#f3f4f6';
+    const textColor = '#374760';
+    
+    return `
+        <div class="activity-card" style="background-color: ${backgroundColor}; color: ${textColor};">
+            <div class="activity-category-tag">${activity.category}</div>
+            <div class="activity-name">${activity.name}</div>
+            <div class="activity-details">
+                <div class="activity-location">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    ${activity.destination}
+                </div>
+                ${activity.time ? `
+                    <div class="activity-time">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        ${activity.time}
+                    </div>
+                ` : ''}
+                ${activity.cost ? `
+                    <div class="activity-cost">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        ${activity.cost} SEK
+                    </div>
+                ` : ''}
+            </div>
+        </div>
+    `;
+}
+
+// Initialize trip card functionality
+// Export trip data (for sharing or printing)
+function exportTrip(tripId) {
+    const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+    const trip = savedTrips.find(t => t.id === tripId);
+    
+    if (!trip) {
+        showToast('Kunde inte hitta resan för export.');
+        return;
+    }
+    
+    // Create a formatted text representation
+    let exportText = `RESEPLAN: ${trip.destinations.map(d => d.name).join(' → ')}\n`;
+    exportText += `Datum: ${new Date(trip.startDate).toLocaleDateString('sv-SE')} - ${new Date(trip.endDate).toLocaleDateString('sv-SE')}\n`;
+    exportText += `Antal dagar: ${trip.days}\n`;
+    exportText += `Budget: ${formatCurrency(trip.budget)}\n\n`;
+    
+    // Add destinations and transports
+    exportText += `DESTINATIONER:\n`;
+    trip.destinations.forEach((dest, i) => {
+        if (!dest.name) return;
+        
+        exportText += `${i+1}. ${dest.name}\n`;
+        
+        if (dest.transports && dest.transports.length > 0) {
+            exportText += `   Transport: ${dest.transports.map(t => t.type).join(', ')}\n`;
+        }
+        
+        if (dest.accommodations && dest.accommodations.length > 0) {
+            exportText += `   Boende: ${dest.accommodations.map(a => 
+                `${a.type} (${a.days} ${a.days === 1 ? 'dag' : 'dagar'})`).join(', ')}\n`;
+        }
+        
+        exportText += '\n';
+    });
+    
+    // Add activities if any
+    const allActivities = trip.destinations.flatMap(d => 
+        (d.activities || []).map(a => ({...a, destination: d.name}))
+    );
+    
+    if (allActivities.length > 0) {
+        exportText += `AKTIVITETER:\n`;
+        allActivities.forEach((activity, i) => {
+            const dateStr = activity.date ? 
+                `${new Date(activity.date).toLocaleDateString('sv-SE')}` : '';
+            const timeStr = activity.time ? ` kl ${activity.time}` : '';
+            const dateTimeStr = dateStr || timeStr ? ` (${dateStr}${timeStr})` : '';
+            
+            exportText += `${i+1}. ${activity.name}${dateTimeStr}\n`;
+            exportText += `   Plats: ${activity.destination}, Kategori: ${activity.category}\n`;
+            if (activity.cost) {
+                exportText += `   Kostnad: ${activity.cost} SEK\n`;
+            }
+            exportText += '\n';
+        });
+    }
+    
+    // Add insurances if any
+    if (trip.insurances && trip.insurances.length > 0) {
+        exportText += `FÖRSÄKRINGAR:\n`;
+        trip.insurances.forEach((insurance, i) => {
+            exportText += `${i+1}. ${insurance.name}\n`;
+        });
+    }
+    
+    // Create a Blob and generate download link
+    const blob = new Blob([exportText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `reseplan_${trip.destinations[0]?.name || 'resa'}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showToast('Reseplan exporterad');
+}
+
+
+// Förbättrad funktion för att redigera en resa
+function editTrip(tripId) {
+    console.log("Redigerar resa med ID:", tripId);
+    
+    // Hämta resan från localStorage
+    const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+    const tripToEdit = savedTrips.find(trip => trip.id === parseInt(tripId));
+    
+    if (!tripToEdit) {
+        showToast('Kunde inte hitta resan för redigering');
+        return;
+    }
+    
+    // Spara resan exakt som den är - utan att manipulera data
+    localStorage.setItem('tripToEdit', JSON.stringify(tripToEdit));
+    
+    // För debugging, logga den sparade resan
+    console.log("Sparad resa för redigering:", tripToEdit);
+    
+    // Navigera till reseplaneraren med tydlig flagga
+    window.location.href = `reseplanerare2.html?edit=${tripId}&ts=${Date.now()}`;
+}
+// Confirmation dialog for trip deletion
+function confirmDeleteTrip(tripId) {
+    // Create modal dialog
+    const modal = document.createElement('div');
+    modal.className = 'delete-modal';
+    modal.innerHTML = `
+        <div class="delete-modal-content">
+            <h3>Ta bort resa</h3>
+            <p>Är du säker på att du vill ta bort denna resa? Detta kan inte ångras.</p>
+            <div class="delete-modal-buttons">
+                <button class="cancel-button">Avbryt</button>
+                <button class="confirm-button">Ta bort</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Add event listeners
+    const cancelButton = modal.querySelector('.cancel-button');
+    const confirmButton = modal.querySelector('.confirm-button');
+    
+    cancelButton.addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+    
+    confirmButton.addEventListener('click', () => {
+        deleteTrip(tripId);
+        document.body.removeChild(modal);
+    });
+    
+    // Close when clicking outside
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+}
+
+function initializeTripCards() {
+    // Add tab switching functionality
+    document.querySelectorAll('.tab-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            // Find parent tab container
+            const tabContainer = this.closest('.trip-tabs');
+            if (!tabContainer) return;
+            
+            // Remove active class from all buttons and panes in this container
+            tabContainer.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            const tabContentContainer = tabContainer.querySelector('.tab-content');
+            if (!tabContentContainer) return;
+            
+            tabContentContainer.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+            
+            // Add active class to current button and corresponding pane
+            this.classList.add('active');
+            const tabId = this.getAttribute('data-tab');
+            const tabPane = document.getElementById(tabId);
+            if (tabPane) {
+                tabPane.classList.add('active');
+            }
+        });
+    });
+}
+
+function toggleTripDetails(tripId) {
+    const content = document.getElementById(`trip-content-${tripId}`);
+    const header = content.closest('.trip-card').querySelector('.trip-header');
+    
+    if (content.classList.contains('expanded')) {
+        // Collapse
+        content.classList.remove('expanded');
+        header.classList.remove('active');
+        
+        // Använd requestAnimationFrame för smidigare animering
+        requestAnimationFrame(() => {
+            content.style.height = '0';
+            content.style.maxHeight = '0';
+            content.style.overflow = 'hidden';
+        });
+        
+    } else {
+        // Stäng alla andra öppna resor först
+        document.querySelectorAll('.trip-content.expanded').forEach(openContent => {
+            if (openContent.id !== `trip-content-${tripId}`) {
+                openContent.classList.remove('expanded');
+                openContent.style.height = '0';
+                openContent.style.maxHeight = '0';
+                openContent.style.overflow = 'hidden';
+                
+                const openHeader = openContent.closest('.trip-card').querySelector('.trip-header');
+                if (openHeader) openHeader.classList.remove('active');
+            }
+        });
+        
+        // Öppna denna resa
+        content.classList.add('expanded');
+        header.classList.add('active');
+        
+        // Garantera att innehåll kan vara synligt utan höjdbegränsning
+        requestAnimationFrame(() => {
+            content.style.height = 'auto';
+            content.style.maxHeight = 'none';
+            content.style.overflow = 'visible';
+            
+            // Säkerställ att allt innehåll renderas korrekt
+            setTimeout(() => {
+                // Force a reflow/repaint to ensure all content is visible
+                content.style.display = 'none';
+                content.offsetHeight; // Trigger reflow
+                content.style.display = '';
+            }, 50);
+        });
+        
+        // Aktivera första fliken och se till att den renderas korrekt
+        const tabButtons = content.querySelectorAll('.tab-btn');
+        if (tabButtons.length > 0) {
+            setTimeout(() => {
+                tabButtons[0].click();
+            }, 100);
+        }
+    }
+}
+
+// Förbättrad tabfunktionalitet för att säkerställa korrekt rendering
+function initializeTripTabs() {
+    document.querySelectorAll('.tab-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            // Hitta föräldratabellen
+            const tabContainer = this.closest('.trip-tabs');
+            if (!tabContainer) return;
+            
+            // Ta bort aktiv klass från alla knappar och paneler i denna container
+            tabContainer.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            const tabContentContainer = tabContainer.querySelector('.tab-content');
+            if (!tabContentContainer) return;
+            
+            tabContentContainer.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+                pane.style.height = '0';
+                pane.style.overflow = 'hidden';
+            });
+            
+            // Lägg till aktiv klass på aktuell knapp och motsvarande panel
+            this.classList.add('active');
+            const tabId = this.getAttribute('data-tab');
+            const tabPane = document.getElementById(tabId);
+            
+            if (tabPane) {
+                // Använd setTimeout för att tillåta DOM-uppdateringar
+                setTimeout(() => {
+                    tabPane.classList.add('active');
+                    tabPane.style.height = 'auto';
+                    tabPane.style.overflow = 'visible';
+                    
+                    // Garantera att förälderinnehåll har tillräcklig höjd
+                    const tripContent = tabPane.closest('.trip-content');
+                    if (tripContent) {
+                        tripContent.style.height = 'auto';
+                        tripContent.style.maxHeight = 'none';
+                    }
+                    
+                    // Skrolla vid behov för att visa innehåll
+                    if (tabPane.offsetTop > window.innerHeight) {
+                        tabPane.scrollIntoView({behavior: 'smooth', block: 'start'});
+                    }
+                }, 50);
+            }
+        });
+    });
+}
+//test
+
+// Helper function to format currency with budget object support
+function formatCurrency(budget) {
+    // Kontrollera om budget är ett objekt (nytt format) eller ett nummer (gammalt format)
+    if (typeof budget === 'object') {
+        const amount = budget.amount || 0;
+        const currency = budget.currency || 'SEK';
+        
+        return new Intl.NumberFormat('sv-SE', { 
+            style: 'currency', 
+            currency: currency,
+            maximumFractionDigits: 0 
+        }).format(amount);
+    } else {
+        // Gammalt format - antar SEK som valuta
+        return new Intl.NumberFormat('sv-SE', { 
+            style: 'currency', 
+            currency: 'SEK',
+            maximumFractionDigits: 0 
+        }).format(budget || 0);
+    }
+}
+
+// Generate HTML for a single trip card
+function generateTripCard(trip, index) {
+    const destinations = trip.destinations.filter(d => d.name).map(d => d.name);
+    const mainDestination = destinations.length > 0 ? destinations[0] : 'Okänd destination';
+    const destinationCount = destinations.length;
+    const destinationList = destinations.join(' → ');
+    
+    // Calculate upcoming status
+    const today = new Date();
+    const startDate = new Date(trip.startDate);
+    const endDate = new Date(trip.endDate);
+    let tripStatus = '';
+    let statusClass = '';
+    
+    if (today < startDate) {
+        const daysUntil = Math.ceil((startDate - today) / (1000 * 60 * 60 * 24));
+        tripStatus = `Startar om ${daysUntil} dagar`;
+        statusClass = 'status-upcoming';
+    } else if (today <= endDate) {
+        tripStatus = 'Pågående resa';
+        statusClass = 'status-active';
+    } else {
+        tripStatus = 'Genomförd';
+        statusClass = 'status-completed';
+    }
+    
+    // Find main transport type if available
+    let mainTransport = '';
+    let transportIcon = '';
+    
+    if (trip.destinations[0]?.transports?.length > 0) {
+        mainTransport = trip.destinations[0].transports[0].type;
+        switch (mainTransport.toLowerCase()) {
+            case 'flyg':
+                transportIcon = '<i class="transport-icon">✈️</i>';
+                break;
+            case 'tåg':
+                transportIcon = '<i class="transport-icon">🚄</i>';
+                break;
+            case 'bil':
+                transportIcon = '<i class="transport-icon">🚗</i>';
+                break;
+            case 'buss':
+                transportIcon = '<i class="transport-icon">🚌</i>';
+                break;
+            case 'båt':
+                transportIcon = '<i class="transport-icon">🚢</i>';
+                break;
+            default:
+                transportIcon = '';
+        }
+    }
+    
+    // Count activities if any
+    const activitiesCount = trip.destinations.reduce((count, dest) => 
+        count + (dest.activities?.length || 0), 0);
+    
+    // Get budget display info and tracking status
+    const budgetDisplay = formatCurrency(trip.budget);
+    const hasBudgetTracking = trip.budget && trip.budget.trackingEnabled;
+    
+    return `
+    <div class="trip-card" data-trip-id="${trip.id}">
+        <div class="trip-status ${statusClass}">${tripStatus}</div>
+        <div class="trip-header" onclick="toggleTripDetails(${trip.id})">
+            <div class="trip-header-main">
+                <div class="trip-title-container">
+                    <div class="trip-title">${destinationList}</div>
+                    <div class="trip-subtitle">
+                        ${transportIcon}
+                        ${destinationCount > 1 ? `${destinationCount} destinationer` : '1 destination'}
+                        ${activitiesCount > 0 ? ` • ${activitiesCount} aktiviteter` : ''}
+                    </div>
+                </div>
+                <div class="trip-days-badge">${trip.days} dagar</div>
+            </div>
+            <div class="trip-dates">
+                <div class="date-badge">
+                    <div class="date-month">${formatDateMonth(trip.startDate)}</div>
+                    <div class="date-day">${formatDateDay(trip.startDate)}</div>
+                </div>
+                <div class="date-arrow">→</div>
+                <div class="date-badge">
+                    <div class="date-month">${formatDateMonth(trip.endDate)}</div>
+                    <div class="date-day">${formatDateDay(trip.endDate)}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="trip-content" id="trip-content-${trip.id}">
+            <div class="trip-details">
+                <div class="trip-quick-info">
+                    <div class="info-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                        </svg>
+                        <span>Budget: <strong>${budgetDisplay}</strong>${hasBudgetTracking ? ' <span class="budget-tracking-badge">Spårning aktiv</span>' : ''}</span>
+                    </div>
+                    ${trip.insurances && trip.insurances.length > 0 ? `
+                    <div class="info-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <span>${trip.insurances.length} försäkringar</span>
+                    </div>
+                    ` : ''}
+                    ${hasBudgetTracking ? `
+                    <div class="info-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                        <span>Kostnader: ${calculateTripExpenses(trip)} ${trip.budget.currency || 'SEK'}</span>
+                    </div>
+                    ` : ''}
+                </div>
+                
+                <div class="trip-tabs">
+                    <div class="tab-headers">
+                        <button class="tab-btn active" data-tab="destinations-${trip.id}">Destinationer</button>
+                        <button class="tab-btn" data-tab="accommodations-${trip.id}">Boende</button>
+                        <button class="tab-btn" data-tab="activities-${trip.id}">Aktiviteter</button>
+                        <button class="tab-btn" data-tab="insurances-${trip.id}">Försäkringar</button>
+                        ${hasBudgetTracking ? `<button class="tab-btn" data-tab="budget-${trip.id}">Budget</button>` : ''}
+                    </div>
+                    
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="destinations-${trip.id}">
+                            <div class="destinations-timeline">
+                                ${trip.destinations.map((dest, i) => 
+                                    dest.name ? `
+                                    <div class="timeline-item">
+                                        <div class="timeline-marker">${i + 1}</div>
+                                        <div class="timeline-content">
+                                            <div class="destination-name">${dest.name}</div>
+                                            
+                                            ${dest.transports && dest.transports.length > 0 ? `
+                                            <div class="transport-info">
+                                                ${dest.transports.map(transport => `
+                                                    <div class="transport-chip">
+                                                        ${getTransportIcon(transport.type)}
+                                                        <span>${transport.type}</span>
+                                                        ${transport.cost ? `<span class="transport-cost">${transport.cost} ${trip.budget?.currency || 'SEK'}</span>` : ''}
+                                                        ${transport.bookingLink ? `
+                                                            <a href="${transport.bookingLink}" target="_blank" class="booking-link">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                                                    <polyline points="15 3 21 3 21 9"></polyline>
+                                                                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                                                                </svg>
+                                                            </a>
+                                                        ` : ''}
+                                                    </div>
+                                                `).join('')}
+                                            </div>` : ''}
+                                        </div>
+                                    </div>` : ''
+                                ).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane" id="accommodations-${trip.id}">
+                            ${trip.destinations.some(d => d.accommodations && d.accommodations.length > 0) ? 
+                                generateAccommodationsContent(trip) : 
+                                '<div class="empty-tab-message">Inga boenden tillagda</div>'}
+                        </div>
+                        
+                        <div class="tab-pane" id="activities-${trip.id}">
+                            ${trip.destinations.some(d => d.activities && d.activities.length > 0) ? 
+                                generateActivitiesContent(trip) : 
+                                '<div class="empty-tab-message">Inga aktiviteter tillagda</div>'}
+                        </div>
+                        
+                        <div class="tab-pane" id="insurances-${trip.id}">
+                            ${trip.insurances && trip.insurances.length > 0 ? `
+                                <div class="insurances-grid">
+                                    ${trip.insurances.map(insurance => `
+                                        <div class="insurance-card">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                                <path d="M8 11l3 3 6-6"></path>
+                                            </svg>
+                                            <div class="insurance-name">${insurance.name}</div>
+                                            ${insurance.cost ? `<div class="insurance-cost">${insurance.cost} ${trip.budget?.currency || 'SEK'}</div>` : ''}
+                                            ${insurance.link ? `
+                                                <a href="${insurance.link}" target="_blank" class="insurance-link">
+                                                    Visa försäkringsdetaljer
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                                        <polyline points="15 3 21 3 21 9"></polyline>
+                                                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                                                    </svg>
+                                                </a>
+                                            ` : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : '<div class="empty-tab-message">Inga försäkringar tillagda</div>'}
+                        </div>
+                        
+                        ${hasBudgetTracking ? `
+                        <div class="tab-pane" id="budget-${trip.id}">
+                            ${generateBudgetContent(trip)}
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+                
+                <div class="trip-actions">
+                    <button class="edit-trip-btn" onclick="editTrip(${trip.id})">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path>
+                            <polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon>
+                        </svg>
+                        Redigera
+                    </button>
+                    <button class="export-trip-btn" onclick="exportTrip(${trip.id})">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Exportera
+                    </button>
+                    <button class="delete-trip-btn" onclick="confirmDeleteTrip(${trip.id})">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                        Ta bort
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
+
+// Generate budget content
+function generateBudgetContent(trip) {
+    if (!trip.budget || !trip.budget.trackingEnabled) {
+        return '<div class="empty-tab-message">Budgetspårning är inte aktiverad för denna resa</div>';
+    }
+    
+    const currency = trip.budget.currency || 'SEK';
+    const totalBudget = trip.budget.amount || 0;
+    const totalExpenses = calculateTripExpenses(trip);
+    const remaining = totalBudget - totalExpenses;
+    const percentage = totalBudget > 0 ? (totalExpenses / totalBudget) * 100 : 0;
+    
+    let statusClass = '';
+    let statusText = '';
+    
+    if (percentage >= 100) {
+        statusClass = 'danger';
+        statusText = 'Budgeten överskriden!';
+    } else if (percentage >= 80) {
+        statusClass = 'warning';
+        statusText = 'Närmar sig budgettaket!';
+    } else {
+        statusClass = 'success';
+        statusText = 'Inom budget';
+    }
+    
+    return `
+    <div class="budget-overview">
+        <div class="budget-summary">
+            <div class="budget-item">
+                <div class="budget-label">Total budget</div>
+                <div class="budget-value">${totalBudget.toLocaleString('sv-SE')} ${currency}</div>
+            </div>
+            <div class="budget-item">
+                <div class="budget-label">Använt</div>
+                <div class="budget-value">${totalExpenses.toLocaleString('sv-SE')} ${currency}</div>
+            </div>
+            <div class="budget-item">
+                <div class="budget-label">Återstående</div>
+                <div class="budget-value ${remaining < 0 ? 'negative' : ''}">${remaining.toLocaleString('sv-SE')} ${currency}</div>
+            </div>
+        </div>
+        
+        <div class="budget-progress-container">
+            <div class="budget-progress">
+                <div class="budget-progress-bar ${statusClass}" style="width: ${Math.min(100, percentage)}%"></div>
+            </div>
+            <div class="budget-progress-label ${statusClass}">${percentage.toFixed(1)}% (${statusText})</div>
+        </div>
+        
+        <div class="expense-breakdown">
+            <h4>Kostnadsfördelning</h4>
+            
+            <div class="expense-category">
+                <div class="expense-category-header">
+                    <div class="expense-category-name">Transport</div>
+                    <div class="expense-category-value">${calculateTransportCosts(trip).toLocaleString('sv-SE')} ${currency}</div>
+                </div>
+                ${generateTransportCostList(trip)}
+            </div>
+            
+            <div class="expense-category">
+                <div class="expense-category-header">
+                    <div class="expense-category-name">Boende</div>
+                    <div class="expense-category-value">${calculateAccommodationCosts(trip).toLocaleString('sv-SE')} ${currency}</div>
+                </div>
+                ${generateAccommodationCostList(trip)}
+            </div>
+            
+            <div class="expense-category">
+                <div class="expense-category-header">
+                    <div class="expense-category-name">Aktiviteter</div>
+                    <div class="expense-category-value">${calculateActivityCosts(trip).toLocaleString('sv-SE')} ${currency}</div>
+                </div>
+                ${generateActivityCostList(trip)}
+            </div>
+            
+            <div class="expense-category">
+                <div class="expense-category-header">
+                    <div class="expense-category-name">Försäkringar</div>
+                    <div class="expense-category-value">${calculateInsuranceCosts(trip).toLocaleString('sv-SE')} ${currency}</div>
+                </div>
+                ${generateInsuranceCostList(trip)}
+            </div>
+        </div>
+    </div>
+    `;
+}
+
+// Calculate total trip expenses
+function calculateTripExpenses(trip) {
+    return calculateTransportCosts(trip) +
+           calculateAccommodationCosts(trip) +
+           calculateActivityCosts(trip) +
+           calculateInsuranceCosts(trip);
+}
+
+// Calculate transport costs
+function calculateTransportCosts(trip) {
+    let total = 0;
+    trip.destinations.forEach(dest => {
+        if (dest.transports) {
+            dest.transports.forEach(transport => {
+                total += transport.cost || 0;
+            });
+        }
+    });
+    return total;
+}
+
+// Generate transport cost list
+function generateTransportCostList(trip) {
+    let transportItems = [];
+    const tripCurrency = trip.budget?.currency || 'SEK';
+    
+    // Resten av koden förblir densamma, men använd tripCurrency istället för hårdkodad 'SEK'
+    return `
+    <div class="cost-items">
+        ${transportItems.map(item => `
+            <div class="cost-item">
+                <div class="cost-item-details">
+                    <div class="cost-item-name">${item.type} (${item.destination})</div>
+                    <div class="cost-item-value">${item.cost.toLocaleString('sv-SE')} ${tripCurrency}</div>
+                </div>
+            </div>
+        `).join('')}
+    </div>
+    `;
+}
+
+// Calculate accommodation costs
+function calculateAccommodationCosts(trip) {
+    let total = 0;
+    trip.destinations.forEach(dest => {
+        if (dest.accommodations) {
+            dest.accommodations.forEach(acc => {
+                total += acc.cost || 0;
+            });
+        }
+    });
+    return total;
+}
+
+// Generate accommodation cost list
+function generateAccommodationCostList(trip) {
+    let accommodationItems = [];
+    const tripCurrency = trip.budget?.currency || 'SEK';
+    
+    // Samma princip som i transportkostnader
+    return `
+    <div class="cost-items">
+        ${accommodationItems.map(item => `
+            <div class="cost-item">
+                <div class="cost-item-details">
+                    <div class="cost-item-name">${item.type} i ${item.destination} (${item.days} dagar)</div>
+                    <div class="cost-item-value">${item.cost.toLocaleString('sv-SE')} ${tripCurrency}</div>
+                </div>
+            </div>
+        `).join('')}
+    </div>
+    `;
+}
+
+// Calculate activity costs
+function calculateActivityCosts(trip) {
+    let total = 0;
+    trip.destinations.forEach(dest => {
+        if (dest.activities) {
+            dest.activities.forEach(activity => {
+                total += activity.cost || 0;
+            });
+        }
+    });
+    return total;
+}
+
+// This is a more focused fix to ensure activities use the trip's currency
+function generateActivityCostList(trip) {
+    let activityItems = [];
+    
+    // Hämta resans valuta med tydlig fallback
+    const tripCurrency = trip.budget?.currency || 'SEK';
+    
+    trip.destinations.forEach(dest => {
+        if (dest.activities && dest.activities.length > 0) {
+            dest.activities.forEach(activity => {
+                if (activity.cost) {
+                    activityItems.push({
+                        destination: dest.name,
+                        name: activity.name,
+                        category: activity.category,
+                        cost: activity.cost
+                    });
+                }
+            });
+        }
+    });
+    
+    if (activityItems.length === 0) {
+        return '<div class="no-costs">Inga aktivitetskostnader registrerade</div>';
+    }
+    
+    return `
+    <div class="cost-items">
+        ${activityItems.map(item => `
+            <div class="cost-item">
+                <div class="cost-item-details">
+                    <div class="cost-item-name">${item.name} (${item.destination})</div>
+                    <div class="cost-item-value">${item.cost.toLocaleString('sv-SE')} ${tripCurrency}</div>
+                </div>
+                <div class="cost-item-category">${item.category}</div>
+            </div>
+        `).join('')}
+    </div>
+    `;
+}
+
+// Calculate insurance costs
+function calculateInsuranceCosts(trip) {
+    let total = 0;
+    if (trip.insurances) {
+        trip.insurances.forEach(insurance => {
+            total += insurance.cost || 0;
+        });
+    }
+    return total;
+}
+
+// Generate insurance cost list
+function generateInsuranceCostList(trip) {
+    const tripCurrency = trip.budget?.currency || 'SEK';
+    
+    if (!trip.insurances || trip.insurances.length === 0 || !trip.insurances.some(ins => ins.cost)) {
+        return '<div class="no-costs">Inga försäkringskostnader registrerade</div>';
+    }
+    
+    return `
+    <div class="cost-items">
+        ${trip.insurances.filter(ins => ins.cost).map(insurance => `
+            <div class="cost-item">
+                <div class="cost-item-details">
+                    <div class="cost-item-name">${insurance.name}</div>
+                    <div class="cost-item-value">${insurance.cost.toLocaleString('sv-SE')} ${tripCurrency}</div>
+                </div>
+            </div>
+        `).join('')}
+    </div>
+    `;
+}
+
+// Updated Export trip function
+function exportTrip(tripId) {
+    const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+    const trip = savedTrips.find(t => t.id === tripId);
+    
+    if (!trip) {
+        showToast('Kunde inte hitta resan för export.');
+        return;
+    }
+    
+    // Get budget info with support for new format
+    let budgetInfo = '';
+    if (typeof trip.budget === 'object') {
+        budgetInfo = `Budget: ${trip.budget.amount.toLocaleString('sv-SE')} ${trip.budget.currency}\n`;
+        if (trip.budget.trackingEnabled) {
+            const totalExpenses = calculateTripExpenses(trip);
+            const remaining = trip.budget.amount - totalExpenses;
+            budgetInfo += `Kostnader: ${totalExpenses.toLocaleString('sv-SE')} ${trip.budget.currency}\n`;
+            budgetInfo += `Återstående: ${remaining.toLocaleString('sv-SE')} ${trip.budget.currency}\n`;
+        }
+    } else {
+        budgetInfo = `Budget: ${trip.budget.toLocaleString('sv-SE')} SEK\n`;
+    }
+    
+    // Create a formatted text representation
+    let exportText = `RESEPLAN: ${trip.destinations.map(d => d.name).join(' → ')}\n`;
+    exportText += `Datum: ${new Date(trip.startDate).toLocaleDateString('sv-SE')} - ${new Date(trip.endDate).toLocaleDateString('sv-SE')}\n`;
+    exportText += `Antal dagar: ${trip.days}\n`;
+    exportText += budgetInfo + "\n";
+    
+    // Add destinations and transports
+    exportText += `DESTINATIONER:\n`;
+    trip.destinations.forEach((dest, i) => {
+        if (!dest.name) return;
+        
+        exportText += `${i+1}. ${dest.name}\n`;
+        
+        if (dest.transports && dest.transports.length > 0) {
+            exportText += `   Transport:\n`;
+            dest.transports.forEach(t => {
+                exportText += `   - ${t.type}`;
+                if (t.cost) {
+                    exportText += ` (${t.cost} ${trip.budget?.currency || 'SEK'})`;
+                }
+                exportText += '\n';
+            });
+        }
+        
+        if (dest.accommodations && dest.accommodations.length > 0) {
+            exportText += `   Boende:\n`;
+            dest.accommodations.forEach(a => {
+                exportText += `   - ${a.type} (${a.days} ${a.days === 1 ? 'dag' : 'dagar'})`;
+                if (a.cost) {
+                    exportText += ` (${a.cost} ${trip.budget?.currency || 'SEK'})`;
+                }
+                exportText += '\n';
+            });
+        }
+        
+        exportText += '\n';
+    });
+    
+    // Add activities if any
+    const allActivities = trip.destinations.flatMap(d => 
+        (d.activities || []).map(a => ({...a, destination: d.name}))
+    );
+    
+    if (allActivities.length > 0) {
+        exportText += `AKTIVITETER:\n`;
+        allActivities.forEach((activity, i) => {
+            const dateStr = activity.date ? 
+                `${new Date(activity.date).toLocaleDateString('sv-SE')}` : '';
+            const timeStr = activity.time ? ` kl ${activity.time}` : '';
+            const dateTimeStr = dateStr || timeStr ? ` (${dateStr}${timeStr})` : '';
+            const costStr = activity.cost ? ` - ${activity.cost} ${trip.budget?.currency || 'SEK'}` : '';
+            
+            exportText += `${i+1}. ${activity.name}${dateTimeStr}${costStr}\n`;
+            exportText += `   Plats: ${activity.destination}, Kategori: ${activity.category}\n`;
+            exportText += '\n';
+        });
+    }
+    
+    // Add insurances if any
+    if (trip.insurances && trip.insurances.length > 0) {
+        exportText += `FÖRSÄKRINGAR:\n`;
+        trip.insurances.forEach((insurance, i) => {
+            exportText += `${i+1}. ${insurance.name}`;
+            if (insurance.cost) {
+                exportText += ` - ${insurance.cost} ${trip.budget?.currency || 'SEK'}`;
+            }
+            exportText += '\n';
+        });
+    }
+    
+    // Add budget summary if tracking is enabled
+    if (trip.budget && trip.budget.trackingEnabled) {
+        const totalExpenses = calculateTripExpenses(trip);
+        const remaining = trip.budget.amount - totalExpenses;
+        const percentage = trip.budget.amount > 0 ? 
+            (totalExpenses / trip.budget.amount * 100).toFixed(1) : 0;
+        
+        exportText += `\nBUDGET SAMMANFATTNING:\n`;
+        exportText += `Total budget: ${trip.budget.amount.toLocaleString('sv-SE')} ${trip.budget.currency}\n`;
+        exportText += `Totala kostnader: ${totalExpenses.toLocaleString('sv-SE')} ${trip.budget.currency}\n`;
+        exportText += `Återstående: ${remaining.toLocaleString('sv-SE')} ${trip.budget.currency}\n`;
+        exportText += `Budget använd: ${percentage}%\n\n`;
+        
+        exportText += `KOSTNADSFÖRDELNING:\n`;
+        exportText += `Transport: ${calculateTransportCosts(trip).toLocaleString('sv-SE')} ${trip.budget.currency}\n`;
+        exportText += `Boende: ${calculateAccommodationCosts(trip).toLocaleString('sv-SE')} ${trip.budget.currency}\n`;
+        exportText += `Aktiviteter: ${calculateActivityCosts(trip).toLocaleString('sv-SE')} ${trip.budget.currency}\n`;
+        exportText += `Försäkringar: ${calculateInsuranceCosts(trip).toLocaleString('sv-SE')} ${trip.budget.currency}\n`;
+    }
+    
+    // Create a Blob and generate download link
+    const blob = new Blob([exportText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `reseplan_${trip.destinations[0]?.name || 'resa'}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showToast('Reseplan exporterad');
+}
+
+// Förbättrad funktion för att redigera en resa
+function editTrip(tripId) {
+    const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+    const tripToEdit = savedTrips.find(trip => trip.id === tripId);
+    
+    if (!tripToEdit) {
+        showToast('Kunde inte hitta resan för redigering');
+        return;
+    }
+    
+    // Spara hela resobjektet i localStorage för att användas av reseplaneraren
+    localStorage.setItem('tripToEdit', JSON.stringify(tripToEdit));
+    
+    // Skapa en URL med ID som parameter
+    const url = `reseplanerare2.html?edit=${tripId}`;
+    window.location.href = url;
+}
+
+
+</script>
+<script>// Funktion för att visa publicerade event i profilen
+    
+    // Beräkna antal unika platser
+    function calculateUniqueEventLocations(events) {
+        const uniqueLocations = new Set();
+        events.forEach(event => {
+            if (event.location) uniqueLocations.add(event.location);
+        });
+        return uniqueLocations.size;
+    }
+    
+    // Beräkna antal kategorier
+    function calculateCategoriesCount(events) {
+        const categories = new Set();
+        events.forEach(event => {
+            if (event.category) categories.add(event.category);
+        });
+        return categories.size;
+    }
+    
+    // Generera HTML för ett eventkort
+   // Generera HTML för ett eventkort
+function generateEventCard(event, index) {
+    const startDate = new Date(event.startDate);
+    const endDate = new Date(event.endDate);
+    const today = new Date();
+    
+    // Beräkna status för event
+    let eventStatus = '';
+    let statusClass = '';
+    
+    if (today < startDate) {
+        const daysUntil = Math.ceil((startDate - today) / (1000 * 60 * 60 * 24));
+        eventStatus = `Startar om ${daysUntil} dagar`;
+        statusClass = 'status-upcoming';
+    } else if (today <= endDate) {
+        eventStatus = 'Pågående event';
+        statusClass = 'status-active';
+    } else {
+        eventStatus = 'Avslutat';
+        statusClass = 'status-completed';
+    }
+    
+    return `
+    <div class="event-card" data-event-id="${event.id}">
+        <div class="event-status ${statusClass}">${eventStatus}</div>
+        <div class="event-header" onclick="toggleEventDetails(${event.id})">
+            <div class="event-header-main">
+                <div class="event-title-container">
+                    <div class="event-title">${event.title}</div>
+                    <div class="event-subtitle">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        ${event.location}
+                        ${event.category ? `<span class="event-category">${event.category}</span>` : ''}
+                    </div>
+                </div>
+            </div>
+            <div class="event-dates">
+                <div class="date-badge">
+                    <div class="date-month">${formatDateMonth(event.startDate)}</div>
+                    <div class="date-day">${formatDateDay(event.startDate)}</div>
+                </div>
+                <div class="date-arrow">→</div>
+                <div class="date-badge">
+                    <div class="date-month">${formatDateMonth(event.endDate)}</div>
+                    <div class="date-day">${formatDateDay(event.endDate)}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="event-content" id="event-content-${event.id}">
+            <div class="event-details">
+                <div class="event-description">
+                    <h4>Beskrivning</h4>
+                    <p>${event.description}</p>
+                </div>
+                
+                <div class="event-location-details">
+                    <h4>Plats</h4>
+                    <p>${event.city}, ${event.country}</p>
+                    ${event.venue ? `<p>Lokal: ${event.venue}</p>` : ''}
+                </div>
+                
+                ${event.organizer ? `
+                <div class="event-organizer-details">
+                    <h4>Arrangör</h4>
+                    <p>${event.organizer}</p>
+                </div>
+                ` : ''}
+                
+                ${event.price ? `
+                <div class="event-price-details">
+                    <h4>Pris</h4>
+                    <p>${event.price} SEK</p>
+                </div>
+                ` : ''}
+                
+                ${event.website ? `
+                <div class="event-website-details">
+                    <h4>Webbplats</h4>
+                    <p><a href="${event.website}" target="_blank">${event.website}</a></p>
+                </div>
+                ` : ''}
+                
+// In your generateEventCard() function, modify the event-actions div to include:
+
+<div class="event-actions">
+    <button class="edit-event-btn" onclick="editEvent(${event.id}); event.stopPropagation();">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path>
+            <polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon>
+        </svg>
+        Redigera
+    </button>
+    <button class="delete-event-btn" onclick="confirmDeleteEvent(${event.id}); event.stopPropagation();">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+        </svg>
+        Ta bort
+    </button>
+</div>
+            </div>
+        </div>
+    </div>`;
+}
+    
+    // Initialisera eventkortkort
+    function initializeEventCards() {
+        document.querySelectorAll('.event-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const eventId = this.closest('.event-card').dataset.eventId;
+                toggleEventDetails(eventId);
+            });
+        });
+    }
+    
+    // Toggla event-detaljer
+    function toggleEventDetails(eventId) {
+        const content = document.getElementById(`event-content-${eventId}`);
+        const header = content.closest('.event-card').querySelector('.event-header');
+        
+        if (content.classList.contains('expanded')) {
+            // Collapse
+            content.classList.remove('expanded');
+            header.classList.remove('active');
+            
+            requestAnimationFrame(() => {
+                content.style.height = '0';
+                content.style.maxHeight = '0';
+                content.style.overflow = 'hidden';
+            });
+            
+        } else {
+            // Stäng alla andra öppna event först
+            document.querySelectorAll('.event-content.expanded').forEach(openContent => {
+                if (openContent.id !== `event-content-${eventId}`) {
+                    openContent.classList.remove('expanded');
+                    openContent.style.height = '0';
+                    openContent.style.maxHeight = '0';
+                    openContent.style.overflow = 'hidden';
+                    
+                    const openHeader = openContent.closest('.event-card').querySelector('.event-header');
+                    if (openHeader) openHeader.classList.remove('active');
+                }
+            });
+            
+            // Öppna detta event
+            content.classList.add('expanded');
+            header.classList.add('active');
+            
+            requestAnimationFrame(() => {
+                content.style.height = 'auto';
+                content.style.maxHeight = 'none';
+                content.style.overflow = 'visible';
+                
+                setTimeout(() => {
+                    content.style.display = 'none';
+                    content.offsetHeight; // Trigger reflow
+                    content.style.display = '';
+                }, 50);
+            });
+        }
+    }
+    
+    // Helper functions to format date components
+    function formatDateMonth(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('sv-SE', { month: 'short' }).toUpperCase();
+    }
+    
+    function formatDateDay(dateString) {
+        const date = new Date(dateString);
+        return date.getDate();
+    }
+    
+// Function to confirm deletion of an event
+function confirmDeleteEvent(eventId) {
+    console.log("confirmDeleteEvent called with ID:", eventId);
+    
+    // Create modal dialog
+    const modal = document.createElement('div');
+    modal.className = 'delete-modal';
+    modal.innerHTML = `
+        <div class="delete-modal-content">
+            <h3>Ta bort event</h3>
+            <p>Är du säker på att du vill ta bort detta event? Detta kan inte ångras.</p>
+            <div class="delete-modal-buttons">
+                <button class="cancel-button">Avbryt</button>
+                <button class="confirm-button">Ta bort</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Add event listeners
+    const cancelButton = modal.querySelector('.cancel-button');
+    const confirmButton = modal.querySelector('.confirm-button');
+    
+    cancelButton.addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+    
+    confirmButton.addEventListener('click', () => {
+        deleteEvent(eventId);
+        document.body.removeChild(modal);
+    });
+    
+    // Close when clicking outside
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+}
+
+// Function to delete an event
+function deleteEvent(eventId) {
+    console.log("deleteEvent called with ID:", eventId);
+    
+    const events = JSON.parse(localStorage.getItem('events') || '[]');
+    const eventToDelete = events.find(event => event.id === parseInt(eventId));
+    console.log("Event to delete:", eventToDelete);
+    
+    const updatedEvents = events.filter(event => event.id !== parseInt(eventId));
+    console.log("Events before:", events.length, "Events after:", updatedEvents.length);
+    
+    localStorage.setItem('events', JSON.stringify(updatedEvents));
+    
+    displayPublishedEvents();
+    showToast('Eventet har tagits bort');
+}
+    
+    // Bekräfta borttagning av event
+    
+    
+    // Redigera ett event
+    function editEvent(eventId) {
+        const events = JSON.parse(localStorage.getItem('events') || '[]');
+        const eventToEdit = events.find(event => event.id === parseInt(eventId));
+        
+        if (!eventToEdit) {
+            showToast('Kunde inte hitta eventet för redigering');
+            return;
+        }
+        
+        // Spara eventet i localStorage för att användas av Skapa-event sidan
+        localStorage.setItem('eventToEdit', JSON.stringify(eventToEdit));
+        
+        // Skapa en URL med ID som parameter
+        const url = `Skapa-event.html?edit=${eventId}`;
+        window.location.href = url;
+    }
+    
+    // Uppdatera document.addEventListener för att lägga till displayPublishedEvents
+    document.addEventListener('DOMContentLoaded', function() {
+        // Befintliga funktioner
+        loadPersonalInfo();
+        loadProfilePicture();
+        displaySavedTrips();
+        
+        // Lägg till nya funktionen för att visa publicerade event
+        displayPublishedEvents();
+    });
+    
+    // Lägg till stilar för Event-aktiviteter i head
+document.head.insertAdjacentHTML('beforeend', `
+<style>
+    .event-activity {
+        border-left-color: #2ecc71 !important;
+        background-color: rgba(46, 204, 113, 0.05);
+    }
+    
+    .event-activity-icon {
+        color: #2ecc71;
+        margin-right: 8px;
+    }
+    
+    .event-source-badge {
+        background-color: #2ecc71;
+        color: white;
+        font-size: 0.8rem;
+        padding: 2px 8px;
+        border-radius: 12px;
+        margin-left: 8px;
+        vertical-align: middle;
+    }
+</style>
+`);
+
+// Function to add event to selected trip
+// Function to add event to selected trip
+function addEventToSelectedTrip(eventId, tripId) {
+    // Get data from localStorage
+    const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+    const events = loadEvents();
+    
+    // Find selected trip and event
+    const selectedTrip = savedTrips[tripId];
+    const event = events.find(e => e.id === parseInt(eventId));
+    
+    if (!selectedTrip || !event) {
+        showToast('Kunde inte lägga till evenemang - resan eller evenemanget hittades inte');
+        return;
+    }
+    
+    // Check if the event has already been added as an activity ANYWHERE in the trip
+    let eventAlreadyAdded = false;
+    
+    // Check all destinations for existing activities with this event ID
+    for (const dest of selectedTrip.destinations) {
+        if (dest.activities && dest.activities.some(activity => 
+            activity.eventId === event.id || 
+            (activity.name === event.title && activity.date === event.startDate)
+        )) {
+            eventAlreadyAdded = true;
+            break;
+        }
+    }
+    
+    if (eventAlreadyAdded) {
+        showToast('Detta evenemang finns redan i din resa');
+        return;
+    }
+    
+    // Find appropriate destination to add the activity to
+    let targetDestination = null;
+    
+    // Try to find a destination matching the event location
+    for (const dest of selectedTrip.destinations) {
+        if (!dest.name) continue;
+        
+        const destName = dest.name.toLowerCase();
+        const eventCity = event.city ? event.city.toLowerCase() : '';
+        const eventCountry = event.country ? event.country.toLowerCase() : '';
+        const eventLocation = event.location ? event.location.toLowerCase() : '';
+        
+        if ((eventCity && destName.includes(eventCity)) || 
+            (eventCountry && destName.includes(eventCountry)) || 
+            (eventLocation && destName.includes(eventLocation.split(',')[0].trim()))) {
+            targetDestination = dest;
+            break;
+        }
+    }
+    
+    // If no matching destination found, use the first destination
+    if (!targetDestination && selectedTrip.destinations.length > 0) {
+        targetDestination = selectedTrip.destinations.find(d => d.name) || selectedTrip.destinations[0];
+    }
+    
+    // If no valid destination exists, show message and abort
+    if (!targetDestination) {
+        showToast('Kunde inte lägga till evenemang - ingen giltig destination i resan');
+        return;
+    }
+    
+    // Make sure the activities array exists
+    if (!targetDestination.activities) {
+        targetDestination.activities = [];
+    }
+    
+    // Create activity based on the event
+    const eventActivity = {
+        id: Date.now(), // Create a unique ID for the activity
+        eventId: event.id, // Save event ID for tracking
+        name: event.title,
+        category: "Event", // Set category to "Event"
+        date: event.startDate,
+        time: "", // Event might not have a specific time
+        description: event.description,
+        location: event.location,
+        cost: event.price || 0,
+    };
+    
+    // Add the event as an activity to the selected destination
+    targetDestination.activities.push(eventActivity);
+    
+    // Save updated trip back to localStorage
+    localStorage.setItem('savedTrips', JSON.stringify(savedTrips));
+    
+    // Show confirmation message
+    showToast('Evenemanget har lagts till som aktivitet i din resa!');
+}
+</script>
+// Add this code to your profil2.html file, at the end of the <body> but before the closing </body> tag
+
+<script>
+
+// Function to show a complete trip management modal
+
+
+
+
+// Generate activities content for modal
+
+// Generate accommodations content for modal
+function generateAccommodationsContent(trip) {
+    let content = '';
+    let hasAccommodations = false;
+    
+    trip.destinations.forEach((dest, destIndex) => {
+        if (dest.accommodations && dest.accommodations.length > 0) {
+            hasAccommodations = true;
+            content += `<h4 style="margin-top: 15px; margin-bottom: 10px; color: var(--primary-color);">${dest.name || 'Okänd destination'}</h4>`;
+            
+            content += `<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px;">`;
+            
+            dest.accommodations.forEach((accommodation, accIndex) => {
+                content += `
+                    <div style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                        <div style="font-weight: 500; margin-bottom: 8px;">${accommodation.type}</div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">
+                            ${accommodation.days} ${accommodation.days === 1 ? 'dag' : 'dagar'}
+                            ${accommodation.cost ? ' · ' + accommodation.cost + ' SEK' : ''}
+                        </div>
+                        ${accommodation.bookingLink ? 
+                            `<a href="${accommodation.bookingLink}" target="_blank" 
+                                style="color: var(--primary-color); display: inline-block; margin-bottom: 10px; font-size: 0.9rem;">
+                                Visa bokning
+                            </a>` : ''}
+                        <button 
+                            onclick="removeAccommodation(${trip.id}, ${destIndex}, ${accIndex})"
+                            style="width: 100%; background-color: #fff1f0; color: #ff4d4f; border: none; 
+                                padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-top: 5px;">
+                            Ta bort
+                        </button>
+                    </div>
+                `;
+            });
+            
+            content += `</div>`;
+        }
+    });
+    
+    if (!hasAccommodations) {
+        content = `<p style="text-align: center; padding: 15px; color: #999;">Inga boenden tillagda</p>`;
+    }
+    
+    return content;
+}
+
+// Generate transports content for modal
+function generateTransportsContent(trip) {
+    let content = '';
+    let hasTransports = false;
+    
+    trip.destinations.forEach((dest, destIndex) => {
+        if (dest.transports && dest.transports.length > 0) {
+            hasTransports = true;
+            content += `<h4 style="margin-top: 15px; margin-bottom: 10px; color: var(--primary-color);">${dest.name || 'Okänd destination'}</h4>`;
+            
+            dest.transports.forEach((transport, transportIndex) => {
+                content += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; 
+                                padding: 15px; margin-bottom: 10px; background-color: #f8f9fa; 
+                                border-radius: 8px; border-left: 4px solid #1677ff;">
+                        <div>
+                            <div style="font-weight: 500; margin-bottom: 4px;">${transport.type}</div>
+                            <div style="font-size: 0.9rem; color: #666;">
+                                ${transport.departureDate ? new Date(transport.departureDate).toLocaleDateString('sv-SE') : ''}
+                                ${transport.departureTime ? ' · ' + transport.departureTime : ''}
+                                ${transport.cost ? ' · ' + transport.cost + ' SEK' : ''}
+                            </div>
+                        </div>
+                        <button 
+                            onclick="removeTransport(${trip.id}, ${destIndex}, ${transportIndex})"
+                            style="background-color: #fff1f0; color: #ff4d4f; border: none; 
+                                   padding: 6px 12px; border-radius: 4px; cursor: pointer;">
+                            Ta bort
+                        </button>
+                    </div>
+                `;
+            });
+        }
+    });
+    
+    if (!hasTransports) {
+        content = `<p style="text-align: center; padding: 15px; color: #999;">Inga transporter tillagda</p>`;
+    }
+    
+    return content;
+}
+
+// Generate insurances content for modal
+function generateInsurancesContent(trip) {
+    let content = '';
+    
+    if (!trip.insurances || trip.insurances.length === 0) {
+        content = `<p style="text-align: center; padding: 15px; color: #999;">Inga försäkringar tillagda</p>`;
+    } else {
+        content += `<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;">`;
+        
+        trip.insurances.forEach((insurance, insuranceIndex) => {
+            content += `
+                <div style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); text-align: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#374760" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 10px;">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <path d="M8 11l3 3 6-6"></path>
+                    </svg>
+                    <div style="font-weight: 500; margin-bottom: 8px;">${insurance.name}</div>
+                    ${insurance.cost ? `<div style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">${insurance.cost} SEK</div>` : ''}
+                    ${insurance.link ? 
+                        `<a href="${insurance.link}" target="_blank" 
+                            style="color: var(--primary-color); display: inline-block; margin-bottom: 10px; font-size: 0.9rem;">
+                            Visa detaljer
+                        </a>` : ''}
+                    <button 
+                        onclick="removeInsurance(${trip.id}, ${insuranceIndex})"
+                        style="width: 100%; background-color: #fff1f0; color: #ff4d4f; border: none; 
+                              padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-top: 5px;">
+                        Ta bort
+                    </button>
+                </div>
+            `;
+        });
+        
+        content += `</div>`;
+    }
+    
+    return content;
+}
+
+// Function to remove an activity
+function removeActivity(tripId, destIndex, activityIndex) {
+    console.log("removeActivity called:", tripId, destIndex, activityIndex);
+    
+    const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+    const tripIndex = savedTrips.findIndex(t => t.id === parseInt(tripId));
+    
+    if (tripIndex === -1) {
+        showToast('Kunde inte hitta resan');
+        return;
+    }
+    
+    const trip = savedTrips[tripIndex];
+    const destination = trip.destinations[destIndex];
+    
+    if (!destination || !destination.activities) {
+        showToast('Kunde inte hitta aktiviteten');
+        return;
+    }
+    
+    // Get the activity name for the toast message
+    const activityName = destination.activities[activityIndex]?.name || 'Aktivitet';
+    
+    // Remove the activity
+    destination.activities.splice(activityIndex, 1);
+    
+    // Save back to localStorage
+    localStorage.setItem('savedTrips', JSON.stringify(savedTrips));
+    
+    // Show confirmation toast
+    showToast(`${activityName} har tagits bort från resan`);
+    
+    // Refresh the modal
+    refreshModal(tripId);
+}
+
+// Function to remove an accommodation
+function removeAccommodation(tripId, destIndex, accIndex) {
+    const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+    const tripIndex = savedTrips.findIndex(t => t.id === parseInt(tripId));
+    
+    if (tripIndex === -1) {
+        showToast('Kunde inte hitta resan');
+        return;
+    }
+    
+    const trip = savedTrips[tripIndex];
+    const destination = trip.destinations[destIndex];
+    
+    if (!destination || !destination.accommodations) {
+        showToast('Kunde inte hitta boendet');
+        return;
+    }
+    
+    // Get the accommodation type for the toast message
+    const accomType = destination.accommodations[accIndex]?.type || 'Boende';
+    
+    // Remove the accommodation
+    destination.accommodations.splice(accIndex, 1);
+    
+    // Save back to localStorage
+    localStorage.setItem('savedTrips', JSON.stringify(savedTrips));
+    
+    // Show confirmation toast
+    showToast(`${accomType} har tagits bort från resan`);
+    
+    // Refresh the modal
+    refreshModal(tripId);
+}
+
+// Function to remove a transport
+function removeTransport(tripId, destIndex, transportIndex) {
+    const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+    const tripIndex = savedTrips.findIndex(t => t.id === parseInt(tripId));
+    
+    if (tripIndex === -1) {
+        showToast('Kunde inte hitta resan');
+        return;
+    }
+    
+    const trip = savedTrips[tripIndex];
+    const destination = trip.destinations[destIndex];
+    
+    if (!destination || !destination.transports) {
+        showToast('Kunde inte hitta transporten');
+        return;
+    }
+    
+    // Get the transport type for the toast message
+    const transportType = destination.transports[transportIndex]?.type || 'Transport';
+    
+    // Remove the transport
+    destination.transports.splice(transportIndex, 1);
+    
+    // Save back to localStorage
+    localStorage.setItem('savedTrips', JSON.stringify(savedTrips));
+    
+    // Show confirmation toast
+    showToast(`${transportType} har tagits bort från resan`);
+    
+    // Refresh the modal
+    refreshModal(tripId);
+}
+
+// Function to remove an insurance
+function removeInsurance(tripId, insuranceIndex) {
+    const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+    const tripIndex = savedTrips.findIndex(t => t.id === parseInt(tripId));
+    
+    if (tripIndex === -1) {
+        showToast('Kunde inte hitta resan');
+        return;
+    }
+    
+    const trip = savedTrips[tripIndex];
+    
+    if (!trip.insurances) {
+        showToast('Kunde inte hitta försäkringen');
+        return;
+    }
+    
+    // Get the insurance name for the toast message
+    const insuranceName = trip.insurances[insuranceIndex]?.name || 'Försäkring';
+    
+    // Remove the insurance
+    trip.insurances.splice(insuranceIndex, 1);
+    
+    // Save back to localStorage
+    localStorage.setItem('savedTrips', JSON.stringify(savedTrips));
+    
+    // Show confirmation toast
+    showToast(`${insuranceName} har tagits bort från resan`);
+    
+    // Refresh the modal
+    refreshModal(tripId);
+}
+
+// Refresh the modal after a change
+function refreshModal(tripId) {
+    console.log("refreshModal called for tripId:", tripId);
+    
+    // Get the current active tab
+    let activeTab = 'activities';
+    const modal = document.getElementById('trip-management-modal');
+    
+    if (modal) {
+        const visibleTab = modal.querySelector('.tab-content[style*="display: block"]');
+        if (visibleTab) {
+            activeTab = visibleTab.id.replace('tab-', '');
+        }
+        
+        // Remove existing modal
+        document.body.removeChild(modal);
+    }
+    
+    // Re-open the modal
+    manageTripComponents(tripId);
+    
+    // Switch back to the active tab
+    switchModalTab(activeTab);
+    
+    // Refresh the trips display
+    if (typeof displaySavedTrips === 'function') {
+        displaySavedTrips();
+    }
+}
+
+// Add the "Hantera resa" button to each trip card
+function addManageButtons() {
+    console.log("Running addManageButtons");
+    
+    // Get all trip cards
+    const tripCards = document.querySelectorAll('.trip-card');
+    console.log("Found trip cards:", tripCards.length);
+    
+    tripCards.forEach(card => {
+        // Get the trip ID from the card
+        const tripId = card.dataset.tripId;
+        if (!tripId) {
+            console.log("Card without tripId:", card);
+            return;
+        }
+        
+        // Find the trip actions container
+        const actionsDiv = card.querySelector('.trip-actions');
+        if (!actionsDiv) {
+            console.log("Card without actions div:", card);
+            return;
+        }
+        
+        // Ta bort "Hantera aktiviteter"-knappen om den finns
+        const oldActivityBtn = actionsDiv.querySelector('.manage-activities-btn');
+        if (oldActivityBtn) {
+            actionsDiv.removeChild(oldActivityBtn);
+        }
+        
+        // Check if we've already added our button
+        if (actionsDiv.querySelector('.manage-trip-btn')) {
+            console.log("Button already exists for tripId:", tripId);
+            return;
+        }
+        
+        console.log("Adding button for tripId:", tripId);
+        
+        // Create the button
+        const manageBtn = document.createElement('button');
+        manageBtn.className = 'manage-trip-btn';
+        manageBtn.style.backgroundColor = '#1677ff';
+        manageBtn.style.color = 'white';
+        manageBtn.style.border = 'none';
+        manageBtn.style.padding = '10px 15px';
+        manageBtn.style.borderRadius = '5px';
+        manageBtn.style.cursor = 'pointer';
+        manageBtn.style.marginRight = '10px';
+        manageBtn.style.display = 'inline-flex';
+        manageBtn.style.alignItems = 'center';
+        manageBtn.style.justifyContent = 'center';
+        manageBtn.style.gap = '8px';
+        manageBtn.style.fontWeight = '500';
+        
+        manageBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            Hantera resa
+        `;
+        
+        // Viktigt: Använd en dedikerad funktion i onclick för att förhindra event-bubblan
+        manageBtn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation(); // Viktigt: Förhindra att klicket bubblar upp till trip-kortet
+            manageTripComponents(parseInt(tripId));
+        };
+        
+        // Add the button to the actions container - placera först
+        actionsDiv.insertBefore(manageBtn, actionsDiv.firstChild);
+    });
+}
+
+// Initialize our functionality
+function initializeManageButtons() {
+    console.log("Initializing Manage Buttons");
+    
+    // Först - se till att ta bort eventuella tidigare eventlyssnare
+    if (window.manageButtonsInitialized) {
+        return; // Kör bara en gång
+    }
+    
+    // Lägg till knapparna
+    addManageButtons();
+    
+    // Kör igen när DOM:en ändras
+    const observer = new MutationObserver(function(mutations) {
+        addManageButtons();
+    });
+    
+    // Observera förändringar
+    observer.observe(document.body, { childList: true, subtree: true });
+    
+    // Markera att vi har initialiserat
+    window.manageButtonsInitialized = true;
+    
+    // Gör funktioner globalt tillgängliga
+    window.manageTripComponents = manageTripComponents;
+    window.switchModalTab = switchModalTab;
+    window.removeActivity = removeActivity;
+    window.removeAccommodation = removeAccommodation;
+    window.removeTransport = removeTransport;
+    window.removeInsurance = removeInsurance;
+    window.refreshModal = refreshModal;
+}
+
+// Kör initialiseringen så fort skriptet laddas
+initializeManageButtons();
+
+// Om sidan redan är laddad, kör direkt
+if (document.readyState !== 'loading') {
+    console.log("Document already ready, initializing immediately");
+    addManageButtons();
+} else {
+    console.log("Document not ready, adding event listener");
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("Document ready, initializing");
+        addManageButtons();
+    });
+}
+
+// För säkerhets skull, kör en fördröjd körning också
+setTimeout(addManageButtons, 1000);
+    </script>
+
+<script>
+    // Function to show a complete trip management modal
+    function manageTripComponents(tripId) {
+        console.log("manageTripComponents called with tripId:", tripId);
+        
+        // Get trip data
+        const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+        const trip = savedTrips.find(t => t.id === parseInt(tripId));
+        
+        if (!trip) {
+            showToast('Kunde inte hitta resan');
+            return;
+        }
+        
+        // Create modal element
+        const modal = document.createElement('div');
+        modal.className = 'delete-modal'; // Reuse existing modal class
+        modal.id = 'trip-management-modal';
+        
+        // Get list of destinations
+        const destinations = trip.destinations.filter(d => d.name).map(d => d.name);
+        const destinationList = destinations.join(' → ');
+        
+        // Create the modal HTML with tabs
+        let modalContent = `
+            <div class="delete-modal-content" style="width: 95%; max-width: 700px; max-height: 85vh; overflow-y: auto;">
+                <button onclick="document.getElementById('trip-management-modal').remove()" 
+                        style="position: absolute; right: 20px; top: 20px; background: none; border: none; font-size: 24px; cursor: pointer; z-index: 10;">&times;</button>
+                
+                <h3 style="margin-bottom: 20px; color: var(--primary-color);">Hantera resa: ${destinationList}</h3>
+                
+                <!-- Tabs Navigation -->
+                <div style="display: flex; border-bottom: 1px solid #ddd; margin-bottom: 20px; overflow-x: auto;">
+                    <button class="tab-btn" data-tab="activities" 
+                            style="padding: 10px 20px; background: none; border: none; cursor: pointer; border-bottom: 2px solid var(--primary-color); color: var(--primary-color);">
+                        Aktiviteter
+                    </button>
+                    <button class="tab-btn" data-tab="accommodations"
+                            style="padding: 10px 20px; background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; color: #666;">
+                        Boende
+                    </button>
+                    <button class="tab-btn" data-tab="transports"
+                            style="padding: 10px 20px; background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; color: #666;">
+                        Transport
+                    </button>
+                    <button class="tab-btn" data-tab="insurances"
+                            style="padding: 10px 20px; background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; color: #666;">
+                        Försäkringar
+                    </button>
+                </div>
+                
+                <!-- Tab Content -->
+                <div id="tab-activities" class="tab-content" style="display: block;">
+                    ${generateActivitiesContent(trip)}
+                </div>
+                
+                <div id="tab-accommodations" class="tab-content" style="display: none;">
+                    ${generateAccommodationsContent(trip)}
+                </div>
+                
+                <div id="tab-transports" class="tab-content" style="display: none;">
+                    ${generateTransportsContent(trip)}
+                </div>
+                
+                <div id="tab-insurances" class="tab-content" style="display: none;">
+                    ${generateInsurancesContent(trip)}
+                </div>
+                
+                <!-- Footer -->
+                <div style="display: flex; justify-content: flex-end; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+                    <button onclick="document.getElementById('trip-management-modal').remove()" 
+                            style="padding: 10px 20px; background-color: #f5f5f5; color: #666; border: none; border-radius: 6px; cursor: pointer;">
+                        Stäng
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        modal.innerHTML = modalContent;
+        document.body.appendChild(modal);
+        
+        // Lägg till event listeners för flikarna
+        document.querySelectorAll('#trip-management-modal .tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                switchModalTab(tabName);
+            });
+        });
+        
+        // Förhindra att modalklick propagerar till underliggande element
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                document.body.removeChild(modal);
+            }
+        });
+    }
+    
+    // Function to switch tabs in the modal
+    function switchModalTab(tabName) {
+        console.log("switchModalTab called with tabName:", tabName);
+        
+        // Get modal element
+        const modal = document.getElementById('trip-management-modal');
+        if (!modal) return;
+        
+        // Hide all tabs
+        modal.querySelectorAll('.tab-content').forEach(tab => {
+            tab.style.display = 'none';
+        });
+        
+        // Reset all tab buttons
+        modal.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.style.borderBottom = '2px solid transparent';
+            btn.style.color = '#666';
+        });
+        
+        // Activate selected tab
+        const selectedTab = modal.querySelector('#tab-' + tabName);
+        if (selectedTab) {
+            selectedTab.style.display = 'block';
+        }
+        
+        // Activate selected tab button
+        const selectedBtns = modal.querySelectorAll(`.tab-btn[data-tab="${tabName}"]`);
+        selectedBtns.forEach(btn => {
+            btn.style.borderBottom = '2px solid var(--primary-color)';
+            btn.style.color = 'var(--primary-color)';
+        });
+    }
+    
+    // Generate activities content for modal
+    function generateActivitiesContent(trip) {
+        let content = '';
+        let hasActivities = false;
+        
+        trip.destinations.forEach((dest, destIndex) => {
+            if (dest.activities && dest.activities.length > 0) {
+                hasActivities = true;
+                content += `<h4 style="margin-top: 15px; margin-bottom: 10px; color: var(--primary-color);">${dest.name || 'Okänd destination'}</h4>`;
+                
+                dest.activities.forEach((activity, actIndex) => {
+                    const isEvent = activity.category === 'Event';
+                    content += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; 
+                                    padding: 10px; margin-bottom: 10px; background-color: #f8f9fa; 
+                                    border-radius: 8px; ${isEvent ? 'border-left: 4px solid #2ecc71;' : ''}">
+                            <div>
+                                <div style="font-weight: 500;">
+                                    ${activity.name}
+                                    ${isEvent ? '<span style="background-color: #2ecc71; color: white; font-size: 0.8rem; padding: 2px 8px; border-radius: 12px; margin-left: 8px;">Event</span>' : ''}
+                                </div>
+                                <div style="font-size: 0.9rem; color: #666;">
+                                    ${activity.date ? new Date(activity.date).toLocaleDateString('sv-SE') : 'Inget datum'}
+                                    ${activity.time ? ' · ' + activity.time : ''}
+                                </div>
+                            </div>
+                            <button 
+                                onclick="removeActivity(${trip.id}, ${destIndex}, ${actIndex})"
+                                style="background-color: #fff1f0; color: #ff4d4f; border: none; 
+                                       padding: 6px 12px; border-radius: 4px; cursor: pointer;">
+                                Ta bort
+                            </button>
+                        </div>
+                    `;
+                });
+            }
+        });
+        
+        if (!hasActivities) {
+            content = `<p style="text-align: center; padding: 15px; color: #999;">Inga aktiviteter tillagda</p>`;
+        }
+        
+        return content;
+    }
+    
+    // Generate accommodations content for modal
+    function generateAccommodationsContent(trip) {
+        let content = '';
+        let hasAccommodations = false;
+        
+        trip.destinations.forEach((dest, destIndex) => {
+            if (dest.accommodations && dest.accommodations.length > 0) {
+                hasAccommodations = true;
+                content += `<h4 style="margin-top: 15px; margin-bottom: 10px; color: var(--primary-color);">${dest.name || 'Okänd destination'}</h4>`;
+                
+                content += `<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px;">`;
+                
+                dest.accommodations.forEach((accommodation, accIndex) => {
+                    content += `
+                        <div style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                            <div style="font-weight: 500; margin-bottom: 8px;">${accommodation.type}</div>
+                            <div style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">
+                                ${accommodation.days} ${accommodation.days === 1 ? 'dag' : 'dagar'}
+                                ${accommodation.cost ? ' · ' + accommodation.cost + ' SEK' : ''}
+                            </div>
+                            ${accommodation.bookingLink ? 
+                                `<a href="${accommodation.bookingLink}" target="_blank" 
+                                    style="color: var(--primary-color); display: inline-block; margin-bottom: 10px; font-size: 0.9rem;">
+                                    Visa bokning
+                                </a>` : ''}
+                            <button 
+                                onclick="removeAccommodation(${trip.id}, ${destIndex}, ${accIndex})"
+                                style="width: 100%; background-color: #fff1f0; color: #ff4d4f; border: none; 
+                                    padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-top: 5px;">
+                                Ta bort
+                            </button>
+                        </div>
+                    `;
+                });
+                
+                content += `</div>`;
+            }
+        });
+        
+        if (!hasAccommodations) {
+            content = `<p style="text-align: center; padding: 15px; color: #999;">Inga boenden tillagda</p>`;
+        }
+        
+        return content;
+    }
+    
+    // Generate transports content for modal
+    function generateTransportsContent(trip) {
+        let content = '';
+        let hasTransports = false;
+        
+        trip.destinations.forEach((dest, destIndex) => {
+            if (dest.transports && dest.transports.length > 0) {
+                hasTransports = true;
+                content += `<h4 style="margin-top: 15px; margin-bottom: 10px; color: var(--primary-color);">${dest.name || 'Okänd destination'}</h4>`;
+                
+                dest.transports.forEach((transport, transportIndex) => {
+                    content += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; 
+                                    padding: 15px; margin-bottom: 10px; background-color: #f8f9fa; 
+                                    border-radius: 8px; border-left: 4px solid #1677ff;">
+                            <div>
+                                <div style="font-weight: 500; margin-bottom: 4px;">${transport.type}</div>
+                                <div style="font-size: 0.9rem; color: #666;">
+                                    ${transport.departureDate ? new Date(transport.departureDate).toLocaleDateString('sv-SE') : ''}
+                                    ${transport.departureTime ? ' · ' + transport.departureTime : ''}
+                                    ${transport.cost ? ' · ' + transport.cost + ' SEK' : ''}
+                                </div>
+                            </div>
+                            <button 
+                                onclick="removeTransport(${trip.id}, ${destIndex}, ${transportIndex})"
+                                style="background-color: #fff1f0; color: #ff4d4f; border: none; 
+                                       padding: 6px 12px; border-radius: 4px; cursor: pointer;">
+                                Ta bort
+                            </button>
+                        </div>
+                    `;
+                });
+            }
+        });
+        
+        if (!hasTransports) {
+            content = `<p style="text-align: center; padding: 15px; color: #999;">Inga transporter tillagda</p>`;
+        }
+        
+        return content;
+    }
+    
+    // Generate insurances content for modal
+    function generateInsurancesContent(trip) {
+        let content = '';
+        
+        if (!trip.insurances || trip.insurances.length === 0) {
+            content = `<p style="text-align: center; padding: 15px; color: #999;">Inga försäkringar tillagda</p>`;
+        } else {
+            content += `<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;">`;
+            
+            trip.insurances.forEach((insurance, insuranceIndex) => {
+                content += `
+                    <div style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); text-align: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#374760" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 10px;">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            <path d="M8 11l3 3 6-6"></path>
+                        </svg>
+                        <div style="font-weight: 500; margin-bottom: 8px;">${insurance.name}</div>
+                        ${insurance.cost ? `<div style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">${insurance.cost} SEK</div>` : ''}
+                        ${insurance.link ? 
+                            `<a href="${insurance.link}" target="_blank" 
+                                style="color: var(--primary-color); display: inline-block; margin-bottom: 10px; font-size: 0.9rem;">
+                                Visa detaljer
+                            </a>` : ''}
+                        <button 
+                            onclick="removeInsurance(${trip.id}, ${insuranceIndex})"
+                            style="width: 100%; background-color: #fff1f0; color: #ff4d4f; border: none; 
+                                  padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-top: 5px;">
+                            Ta bort
+                        </button>
+                    </div>
+                `;
+            });
+            
+            content += `</div>`;
+        }
+        
+        return content;
+    }
+    
+    // Function to remove an activity
+    function removeActivity(tripId, destIndex, activityIndex) {
+        console.log("removeActivity called:", tripId, destIndex, activityIndex);
+        
+        const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+        const tripIndex = savedTrips.findIndex(t => t.id === parseInt(tripId));
+        
+        if (tripIndex === -1) {
+            showToast('Kunde inte hitta resan');
+            return;
+        }
+        
+        const trip = savedTrips[tripIndex];
+        const destination = trip.destinations[destIndex];
+        
+        if (!destination || !destination.activities) {
+            showToast('Kunde inte hitta aktiviteten');
+            return;
+        }
+        
+        // Get the activity name for the toast message
+        const activityName = destination.activities[activityIndex]?.name || 'Aktivitet';
+        
+        // Remove the activity
+        destination.activities.splice(activityIndex, 1);
+        
+        // Save back to localStorage
+        localStorage.setItem('savedTrips', JSON.stringify(savedTrips));
+        
+        // Show confirmation toast
+        showToast(`${activityName} har tagits bort från resan`);
+        
+        // Refresh the modal
+        refreshModal(tripId);
+    }
+    
+    // Function to remove an accommodation
+    function removeAccommodation(tripId, destIndex, accIndex) {
+        const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+        const tripIndex = savedTrips.findIndex(t => t.id === parseInt(tripId));
+        
+        if (tripIndex === -1) {
+            showToast('Kunde inte hitta resan');
+            return;
+        }
+        
+        const trip = savedTrips[tripIndex];
+        const destination = trip.destinations[destIndex];
+        
+        if (!destination || !destination.accommodations) {
+            showToast('Kunde inte hitta boendet');
+            return;
+        }
+        
+        // Get the accommodation type for the toast message
+        const accomType = destination.accommodations[accIndex]?.type || 'Boende';
+        
+        // Remove the accommodation
+        destination.accommodations.splice(accIndex, 1);
+        
+        // Save back to localStorage
+        localStorage.setItem('savedTrips', JSON.stringify(savedTrips));
+        
+        // Show confirmation toast
+        showToast(`${accomType} har tagits bort från resan`);
+        
+        // Refresh the modal
+        refreshModal(tripId);
+    }
+    
+    // Function to remove a transport
+    function removeTransport(tripId, destIndex, transportIndex) {
+        const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+        const tripIndex = savedTrips.findIndex(t => t.id === parseInt(tripId));
+        
+        if (tripIndex === -1) {
+            showToast('Kunde inte hitta resan');
+            return;
+        }
+        
+        const trip = savedTrips[tripIndex];
+        const destination = trip.destinations[destIndex];
+        
+        if (!destination || !destination.transports) {
+            showToast('Kunde inte hitta transporten');
+            return;
+        }
+        
+        // Get the transport type for the toast message
+        const transportType = destination.transports[transportIndex]?.type || 'Transport';
+        
+        // Remove the transport
+        destination.transports.splice(transportIndex, 1);
+        
+        // Save back to localStorage
+        localStorage.setItem('savedTrips', JSON.stringify(savedTrips));
+        
+        // Show confirmation toast
+        showToast(`${transportType} har tagits bort från resan`);
+        
+        // Refresh the modal
+        refreshModal(tripId);
+    }
+    
+    // Function to remove an insurance
+    function removeInsurance(tripId, insuranceIndex) {
+        const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+        const tripIndex = savedTrips.findIndex(t => t.id === parseInt(tripId));
+        
+        if (tripIndex === -1) {
+            showToast('Kunde inte hitta resan');
+            return;
+        }
+        
+        const trip = savedTrips[tripIndex];
+        
+        if (!trip.insurances) {
+            showToast('Kunde inte hitta försäkringen');
+            return;
+        }
+        
+        // Get the insurance name for the toast message
+        const insuranceName = trip.insurances[insuranceIndex]?.name || 'Försäkring';
+        
+        // Remove the insurance
+        trip.insurances.splice(insuranceIndex, 1);
+        
+        // Save back to localStorage
+        localStorage.setItem('savedTrips', JSON.stringify(savedTrips));
+        
+        // Show confirmation toast
+        showToast(`${insuranceName} har tagits bort från resan`);
+        
+        // Refresh the modal
+        refreshModal(tripId);
+    }
+    
+    // Refresh the modal after a change
+    function refreshModal(tripId) {
+        console.log("refreshModal called for tripId:", tripId);
+        
+        // Get the current active tab
+        let activeTab = 'activities';
+        const modal = document.getElementById('trip-management-modal');
+        
+        if (modal) {
+            const visibleTab = modal.querySelector('.tab-content[style*="display: block"]');
+            if (visibleTab) {
+                activeTab = visibleTab.id.replace('tab-', '');
+            }
+            
+            // Remove existing modal
+            document.body.removeChild(modal);
+        }
+        
+        // Re-open the modal
+        manageTripComponents(tripId);
+        
+        // Switch back to the active tab
+        switchModalTab(activeTab);
+        
+        // Refresh the trips display
+        if (typeof displaySavedTrips === 'function') {
+            displaySavedTrips();
+        }
+    }
+    
+    // Add the "Hantera resa" button to each trip card
+    function addManageButtons() {
+        console.log("Running addManageButtons");
+        
+        // Get all trip cards
+        const tripCards = document.querySelectorAll('.trip-card');
+        console.log("Found trip cards:", tripCards.length);
+        
+        tripCards.forEach(card => {
+            // Get the trip ID from the card
+            const tripId = card.dataset.tripId;
+            if (!tripId) {
+                console.log("Card without tripId:", card);
+                return;
+            }
+            
+            // Find the trip actions container
+            const actionsDiv = card.querySelector('.trip-actions');
+            if (!actionsDiv) {
+                console.log("Card without actions div:", card);
+                return;
+            }
+            
+            // Ta bort "Hantera aktiviteter"-knappen om den finns
+            const oldActivityBtn = actionsDiv.querySelector('.manage-activities-btn');
+            if (oldActivityBtn) {
+                actionsDiv.removeChild(oldActivityBtn);
+            }
+            
+            // Check if we've already added our button
+            if (actionsDiv.querySelector('.manage-trip-btn')) {
+                console.log("Button already exists for tripId:", tripId);
+                return;
+            }
+            
+            console.log("Adding button for tripId:", tripId);
+            
+            // Create the button
+            const manageBtn = document.createElement('button');
+            manageBtn.className = 'manage-trip-btn';
+            manageBtn.style.backgroundColor = '#1677ff';
+            manageBtn.style.color = 'white';
+            manageBtn.style.border = 'none';
+            manageBtn.style.padding = '10px 15px';
+            manageBtn.style.borderRadius = '5px';
+            manageBtn.style.cursor = 'pointer';
+            manageBtn.style.marginRight = '10px';
+            manageBtn.style.display = 'inline-flex';
+            manageBtn.style.alignItems = 'center';
+            manageBtn.style.justifyContent = 'center';
+            manageBtn.style.gap = '8px';
+            manageBtn.style.fontWeight = '500';
+            
+            manageBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                Hantera resa
+            `;
+            
+            // Viktigt: Använd en dedikerad funktion i onclick för att förhindra event-bubblan
+            manageBtn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation(); // Viktigt: Förhindra att klicket bubblar upp till trip-kortet
+                manageTripComponents(parseInt(tripId));
+            };
+            
+            // Add the button to the actions container - placera först
+            actionsDiv.insertBefore(manageBtn, actionsDiv.firstChild);
+        });
+    }
+    
+    // Initialize our functionality
+    function initializeManageButtons() {
+        console.log("Initializing Manage Buttons");
+        
+        // Först - se till att ta bort eventuella tidigare eventlyssnare
+        if (window.manageButtonsInitialized) {
+            return; // Kör bara en gång
+        }
+        
+        // Lägg till knapparna
+        addManageButtons();
+        
+        // Kör igen när DOM:en ändras
+        const observer = new MutationObserver(function(mutations) {
+            addManageButtons();
+        });
+        
+        // Observera förändringar
+        observer.observe(document.body, { childList: true, subtree: true });
+        
+        // Markera att vi har initialiserat
+        window.manageButtonsInitialized = true;
+        
+        // Gör funktioner globalt tillgängliga
+        window.manageTripComponents = manageTripComponents;
+        window.switchModalTab = switchModalTab;
+        window.removeActivity = removeActivity;
+        window.removeAccommodation = removeAccommodation;
+        window.removeTransport = removeTransport;
+        window.removeInsurance = removeInsurance;
+        window.refreshModal = refreshModal;
+    }
+    
+    // Kör initialiseringen så fort skriptet laddas
+    initializeManageButtons();
+    
+    // Om sidan redan är laddad, kör direkt
+    if (document.readyState !== 'loading') {
+        console.log("Document already ready, initializing immediately");
+        addManageButtons();
+    } else {
+        console.log("Document not ready, adding event listener");
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Document ready, initializing");
+            addManageButtons();
+        });
+    }
+    
+    // För säkerhets skull, kör en fördröjd körning också
+    setTimeout(addManageButtons, 1000);
+    </script>
+<script src="chatbot.js"></script>
+    </script>
+    <script>
+    function handleLogout() {
+        localStorage.removeItem('currentUser');
+        window.location.href = 'index.html';
+    }
+    
+    // Uppdatera profil namn om inloggad
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (currentUser) {
+            // Uppdatera profilnamn i headern
+            const profileNameElements = document.querySelectorAll('.profile-name, #displayName');
+            profileNameElements.forEach(element => {
+                if (element) {
+                    element.textContent = currentUser.username;
+                }
+            });
+            
+            // Omdirigera till login om inte inloggad och inte på login-sidan
+            if (!currentUser && !window.location.pathname.includes('index.html')) {
+                window.location.href = 'index.html';
+            }
+        }
+    });
+    // Nu gör vi om för publicerade event Nya event¨
+    // Funktion för att visa publicerade event i profilen
+function displayPublishedEvents() {
+    console.log("Displaying published events");
+    const publishedEvents = JSON.parse(localStorage.getItem('events') || '[]');
+    console.log("Loaded events:", publishedEvents);
+    const publishedEventsContainer = document.getElementById('publishedEvents');
+    
+    if (!publishedEventsContainer) {
+        console.error("Could not find publishedEvents container!");
+        return;
+    }
+    
+    if (publishedEvents.length === 0) {
+        publishedEventsContainer.innerHTML = `
+            <div class="empty-trips-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#374760" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <p class="no-trips">Inga publicerade event ännu</p>
+                <a href="Skapa-event.html" class="create-trip-btn">Skapa ditt första event</a>
+            </div>`;
+        return;
+    }
+    
+    publishedEventsContainer.innerHTML = `
+        <div class="trips-summary">
+            <div class="summary-item">
+                <span class="summary-value">${publishedEvents.length}</span>
+                <span class="summary-label">Publicerade event</span>
+            </div>
+        </div>
+        <div class="events-list">
+            ${publishedEvents.map((event, index) => generateEventCard(event)).join('')}
+        </div>`;
+    
+    // Initialisera event-kort funktionalitet
+    initializeEventActions();
+}
+
+// Beräkna antal unika platser
+function calculateUniqueEventLocations(events) {
+    const uniqueLocations = new Set();
+    events.forEach(event => {
+        if (event.location) uniqueLocations.add(event.location);
+    });
+    return uniqueLocations.size;
+}
+
+// Beräkna antal kategorier
+function calculateCategoriesCount(events) {
+    const categories = new Set();
+    events.forEach(event => {
+        if (event.category) categories.add(event.category);
+    });
+    return categories.size;
+}
+
+// Funktion för att initiera event-kortfunktionalitet
+function initializeEventActions() {
+    // Lägg till händelselyssnare för att växla event-detaljer
+    document.querySelectorAll('.event-header').forEach(header => {
+        header.addEventListener('click', function() {
+            const eventId = this.closest('.event-card').dataset.eventId;
+            toggleEventDetails(eventId);
+        });
+    });
+    
+    // Lägg till separata händelselyssnare för redigerings- och borttagningsknappar
+    // för att förhindra att klick bubblar upp
+    document.querySelectorAll('.edit-event-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const eventId = this.closest('.event-card').dataset.eventId;
+            editEvent(parseInt(eventId));
+        });
+    });
+    
+    document.querySelectorAll('.delete-event-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const eventId = this.closest('.event-card').dataset.eventId;
+            confirmDeleteEvent(parseInt(eventId));
+        });
+    });
+}
+
+// Funktion för att generera HTML för ett event-kort
+function generateEventCard(event) {
+    const startDate = new Date(event.startDate);
+    const endDate = new Date(event.endDate);
+    const today = new Date();
+    
+    // Beräkna status för event
+    let eventStatus = '';
+    let statusClass = '';
+    
+    if (today < startDate) {
+        const daysUntil = Math.ceil((startDate - today) / (1000 * 60 * 60 * 24));
+        eventStatus = `Startar om ${daysUntil} dagar`;
+        statusClass = 'status-upcoming';
+    } else if (today <= endDate) {
+        eventStatus = 'Pågående event';
+        statusClass = 'status-active';
+    } else {
+        eventStatus = 'Avslutat';
+        statusClass = 'status-completed';
+    }
+    
+    return `
+    <div class="event-card" data-event-id="${event.id}">
+        <div class="event-status ${statusClass}">${eventStatus}</div>
+        <div class="event-header">
+            <div class="event-header-main">
+                <div class="event-title-container">
+                    <div class="event-title">${event.title}</div>
+                    <div class="event-subtitle">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        ${event.location}
+                        ${event.category ? `<span class="event-category">${event.category}</span>` : ''}
+                    </div>
+                </div>
+            </div>
+            <div class="event-dates">
+                <div class="date-badge">
+                    <div class="date-month">${formatDateMonth(event.startDate)}</div>
+                    <div class="date-day">${formatDateDay(event.startDate)}</div>
+                </div>
+                <div class="date-arrow">→</div>
+                <div class="date-badge">
+                    <div class="date-month">${formatDateMonth(event.endDate)}</div>
+                    <div class="date-day">${formatDateDay(event.endDate)}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="event-content" id="event-content-${event.id}">
+            <div class="event-details">
+                <div class="event-description">
+                    <h4>Beskrivning</h4>
+                    <p>${event.description}</p>
+                </div>
+                
+                <div class="event-location-details">
+                    <h4>Plats</h4>
+                    <p>${event.city}, ${event.country}</p>
+                    ${event.venue ? `<p>Lokal: ${event.venue}</p>` : ''}
+                </div>
+                
+                ${event.organizer ? `
+                <div class="event-organizer-details">
+                    <h4>Arrangör</h4>
+                    <p>${event.organizer}</p>
+                </div>
+                ` : ''}
+                
+                ${event.price ? `
+                <div class="event-price-details">
+                    <h4>Pris</h4>
+                    <p>${event.price} SEK</p>
+                </div>
+                ` : ''}
+                
+                ${event.website ? `
+                <div class="event-website-details">
+                    <h4>Webbplats</h4>
+                    <p><a href="${event.website}" target="_blank">${event.website}</a></p>
+                </div>
+                ` : ''}
+                
+                <div class="event-actions">
+                    <button class="edit-event-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path>
+                            <polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon>
+                        </svg>
+                        Redigera
+                    </button>
+                    <button class="delete-event-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                        Ta bort
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
+
+// Växla event-detaljer
+function toggleEventDetails(eventId) {
+    console.log("Toggling event details for event ID:", eventId);
+    const content = document.getElementById(`event-content-${eventId}`);
+    const header = content.closest('.event-card').querySelector('.event-header');
+    
+    if (content.classList.contains('expanded')) {
+        // Collapse
+        content.classList.remove('expanded');
+        header.classList.remove('active');
+        
+        requestAnimationFrame(() => {
+            content.style.height = '0';
+            content.style.maxHeight = '0';
+            content.style.overflow = 'hidden';
+        });
+    } else {
+        // Stäng alla andra öppna event först
+        document.querySelectorAll('.event-content.expanded').forEach(openContent => {
+            if (openContent.id !== `event-content-${eventId}`) {
+                openContent.classList.remove('expanded');
+                openContent.style.height = '0';
+                openContent.style.maxHeight = '0';
+                openContent.style.overflow = 'hidden';
+                
+                const openHeader = openContent.closest('.event-card').querySelector('.event-header');
+                if (openHeader) openHeader.classList.remove('active');
+            }
+        });
+        
+        // Öppna detta event
+        content.classList.add('expanded');
+        header.classList.add('active');
+        
+        requestAnimationFrame(() => {
+            content.style.height = 'auto';
+            content.style.maxHeight = 'none';
+            content.style.overflow = 'visible';
+            
+            setTimeout(() => {
+                content.style.display = 'none';
+                content.offsetHeight; // Trigger reflow
+                content.style.display = '';
+            }, 50);
+        });
+    }
+}
+
+// Bekräfta borttagning av event
+function confirmDeleteEvent(eventId) {
+    console.log("confirmDeleteEvent called with ID:", eventId);
+    
+    // Create modal dialog
+    const modal = document.createElement('div');
+    modal.className = 'delete-modal';
+    modal.innerHTML = `
+        <div class="delete-modal-content">
+            <h3>Ta bort event</h3>
+            <p>Är du säker på att du vill ta bort detta event? Detta kan inte ångras.</p>
+            <div class="delete-modal-buttons">
+                <button class="cancel-button">Avbryt</button>
+                <button class="confirm-button">Ta bort</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Add event listeners
+    const cancelButton = modal.querySelector('.cancel-button');
+    const confirmButton = modal.querySelector('.confirm-button');
+    
+    cancelButton.addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+    
+    confirmButton.addEventListener('click', () => {
+        deleteEvent(eventId);
+        document.body.removeChild(modal);
+    });
+    
+    // Close when clicking outside
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+}
+
+// Ta bort ett event
+function deleteEvent(eventId) {
+    console.log("deleteEvent called with ID:", eventId);
+    
+    const events = JSON.parse(localStorage.getItem('events') || '[]');
+    const eventToDelete = events.find(event => event.id === parseInt(eventId));
+    console.log("Event to delete:", eventToDelete);
+    
+    const updatedEvents = events.filter(event => event.id !== parseInt(eventId));
+    console.log("Events before:", events.length, "Events after:", updatedEvents.length);
+    
+    localStorage.setItem('events', JSON.stringify(updatedEvents));
+    
+    // Uppdatera visningen
+    displayPublishedEvents();
+    showToast('Eventet har tagits bort');
+}
+
+// Redigera ett event
+function editEvent(eventId) {
+    console.log("Editing event with ID:", eventId);
+    
+    const events = JSON.parse(localStorage.getItem('events') || '[]');
+    const eventToEdit = events.find(event => event.id === parseInt(eventId));
+    
+    if (!eventToEdit) {
+        showToast('Kunde inte hitta eventet för redigering');
+        return;
+    }
+    
+    // Spara eventet i localStorage för att användas av Skapa-event sidan
+    localStorage.setItem('eventToEdit', JSON.stringify(eventToEdit));
+    
+    // Navigera till Skapa-event sidan med redigeringsläge
+    window.location.href = `Skapa-event.html?edit=${eventId}`;
+}
+
+// Hjälpfunktioner för datumformatering
+function formatDateMonth(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('sv-SE', { month: 'short' }).toUpperCase();
+}
+
+function formatDateDay(dateString) {
+    const date = new Date(dateString);
+    return date.getDate();
+}
+
+// Se till att displayPublishedEvents anropas när sidan laddas
+document.addEventListener('DOMContentLoaded', function() {
+    // Andra DOMContentLoaded-funktioner...
+    
+    // Anropa displayPublishedEvents för att visa publicerade event
+    displayPublishedEvents();
+});
+    </script>
+
+</body>
+</html>
+

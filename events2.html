@@ -1,0 +1,3196 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - TravelBuddy</title>
+    <link rel="stylesheet" href="chatbot.css">
+    <style>
+        :root {
+            --primary-color: #374760;
+            --secondary-color: #5D7599;
+            --background-color: #374760;
+            --text-color: #333;
+            --card-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color var(--transition-speed) ease;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-nav-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .profile-nav-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 100px 20px 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        /* Improved Search Container */
+        .search-container {
+            background: linear-gradient(to right, #fff, #f8f9fa);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .search-tabs {
+            display: flex;
+            border-bottom: 2px solid #eee;
+            background-color: #f8f9fa;
+        }
+
+        .search-tab {
+            padding: 15px 20px;
+            cursor: pointer;
+            margin-right: 5px;
+            border-radius: 8px 8px 0 0;
+            transition: all var(--transition-speed) ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-tab i {
+            font-size: 1.2em;
+        }
+
+        .search-tab.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .search-form {
+            display: none;
+            padding: 25px 20px;
+        }
+
+        .search-form.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            background-color: #f9f9f9;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(55, 71, 96, 0.2);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .search-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all var(--transition-speed) ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .search-btn:hover {
+            background-color: #2a3649;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .search-btn i {
+            font-size: 1.2em;
+        }
+
+        /* Trip Info Display */
+        .trip-info {
+            background: linear-gradient(to right, #f0f4f8, #e9f2f9);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .trip-info.visible {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .destination-tag {
+            display: inline-block;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            margin: 6px 4px;
+            font-size: 0.9em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all var(--transition-speed) ease;
+        }
+
+        .destination-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        /* Events */
+        .event-card {
+            border-left: 4px solid var(--primary-color);
+            padding: 25px;
+            margin: 20px 0;
+            background: #f8f8f8;
+            border-radius: 0 12px 12px 0;
+            position: relative;
+            transition: all var(--transition-speed) ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .event-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .event-date {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .event-date i {
+            font-size: 1.2em;
+        }
+
+        .event-location {
+            color: #666;
+            font-size: 0.95em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .event-location i {
+            color: var(--primary-color);
+        }
+
+        .event-title {
+            margin-bottom: 12px;
+            font-size: 1.3em;
+            color: #333;
+        }
+
+        .event-description {
+            margin: 12px 0;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .event-organizer {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .event-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .event-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .event-link:hover {
+            color: #2a3649;
+            transform: translateX(3px);
+        }
+
+        .add-event-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-event-btn:hover {
+            background-color: #2a3649;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .month-section {
+            margin-bottom: 40px;
+        }
+
+        .month-title {
+            color: var(--primary-color);
+            font-size: 1.7rem;
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .month-title i {
+            font-size: 1.3em;
+        }
+
+        .upload-event-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 5px;
+            transition: all var(--transition-speed) ease;
+            text-decoration: none;
+        }
+
+        .upload-event-btn:hover {
+            background: linear-gradient(to right, #27ae60, #219652);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .upload-event-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* Modal */
+/* Modalfönster som alltid är fixerat i mitten av skärmen */
+
+
+
+
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+
+@keyframes modalContentSlideIn {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Specifik fix för select trip modal */
+#selectTripModal.active {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Responsiv justering för mindre skärmar */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+}
+
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #777;
+            transition: all var(--transition-speed) ease;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .close-modal:hover {
+            color: #333;
+            background-color: #f0f0f0;
+        }
+
+        /* Justera för mindre skärmar */
+        @media (max-width: 768px) {
+            #selectTripModal .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+        }
+
+        /* Toast */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1001;
+            animation: toastSlideIn 0.3s ease;
+        }
+
+        @keyframes toastSlideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .no-events {
+            text-align: center;
+            padding: 60px 20px;
+            background: #f8f8f8;
+            border-radius: 12px;
+            color: #666;
+            font-size: 1.2em;
+            box-shadow: var(--card-shadow);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.5rem;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .nav-links {
+                gap: 0.5rem;
+            }
+
+            .nav-link {
+                font-size: 0.9rem;
+                padding: 0.3rem 0.8rem;
+            }
+
+            .container {
+                padding-top: 70px;
+            }
+
+            h1 {
+                font-size: 1.7rem;
+                margin-bottom: 20px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .modal-content {
+                padding: 20px;
+                width: 95%;
+            }
+            
+            .search-tab {
+                padding: 12px 15px;
+                font-size: 0.9em;
+            }
+        }
+
+        /*Förbättring av ladda upp event*/
+        /* Förbättrad card design */
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    border: none;
+}
+
+/* Event Creation Card */
+.event-creation-card {
+    background: linear-gradient(135deg, #fff, #f8f9fa);
+    overflow: hidden;
+    position: relative;
+}
+
+.event-creation-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    opacity: 0.1;
+    border-radius: 0 0 0 150px;
+}
+
+.event-creation-content {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.event-creation-info {
+    flex: 2;
+}
+
+.event-creation-info h2 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.event-creation-info p {
+    color: #555;
+    margin-bottom: 20px;
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+.event-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 25px 0 0;
+}
+
+.event-benefits li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+    color: #444;
+    font-size: 1.05rem;
+}
+
+.event-benefits li svg {
+    color: var(--primary-color);
+    flex-shrink: 0;
+}
+
+.event-creation-action {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.create-event-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 16px 30px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(55, 71, 96, 0.2);
+    border: none;
+}
+
+.create-event-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(55, 71, 96, 0.3);
+}
+
+.create-event-btn svg {
+    transition: transform 0.3s ease;
+}
+
+.create-event-btn:hover svg {
+    transform: rotate(90deg);
+}
+
+/* Förbättrad search container design */
+.search-container {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.search-tabs {
+    display: flex;
+    border-bottom: 2px solid #f0f0f0;
+    background-color: #fcfcfc;
+    padding: 0 15px;
+}
+
+.search-tab {
+    padding: 18px 24px;
+    cursor: pointer;
+    margin-right: 5px;
+    border-radius: 8px 8px 0 0;
+    transition: all var(--transition-speed) ease;
+    font-weight: 500;
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 3px solid transparent;
+}
+
+.search-tab i {
+    font-size: 1.2rem;
+    color: #999;
+    transition: color var(--transition-speed) ease;
+}
+
+.search-tab:hover {
+    background-color: rgba(55, 71, 96, 0.05);
+}
+
+.search-tab:hover i {
+    color: var(--primary-color);
+}
+
+.search-tab.active {
+    background-color: white;
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--primary-color);
+}
+
+.search-tab.active i {
+    color: var(--primary-color);
+}
+
+.search-form {
+    display: none;
+    padding: 30px;
+}
+
+.search-form.active {
+    display: block;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+/* Förbättrade event-kort */
+.event-card {
+    border-left: 4px solid var(--primary-color);
+    padding: 30px;
+    margin: 25px 0;
+    background: white;
+    border-radius: 0 16px 16px 0;
+    position: relative;
+    transition: all var(--transition-speed) ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+}
+
+.event-card:hover {
+    transform: translateX(5px) translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.event-date {
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.05rem;
+}
+
+.event-date i {
+    font-size: 1.25rem;
+}
+
+.event-location {
+    color: #666;
+    font-size: 1rem;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.event-location i {
+    color: var(--primary-color);
+}
+
+.event-title {
+    margin-bottom: 16px;
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.event-description {
+    margin: 16px 0;
+    color: #555;
+    line-height: 1.6;
+    font-size: 1.05rem;
+}
+
+.event-organizer {
+    font-size: 0.95rem;
+    color: #666;
+    margin-top: 12px;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.event-organizer i {
+    color: var(--primary-color);
+    font-size: 1rem;
+}
+
+.event-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.event-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all var(--transition-speed) ease;
+    padding: 10px 16px;
+    border-radius: 8px;
+}
+
+.event-link:hover {
+    background-color: rgba(55, 71, 96, 0.05);
+    color: var(--primary-color);
+    transform: translateX(3px);
+}
+
+.add-event-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all var(--transition-speed) ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.add-event-btn:hover {
+    background-color: #2a3649;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Month section styling */
+.month-section {
+    margin-bottom: 50px;
+}
+
+.month-title {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.month-title i {
+    font-size: 1.4rem;
+}
+
+/* Förbättrad tom tillstånd */
+.no-events {
+    text-align: center;
+    padding: 80px 20px;
+    background: #f8f9fa;
+    border-radius: 16px;
+    color: #666;
+    font-size: 1.3rem;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+}
+
+.no-events i {
+    font-size: 4rem;
+    color: #ddd;
+    display: block;
+    margin-bottom: 25px;
+}
+
+/* Trip info display */
+.trip-info {
+    background: linear-gradient(to right, #f5f9ff, #eef6ff);
+    padding: 25px;
+    border-radius: 12px;
+    margin-top: 25px;
+    display: none;
+    border-left: 4px solid var(--primary-color);
+    animation: slideDown 0.4s ease;
+}
+
+@keyframes slideDown {
+    from { 
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.trip-info.visible {
+    display: block;
+}
+
+.destination-tag {
+    display: inline-block;
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 8px 16px;
+    border-radius: 25px;
+    margin: 8px 6px 8px 0;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all var(--transition-speed) ease;
+}
+
+.destination-tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Responsiva justeringar */
+@media (max-width: 768px) {
+    .event-creation-content {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .create-event-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .search-tab {
+        padding: 15px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .search-form {
+        padding: 20px;
+    }
+    
+    .search-tab i {
+        font-size: 1rem;
+    }
+    
+    .event-card {
+        padding: 20px;
+    }
+    
+    .event-title {
+        font-size: 1.3rem;
+    }
+    
+    .event-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .event-link, .add-event-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+.trip-form-section {
+    margin-bottom: 25px;
+}
+
+/* Förbättrad select-design */
+.trip-select-container {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.trip-select-label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 1.05rem;
+}
+
+.trip-select {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #e0e6ed;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    color: #333;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+
+.trip-select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 2px 15px rgba(55,71,96,0.1);
+}
+
+.trip-select-icon {
+    position: absolute;
+    right: 15px;
+    top: 45px;
+    color: var(--primary-color);
+    pointer-events: none;
+    transition: transform 0.3s;
+}
+
+.trip-select-container:hover .trip-select-icon {
+    transform: translateY(2px);
+}
+
+/* Förbättrad trip info display */
+.trip-info {
+    background: linear-gradient(135deg, #f5f9ff, #eef6ff);
+    padding: 25px;
+    border-radius: 12px;
+    margin: 20px 0;
+    display: none;
+    border-left: 4px solid var(--primary-color);
+    box-shadow: 0 4px 15px rgba(55,71,96,0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.trip-info::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    opacity: 0.05;
+    border-radius: 50%;
+    z-index: 0;
+}
+
+.trip-info.visible {
+    display: block;
+    animation: slideDown 0.4s ease;
+}
+
+@keyframes slideDown {
+    from { 
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.trip-info-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 1;
+}
+
+.trip-info-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.trip-info-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.trip-dates-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.trip-date-item {
+    position: relative;
+    background-color: white;
+    padding: 12px 18px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 100px;
+}
+
+.trip-date-label {
+    font-size: 0.8rem;
+    color: #666;
+    text-transform: uppercase;
+}
+
+.trip-date-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    line-height: 1.3;
+}
+
+.trip-date-arrow {
+    color: #999;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.trip-duration {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.85rem;
+    color: #666;
+    white-space: nowrap;
+    background-color: rgba(255,255,255,0.8);
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.trip-destinations-container {
+    position: relative;
+    z-index: 1;
+}
+
+.trip-destinations-label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.destination-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.destination-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.destination-tag:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.destination-tag svg {
+    height: 16px;
+    width: 16px;
+}
+
+/* Förbättrad sökknapp */
+.trip-search-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.05rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(55,71,96,0.15);
+    margin-top: 10px;
+}
+
+.trip-search-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(55,71,96,0.2);
+}
+
+.trip-search-btn:active {
+    transform: translateY(-1px);
+}
+
+.trip-search-btn svg {
+    height: 20px;
+    width: 20px;
+    transition: transform 0.3s ease;
+}
+
+.trip-search-btn:hover svg {
+    transform: translateX(3px);
+}
+
+/* Responsiva stilar */
+@media (max-width: 768px) {
+    .trip-select {
+        font-size: 1rem;
+        padding: 12px 16px;
+    }
+    
+    .trip-dates-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 25px;
+    }
+    
+    .trip-date-arrow {
+        display: none;
+    }
+    
+    .trip-date-item {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .trip-date-label {
+        font-size: 0.75rem;
+    }
+    
+    .trip-date-value {
+        font-size: 1rem;
+    }
+    
+    .trip-duration {
+        top: -15px;
+        font-size: 0.8rem;
+    }
+}
+/* Event Cards - Förbättrad design */
+.event-list-container {
+    margin-top: 30px;
+}
+
+/* Månadssektionens stilar */
+.month-section {
+    margin-bottom: 50px;
+    position: relative;
+}
+
+.month-title {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+}
+
+.month-title::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 50px;
+    height: 4px;
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    border-radius: 4px;
+}
+
+.month-title i {
+    font-size: 1.4rem;
+    color: var(--primary-color);
+}
+
+/* Moderna event-kort */
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+.event-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: none !important; /* Ta bort tidigare border */
+    height: 100%;
+    transform: translateY(0);
+}
+
+.event-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+}
+
+.event-card-img {
+    height: 160px;
+    background-color: #f1f5f9;
+    position: relative;
+    overflow: hidden;
+}
+
+.event-card-img-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    opacity: 0.7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    color: white;
+}
+
+.event-category-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: rgba(255, 255, 255, 0.85);
+    color: var(--primary-color);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 1;
+}
+
+.event-date-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.8rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    z-index: 1;
+}
+
+.event-date-day {
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.event-date-month {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.event-card-content {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.event-card-location {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+}
+
+.event-card-location i {
+    color: var(--primary-color);
+    font-size: 0.95rem;
+}
+
+.event-card-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+    line-height: 1.3;
+}
+
+.event-card-description {
+    color: #555;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex-grow: 1;
+}
+
+.event-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 15px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.event-card-organizer {
+    font-size: 0.85rem;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.event-card-organizer i {
+    color: var(--primary-color);
+}
+
+.event-card-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.event-detail-btn {
+    border: none;
+    background: #f0f4f8;
+    color: var(--primary-color);
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.event-detail-btn:hover {
+    background: #e0eaf5;
+    transform: translateY(-2px);
+}
+
+.event-add-btn {
+    border: none;
+    background: var(--primary-color);
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.event-add-btn:hover {
+    background: #2a3649;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.event-card-ribbon {
+    position: absolute;
+    top: 15px;
+    left: -5px;
+    padding: 6px 12px;
+    background: linear-gradient(to right, #ff6b6b, #ff8787);
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 2;
+}
+
+.event-card-ribbon:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 5px 5px 0;
+    border-color: transparent #b83b3b transparent transparent;
+}
+
+/* Responsiva stilar */
+@media (max-width: 768px) {
+    .events-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .event-card-img {
+        height: 140px;
+    }
+    
+    .event-card-title {
+        font-size: 1.3rem;
+    }
+    
+    .event-card-content {
+        padding: 15px;
+    }
+}
+
+
+#selectTripModal.active {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#selectTripModal .modal-content {
+    margin: auto !important;
+    position: static !important;
+    transform: none !important;
+}
+
+
+/* CSS för inbäddad resväljare i eventkort */
+.trip-selection-container {
+    margin: 15px 0;
+    padding: 15px;
+    background: rgba(240, 244, 248, 0.7);
+    border-radius: 8px;
+    border-left: 3px solid var(--primary-color);
+    animation: fadeIn 0.3s ease;
+}
+
+.trip-selection-container p {
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: #444;
+}
+
+.trip-select-dropdown {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    background-color: white;
+    font-size: 0.95rem;
+}
+
+.confirm-add-event-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.confirm-add-event-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Animation för fade-in */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsiva justeringar */
+@media (max-width: 768px) {
+    .trip-selection-container {
+        padding: 12px;
+    }
+}
+/*dark mode styles*/
+/*@media (prefers-color-scheme: dark) {
+    .event-card {
+        background: #1f2937;
+    }
+    
+    .event-card-title {
+        color: #f9fafb;
+    }
+    
+    .event-card-description {
+        color: #d1d5db;
+    }
+    
+    .event-card-footer {
+        border-top-color: #374151;
+    }
+    
+    .event-card-location, .event-card-organizer {
+        color: #9ca3af;
+    }
+    
+    .event-detail-btn {
+        background: #374151;
+        color: #e5e7eb;
+    }
+    
+    .event-detail-btn:hover {
+        background: #4b5563;
+    }
+    
+    .event-category-badge {
+        background-color: rgba(31, 41, 55, 0.85);
+        color: #e5e7eb;
+    }
+}
+*/
+    </style>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+</head>
+<body>
+    <header class="header">
+        <div class="nav-container">
+            <a href="home.html" class="logo">TravelBuddy</a>
+            <nav class="nav-links">
+                <a href="home.html" class="nav-link">Hem</a>
+                <a href="reseplanerare2.html" class="nav-link">Reseplanerare</a>
+                <a href="tips2.html" class="nav-link">Tips</a>
+                <a href="events2.html" class="nav-link active">Events</a>
+                <a href="Skapa-event.html" class="nav-link">Skapa Event</a>
+                <a href="#" class="nav-link" onclick="handleLogout()">Logga ut</a>
+                <a href="profil2.html" class="profile-nav-link">
+                    <img id="navProfilePic" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 24 24'%3E%3Cpath fill='%23666' d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4-4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Profil" class="profile-nav-pic">
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Hitta Intressanta Events</h1>
+
+        <!-- Förbättrad sökcontainer -->
+        <div class="card search-container">
+            <div class="search-tabs">
+                <div class="search-tab active" data-tab="all-events">
+                    <i class="fas fa-globe"></i> Alla Event
+                </div>
+                <div class="search-tab" data-tab="date-country">
+                    <i class="fas fa-calendar-alt"></i> Datum & Land
+                </div>
+                <div class="search-tab" data-tab="my-trip">
+                    <i class="fas fa-suitcase"></i> Min Resa
+                </div>
+            </div>
+
+            <!-- Alla Event Form -->
+            <form class="search-form active" id="all-events-form">
+                <div class="form-group">
+                    <label for="all-keyword"><i class="fas fa-search"></i> Sökord (valfritt)</label>
+                    <input type="text" id="all-keyword" class="form-control" placeholder="Sök efter nyckelord, plats eller arrangör">
+                </div>
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i> Visa Alla Event
+                </button>
+            </form>
+
+            <!-- Datum & Land Form -->
+            <form class="search-form" id="date-country-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="start-date"><i class="fas fa-calendar"></i> Startdatum</label>
+                        <input type="date" id="start-date" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="end-date"><i class="fas fa-calendar-check"></i> Slutdatum</label>
+                        <input type="date" id="end-date" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="country"><i class="fas fa-globe-europe"></i> Land</label>
+                    <select id="country" class="form-control">
+                        <option value="">Välj land</option>
+                        <option value="Sverige">Sverige</option>
+                        <option value="Norge">Norge</option>
+                        <option value="Danmark">Danmark</option>
+                        <option value="Finland">Finland</option>
+                        <option value="Tyskland">Tyskland</option>
+                        <option value="Frankrike">Frankrike</option>
+                        <option value="Italien">Italien</option>
+                        <option value="Spanien">Spanien</option>
+                        <option value="Storbritannien">Storbritannien</option>
+                        <option value="USA">USA</option>
+                    </select>
+                </div>
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-filter"></i> Sök Event
+                </button>
+            </form>
+
+            <!-- Min Resa Form -->
+            <form class="search-form" id="my-trip-form">
+                <div class="trip-form-section">
+                    <div class="trip-select-container">
+                        <label for="trip-select" class="trip-select-label">
+                            <i class="fas fa-suitcase"></i> Välj din sparade resa
+                        </label>
+                        <select id="trip-select" class="trip-select">
+                            <option value="">Välj en resa</option>
+                            <!-- Will be populated dynamically -->
+                        </select>
+                        <div class="trip-select-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    
+                    <div id="trip-info" class="trip-info">
+                        <div class="trip-info-header">
+                            <div class="trip-info-icon">
+                                <i class="fas fa-plane-departure"></i>
+                            </div>
+                            <div class="trip-info-title">Din resa</div>
+                        </div>
+                        
+                        <div class="trip-dates-container">
+                            <div class="trip-date-item">
+                                <span class="trip-date-label">Avresa</span>
+                                <span class="trip-date-value" id="trip-start-date">--/--/----</span>
+                            </div>
+                            
+                            <div class="trip-date-arrow">
+                                <span class="trip-duration">10 dagar</span>
+                                <i class="fas fa-long-arrow-alt-right"></i>
+                            </div>
+                            
+                            <div class="trip-date-item">
+                                <span class="trip-date-label">Hemresa</span>
+                                <span class="trip-date-value" id="trip-end-date">--/--/----</span>
+                            </div>
+                        </div>
+                        
+                        <div class="trip-destinations-container">
+                            <span class="trip-destinations-label">Destinationer</span>
+                            <div class="destination-tags" id="trip-destinations">
+                                <!-- Will be populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="trip-search-btn">
+                    <i class="fas fa-search"></i> Hitta event för min resa
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 18l6-6-6-6"></path>
+                    </svg>
+                </button>
+            </form>
+
+            <div class="card event-creation-card">
+                <div class="event-creation-content">
+                    <div class="event-creation-info">
+                        <h2>För eventarrangörer</h2>
+                        <p>Anordnar du evenemang, uppträdanden eller aktiviteter? Som arrangör kan du här publicera dina event och nå ut till resenärer som besöker din stad!</p>
+                        <ul class="event-benefits">
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="9 11 12 14 22 4"></polyline>
+                                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                                </svg>
+                                <span>Marknadsför dina evenemang till resenärer</span>
+                            </li>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                                <span>Nå ut till besökare som planerar sin resa</span>
+                            </li>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                <span>Perfekt för festivaler, konserter, matcher, museum & mer</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="event-creation-action">
+                        <a href="Skapa-event.html" class="create-event-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="16"></line>
+                                <line x1="8" y1="12" x2="16" y2="12"></line>
+                            </svg>
+                            Publicera ditt event
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        <!-- Events container -->
+        <div id="events-container"></div>
+
+        <!-- Event Details Modal -->
+        <div class="modal" id="eventDetailsModal">
+            <div class="modal-content">
+                <span class="close-modal" id="closeEventDetailsModal">&times;</span>
+                <div id="eventDetailsContent"></div>
+            </div>
+        </div>
+        <!-- Select Trip Modal -->
+
+
+        <!-- Toast Notification -->
+        <div id="toast" class="toast-notification"></div>
+    </div>
+
+    <!-- Chatbot -->
+    <div class="chat-bubble" onclick="toggleChat()">
+        <i>💬</i>
+    </div>
+
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <span>TravelBuddy Assistent</span>
+            <button class="chat-close" onclick="toggleChat()">×</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <!-- Messages will be added here -->
+        </div>
+        <div class="typing-indicator" id="typingIndicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+        </div>
+        <div class="chat-input-container">
+            <button id="reset-chat">Ny konversation</button>
+            <input type="text" class="chat-input" id="chatInput" placeholder="Ställ en fråga...">
+            <button class="chat-send" onclick="sendChatMessage()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+
+            
+
+    <script>
+// Load events from localStorage if available
+function loadEvents() {
+    const storedEvents = localStorage.getItem('events');
+    return storedEvents ? JSON.parse(storedEvents) : [
+        {
+            id: 1,
+            title: "Stockholm Jazz Festival",
+            description: "Europas största jazzfestival med artister från hela världen.",
+            startDate: "2025-06-15",
+            endDate: "2025-06-20",
+            country: "Sverige",
+            city: "Stockholm",
+            location: "Stockholm, Sverige",
+            organizer: "Stockholm Kultur AB"
+        },
+        {
+            id: 2,
+            title: "Berlin Filmfestival",
+            description: "En hyllad filmfestival med premiärvisningar och gäster från hela filmindustrin.",
+            startDate: "2025-07-10",
+            endDate: "2025-07-17",
+            country: "Tyskland",
+            city: "Berlin",
+            location: "Berlin, Tyskland",
+            organizer: "Berlinale GmbH"
+        },
+        {
+            id: 3,
+            title: "Barcelona Matfestival",
+            description: "Upplev det bästa av katalansk och spansk matkultur.",
+            startDate: "2025-08-05",
+            endDate: "2025-08-09",
+            country: "Spanien",
+            city: "Barcelona",
+            location: "Barcelona, Spanien",
+            organizer: "Barcelona Gastronomy"
+        },
+        {
+            id: 4,
+            title: "Paris Fashion Week",
+            description: "Exklusiva modevisningar med världens främsta designers.",
+            startDate: "2025-09-25",
+            endDate: "2025-10-03",
+            country: "Frankrike",
+            city: "Paris",
+            location: "Paris, Frankrike",
+            organizer: "Paris Fashion Committee"
+        },
+        {
+            id: 5,
+            title: "Göteborgs Bokmässa",
+            description: "Nordens största litterära mötesplats med författare, förlag och bokälskare.",
+            startDate: "2025-09-10",
+            endDate: "2025-09-13",
+            country: "Sverige",
+            city: "Göteborg",
+            location: "Göteborg, Sverige",
+            organizer: "Svenska Mässan"
+        },
+        {
+            id: 6,
+            title: "Julmarknad i Gamla Stan",
+            description: "Upplev Sveriges mest kända julmarknad i hjärtat av Stockholm.",
+            startDate: "2025-11-25",
+            endDate: "2025-12-23",
+            country: "Sverige",
+            city: "Stockholm",
+            location: "Stockholm, Sverige",
+            organizer: "Stockholms Stad"
+        },
+        {
+            id: 7,
+            title: "Nyårsfirande vid Eiffeltornet",
+            description: "Spektakulärt fyrverkeri och ljusshow vid Eiffeltornet.",
+            startDate: "2024-12-31",
+            endDate: "2024-12-31",
+            country: "Frankrike",
+            city: "Paris",
+            location: "Paris, Frankrike",
+            organizer: "Paris City Council"
+        },
+        {
+            id: 8,
+            title: "Norrskensfestival",
+            description: "En magisk festival dedikerad till norrsken och vinteraktiviteter.",
+            startDate: "2025-01-10",
+            endDate: "2025-01-12",
+            country: "Sverige",
+            city: "Kiruna",
+            location: "Kiruna, Sverige",
+            organizer: "Visit Kiruna"
+        }
+    ];
+}
+
+// Initialize events
+let events = loadEvents();
+let currentEventId = events.length + 1;
+
+// Data for trips
+let trips = [];
+
+// DOM Elements
+const searchTabs = document.querySelectorAll('.search-tab');
+const searchForms = document.querySelectorAll('.search-form');
+const eventsContainer = document.getElementById('events-container');
+const uploadEventBtn = document.querySelector('.upload-event-btn');
+const uploadEventModal = document.getElementById('uploadEventModal');
+const closeUploadModal = document.getElementById('closeUploadModal');
+const uploadEventForm = document.getElementById('upload-event-form');
+const allEventsForm = document.getElementById('all-events-form');
+const dateCountryForm = document.getElementById('date-country-form');
+const myTripForm = document.getElementById('my-trip-form');
+const tripSelect = document.getElementById('trip-select');
+const tripInfo = document.getElementById('trip-info');
+const tripDates = document.getElementById('trip-dates');
+const tripDestinations = document.getElementById('trip-destinations');
+const toast = document.getElementById('toast');
+const selectTripModal = document.getElementById('selectTripModal');
+const closeSelectTripModal = document.getElementById('closeSelectTripModal');
+const selectTripDropdown = document.getElementById('selectTripDropdown');
+const confirmAddEventBtn = document.getElementById('confirmAddEventBtn');
+
+// Function to load saved trips
+function loadSavedTrips() {
+    trips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+    
+    // Update trip select dropdown for "Min Resa" tab
+    updateTripSelects();
+}
+
+// Function to update trip select dropdown for "Min Resa" tab
+function updateTripSelects() {
+    tripSelect.innerHTML = '<option value="">Välj en sparad resa</option>';
+    
+    trips.forEach((trip, index) => {
+        if (trip) {
+            const option = document.createElement('option');
+            option.value = index;
+            
+            // Handle different formats of trip destinations
+            let destinations = "";
+            if (Array.isArray(trip.destinations)) {
+                destinations = trip.destinations
+                    .filter(d => d && (typeof d === 'string' || d.name))
+                    .map(d => typeof d === 'string' ? d : d.name)
+                    .join(' → ');
+            } else if (trip.destination) {
+                destinations = trip.destination;
+            }
+            
+            option.textContent = `${destinations || 'Resa'} (${formatDate(trip.startDate)} - ${formatDate(trip.endDate)})`;
+            tripSelect.appendChild(option);
+        }
+    });
+}
+
+// Function to display events
+// Uppdaterad funktion för att visa events med bilder
+function displayEvents(eventsToShow) {
+    const container = document.getElementById('events-container');
+    container.innerHTML = '';
+
+    if (eventsToShow.length === 0) {
+        container.innerHTML = `
+            <div class="card">
+                <p class="no-events">
+                    <i class="fas fa-calendar-times"></i>
+                    Inga events matchade dina kriterier. Försök med en annan sökning.
+                </p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Gruppera events efter månad
+    const groupedEvents = groupEventsByMonth(eventsToShow);
+
+    // Skapa en event-list-container
+    const eventListContainer = document.createElement('div');
+    eventListContainer.className = 'event-list-container';
+    
+    // Visa events grupperade efter månad
+    Object.entries(groupedEvents).forEach(([month, monthEvents]) => {
+        const monthSection = document.createElement('div');
+        monthSection.className = 'month-section';
+        
+        monthSection.innerHTML = `
+            <h2 class="month-title">
+                <i class="fas fa-calendar-alt"></i>
+                ${month}
+            </h2>
+            <div class="events-grid">
+                ${monthEvents.map(event => {
+                    // Extrahera datum från event
+                    const startDate = new Date(event.startDate);
+                    const day = startDate.getDate();
+                    const month = startDate.toLocaleString('sv-SE', { month: 'short' });
+                    
+                    // Bestäm ikon baserat på kategori
+                    let categoryIcon = 'fas fa-star';
+                    if (event.category) {
+                        switch(event.category.toLowerCase()) {
+                            case 'musik':
+                            case 'konsert':
+                                categoryIcon = 'fas fa-music';
+                                break;
+                            case 'sport':
+                                categoryIcon = 'fas fa-futbol';
+                                break;
+                            case 'kultur':
+                            case 'konst':
+                                categoryIcon = 'fas fa-palette';
+                                break;
+                            case 'mat & dryck':
+                            case 'mat':
+                            case 'food':
+                                categoryIcon = 'fas fa-utensils';
+                                break;
+                            case 'festival':
+                                categoryIcon = 'fas fa-glass-cheers';
+                                break;
+                            case 'teater':
+                                categoryIcon = 'fas fa-theater-masks';
+                                break;
+                            case 'marknad':
+                                categoryIcon = 'fas fa-store';
+                                break;
+                            case 'barn':
+                            case 'familj':
+                            case 'barn & familj':
+                                categoryIcon = 'fas fa-child';
+                                break;
+                            default:
+                                categoryIcon = 'fas fa-calendar-day';
+                        }
+                    }
+                    
+                    // Hantera bild eller visa platshållarbild
+                    const hasImage = event.imageData ? true : false;
+                    
+                    return `
+                    <div class="event-card" data-event-id="${event.id}">
+                        <div class="event-card-img">
+                            ${hasImage ? 
+                                `<img src="${event.imageData}" alt="${event.title}" style="width:100%; height:100%; object-fit:cover;">` : 
+                                `<div class="event-card-img-placeholder">
+                                    <i class="${categoryIcon}"></i>
+                                </div>`
+                            }
+                            ${event.category ? `<div class="event-category-badge">${event.category}</div>` : ''}
+                            <div class="event-date-badge">
+                                <span class="event-date-day">${day}</span>
+                                <span class="event-date-month">${month}</span>
+                            </div>
+                        </div>
+                        <div class="event-card-content">
+                            <div class="event-card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                ${event.location}
+                            </div>
+                            <h3 class="event-card-title">${event.title}</h3>
+                            <p class="event-card-description">${event.description}</p>
+                            
+                            <!-- Inbäddad resväljare (dold som standard) -->
+                            <div class="trip-selection-container" style="display: none;">
+                                <p>Lägg till i resa</p>
+                                <select class="trip-select-dropdown form-control" style="margin: 10px 0;">
+                                    <option value="">Välj resa</option>
+                                </select>
+                                <button class="confirm-add-event-btn search-btn" style="width: 100%;">
+                                    <i class="fas fa-plus-circle"></i> Lägg till i resa
+                                </button>
+                            </div>
+                            
+                            <div class="event-card-footer">
+                                ${event.organizer ? `
+                                <div class="event-card-organizer">
+                                    <i class="fas fa-user-tie"></i>
+                                    ${event.organizer}
+                                </div>
+                                ` : '<div></div>'}
+                                <div class="event-card-actions">
+                                    <button onclick="showEventDetails(${event.id})" class="event-detail-btn">
+                                        <i class="fas fa-info-circle"></i>
+                                        Detaljer
+                                    </button>
+                                    <button onclick="toggleTripSelection(${event.id})" class="event-add-btn">
+                                        <i class="fas fa-plus"></i>
+                                        Lägg till
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+        
+        eventListContainer.appendChild(monthSection);
+    });
+    
+    container.appendChild(eventListContainer);
+    
+    // Lägg till eventlyssnare för alla "Bekräfta lägg till"-knappar
+    document.querySelectorAll('.confirm-add-event-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const eventCard = this.closest('.event-card');
+            const eventId = eventCard.dataset.eventId;
+            const tripDropdown = eventCard.querySelector('.trip-select-dropdown');
+            const tripId = tripDropdown.value;
+            
+            if (!tripId) {
+                showToast('Välj en resa först');
+                return;
+            }
+            
+            addEventToSelectedTrip(eventId, tripId);
+            
+            // Dölj resväljarcontainern igen
+            eventCard.querySelector('.trip-selection-container').style.display = 'none';
+        });
+    });
+}
+// Uppdaterad funktion för visning av eventdetaljer
+function showEventDetails(eventId) {
+    const event = events.find(e => e.id === eventId);
+    if (!event) return;
+    
+    const modal = document.getElementById('eventDetailsModal');
+    const content = document.getElementById('eventDetailsContent');
+    
+    content.innerHTML = `
+        <h2 class="modal-title">${event.title}</h2>
+        
+        ${event.imageData ? `
+        <div style="text-align: center; margin-bottom: 20px;">
+            <img src="${event.imageData}" alt="${event.title}" style="max-width: 100%; max-height: 300px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        </div>
+        ` : ''}
+        
+        <div class="event-date" style="margin-bottom: 15px;">
+            <i class="fas fa-calendar-alt" style="color: var(--primary-color); margin-right: 8px;"></i>
+            ${formatDateRange(event.startDate, event.endDate)}
+        </div>
+        <div class="event-location" style="margin-bottom: 20px;">
+            <i class="fas fa-map-marker-alt" style="color: var(--primary-color); margin-right: 8px;"></i>
+            <strong>Plats:</strong> ${event.location}
+            ${event.venue ? ` (${event.venue})` : ''}
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <h3 style="margin-bottom: 15px; color: #374760; border-bottom: 2px solid #eee; padding-bottom: 8px;">
+                <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
+                Om eventet
+            </h3>
+            <p style="line-height: 1.6;">${event.description}</p>
+        </div>
+        
+        ${event.category ? `
+        <div style="margin-bottom: 20px;">
+            <h3 style="margin-bottom: 15px; color: #374760; border-bottom: 2px solid #eee; padding-bottom: 8px;">
+                <i class="fas fa-tag" style="margin-right: 8px;"></i>
+                Kategori
+            </h3>
+            <p>${event.category}</p>
+        </div>
+        ` : ''}
+        
+        ${event.organizer ? `
+        <div style="margin-bottom: 20px;">
+            <h3 style="margin-bottom: 15px; color: #374760; border-bottom: 2px solid #eee; padding-bottom: 8px;">
+                <i class="fas fa-user-tie" style="margin-right: 8px;"></i>
+                Arrangör
+            </h3>
+            <p>${event.organizer}</p>
+        </div>
+        ` : ''}
+        
+        ${event.price ? `
+        <div style="margin-bottom: 20px;">
+            <h3 style="margin-bottom: 15px; color: #374760; border-bottom: 2px solid #eee; padding-bottom: 8px;">
+                <i class="fas fa-tag" style="margin-right: 8px;"></i>
+                Pris
+            </h3>
+            <p>${event.price} SEK</p>
+        </div>
+        ` : ''}
+        
+        ${event.website ? `
+        <div style="margin-bottom: 20px;">
+            <h3 style="margin-bottom: 15px; color: #374760; border-bottom: 2px solid #eee; padding-bottom: 8px;">
+                <i class="fas fa-globe" style="margin-right: 8px;"></i>
+                Webbplats
+            </h3>
+            <p><a href="${event.website}" target="_blank" style="color: var(--primary-color);">${event.website}</a></p>
+        </div>
+        ` : ''}
+        
+        <button onclick="showSelectTripModal(${event.id})" class="add-event-btn" style="padding: 12px 25px; margin-top: 20px; width: 100%;">
+            <i class="fas fa-plus-circle" style="margin-right: 8px;"></i>
+            Lägg till i min resa
+        </button>
+    `;
+    
+    modal.classList.add('active');
+}
+
+// Function to show event details
+function showEventDetails(eventId) {
+    const event = events.find(e => e.id === eventId);
+    if (!event) return;
+    
+    const modal = document.getElementById('eventDetailsModal');
+    const content = document.getElementById('eventDetailsContent');
+    
+    content.innerHTML = `
+        <h2 class="modal-title">${event.title}</h2>
+        <div class="event-date" style="margin-bottom: 15px;">
+            <i class="fas fa-calendar-alt" style="color: var(--primary-color); margin-right: 8px;"></i>
+            ${formatDateRange(event.startDate, event.endDate)}
+        </div>
+        <div class="event-location" style="margin-bottom: 20px;">
+            <i class="fas fa-map-marker-alt" style="color: var(--primary-color); margin-right: 8px;"></i>
+            <strong>Plats:</strong> ${event.location}
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <h3 style="margin-bottom: 15px; color: #374760; border-bottom: 2px solid #eee; padding-bottom: 8px;">
+                <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
+                Om eventet
+            </h3>
+            <p style="line-height: 1.6;">${event.description}</p>
+        </div>
+        
+        ${event.organizer ? `
+        <div style="margin-bottom: 20px;">
+            <h3 style="margin-bottom: 15px; color: #374760; border-bottom: 2px solid #eee; padding-bottom: 8px;">
+                <i class="fas fa-user-tie" style="margin-right: 8px;"></i>
+                Arrangör
+            </h3>
+            <p>${event.organizer}</p>
+        </div>
+        ` : ''}
+        
+        <button onclick="showSelectTripModal(${event.id})" class="add-event-btn" style="padding: 12px 25px; margin-top: 20px; width: 100%;">
+            <i class="fas fa-plus-circle" style="margin-right: 8px;"></i>
+            Lägg till i min resa
+        </button>
+    `;
+    
+    modal.classList.add('active');
+}
+
+// Helper function to format date
+function formatDate(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('sv-SE');
+}
+
+// Helper function to format date range
+function formatDateRange(startDate, endDate) {
+    const start = formatDate(startDate);
+    const end = formatDate(endDate);
+    
+    if (start === end) {
+        return start;
+    }
+    
+    return `${start} - ${end}`;
+}
+
+// Function to group events by month
+function groupEventsByMonth(events) {
+    return events.reduce((groups, event) => {
+        const date = new Date(event.startDate);
+        const monthYear = date.toLocaleString('sv-SE', { month: 'long', year: 'numeric' });
+        
+        if (!groups[monthYear]) {
+            groups[monthYear] = [];
+        }
+        groups[monthYear].push(event);
+        
+        return groups;
+    }, {});
+}
+
+// Initialize all event handlers
+function initializeEventHandlers() {
+    // Tab functionality with animation
+    searchTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Remove active class from all tabs and forms
+            searchTabs.forEach(t => t.classList.remove('active'));
+            searchForms.forEach(f => {
+                f.classList.remove('active');
+                f.style.display = 'none';
+            });
+            
+            // Add active class to current tab
+            tab.classList.add('active');
+            
+            // Get corresponding form and activate it with animation
+            const formId = `${tab.dataset.tab}-form`;
+            const form = document.getElementById(formId);
+            
+            // Set display to block first (required for animation)
+            form.style.display = 'block';
+            
+            // Trigger reflow to ensure animation works
+            void form.offsetWidth;
+            
+            // Add active class for animation
+            form.classList.add('active');
+            
+            // If my-trip tab, update trip select
+            if (tab.dataset.tab === 'my-trip') {
+                updateTripSelects();
+            }
+        });
+    });
+
+    // All event handlers initialized here
+    
+    // Close upload modal
+    if (closeUploadModal) {
+        closeUploadModal.addEventListener('click', () => {
+            uploadEventModal.classList.remove('active');
+        });
+    }
+
+    // Close select trip modal
+    if (closeSelectTripModal) {
+        closeSelectTripModal.addEventListener('click', () => {
+            selectTripModal.classList.remove('active');
+        });
+    }
+    
+    // Confirm add event button
+    if (confirmAddEventBtn) {
+        confirmAddEventBtn.addEventListener('click', () => {
+            const selectedTripId = selectTripDropdown.value;
+            const eventId = parseInt(selectTripModal.dataset.eventId);
+            
+            if (!selectedTripId) {
+                showToast('Välj en resa först');
+                return;
+            }
+            
+            addEventToSelectedTrip(eventId, selectedTripId);
+            selectTripModal.classList.remove('active');
+        });
+    }
+
+    // Upload event form submission
+    if (uploadEventForm) {
+        uploadEventForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('event-title').value;
+            const startDate = document.getElementById('event-start-date').value;
+            const endDate = document.getElementById('event-end-date').value;
+            const country = document.getElementById('event-country').value;
+            const city = document.getElementById('event-city').value;
+            const description = document.getElementById('event-description').value;
+            const organizer = document.getElementById('event-organizer').value;
+            
+            const newEvent = {
+                id: currentEventId++,
+                title: title,
+                description: description,
+                startDate: startDate,
+                endDate: endDate,
+                country: country,
+                city: city,
+                location: `${city}, ${country}`,
+                organizer: organizer
+            };
+            
+            events.push(newEvent);
+            
+            // Save to localStorage
+            localStorage.setItem('events', JSON.stringify(events));
+            
+            // Display updated events
+            displayEvents(events);
+            
+            // Show notification
+            showToast('Event uppladdat');
+            
+            // Close modal and reset form
+            uploadEventModal.classList.remove('active');
+            uploadEventForm.reset();
+        });
+    }
+
+    // All events form submission
+    allEventsForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const keyword = document.getElementById('all-keyword').value.toLowerCase();
+        
+        let filteredEvents = events;
+        
+        if (keyword) {
+            filteredEvents = events.filter(event => 
+                event.title.toLowerCase().includes(keyword) || 
+                event.description.toLowerCase().includes(keyword) || 
+                event.location.toLowerCase().includes(keyword) || 
+                (event.organizer && event.organizer.toLowerCase().includes(keyword))
+            );
+        }
+        
+        displayEvents(filteredEvents);
+    });
+
+    // Date & Country form submission
+    dateCountryForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const startDate = document.getElementById('start-date').value;
+        const endDate = document.getElementById('end-date').value;
+        const country = document.getElementById('country').value;
+        
+        let filteredEvents = events;
+        
+        if (startDate) {
+            filteredEvents = filteredEvents.filter(event => 
+                new Date(event.endDate) >= new Date(startDate)
+            );
+        }
+        
+        if (endDate) {
+            filteredEvents = filteredEvents.filter(event => 
+                new Date(event.startDate) <= new Date(endDate)
+            );
+        }
+        
+        if (country) {
+            filteredEvents = filteredEvents.filter(event => 
+                event.country === country
+            );
+        }
+        
+        displayEvents(filteredEvents);
+    });
+
+    // My Trip form submission
+    myTripForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const selectedTripId = tripSelect.value;
+    
+    if (!selectedTripId) {
+        showToast('Välj en resa först');
+        return;
+    }
+    
+    const selectedTrip = trips[selectedTripId];
+    
+    if (!selectedTrip) {
+        return;
+    }
+    
+    // Visa resinformation
+    displayTripInfo(selectedTrip);
+    
+    // Logga information för felsökning
+    console.log("Filtrerar events baserat på följande resa:", selectedTrip);
+    
+    // Filtrera events baserat på resan
+    const filteredEvents = filterEventsByTrip(selectedTrip);
+    
+    // Logga filtrerade resultat
+    console.log("Filtrerade events:", filteredEvents);
+    
+    // Visa de filtrerade eventen
+    displayEvents(filteredEvents);
+    
+    // Om inga events hittades, visa ett meddelande
+    if (filteredEvents.length === 0) {
+        showToast('Inga events hittades för denna resa');
+    }
+});
+    
+    // Trip selection change
+    tripSelect.addEventListener('change', () => {
+    const selectedTripId = tripSelect.value;
+    const tripInfoElement = document.getElementById('trip-info');
+    
+    if (!selectedTripId) {
+        tripInfoElement.classList.remove('visible');
+        return;
+    }
+    
+    const selectedTrip = trips[selectedTripId];
+    
+    if (!selectedTrip) {
+        return;
+    }
+    
+    // Visa resinformation
+    displayTripInfo(selectedTrip);
+});
+    
+    // Close modal when clicking outside
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+    });
+    
+    // Close event details modal
+    document.getElementById('closeEventDetailsModal').addEventListener('click', () => {
+        document.getElementById('eventDetailsModal').classList.remove('active');
+    });
+}
+
+
+
+// Migrera alla befintliga resor för att konvertera events till aktiviteter
+function migrateAllSavedTrips() {
+    const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+    let migrationPerformed = false;
+    
+    savedTrips.forEach(trip => {
+        if (trip.events && trip.events.length > 0) {
+            migrateExistingEvents(trip);
+            migrationPerformed = true;
+        }
+    });
+    
+    if (migrationPerformed) {
+        localStorage.setItem('savedTrips', JSON.stringify(savedTrips));
+        console.log('Migrering av evenemang till aktiviteter slutförd.');
+    }
+}
+
+// Migrera events för en specifik resa
+function migrateExistingEvents(trip) {
+    if (!trip.events || trip.events.length === 0) return;
+    
+    trip.events.forEach(event => {
+        // Hitta lämplig destination för eventet
+        let targetDest = null;
+        
+        // Försök hitta matchande destination baserat på location
+        if (event.location) {
+            for (const dest of trip.destinations) {
+                if (!dest.name) continue;
+                
+                if (event.location.toLowerCase().includes(dest.name.toLowerCase()) ||
+                    dest.name.toLowerCase().includes(event.location.toLowerCase().split(',')[0].trim())) {
+                    targetDest = dest;
+                    break;
+                }
+            }
+        }
+        
+        // Använd första destinationen om ingen matchning hittades
+        if (!targetDest && trip.destinations.length > 0) {
+            targetDest = trip.destinations.find(d => d.name) || trip.destinations[0];
+        }
+        
+        if (!targetDest) return; // Hoppa över om ingen destination finns
+        
+        // Se till att aktiviteter-arrayen existerar
+        if (!targetDest.activities) {
+            targetDest.activities = [];
+        }
+        
+        // Kontrollera om eventet redan har lagts till som aktivitet
+        const alreadyAdded = targetDest.activities.some(a => 
+            a.eventId === event.id || 
+            (a.name === event.title && a.date === event.startDate)
+        );
+        
+        if (!alreadyAdded) {
+            // Skapa en aktivitet baserad på eventet
+            targetDest.activities.push({
+                id: Date.now() + Math.floor(Math.random() * 1000),
+                eventId: event.id,
+                name: event.title,
+                category: "Event",
+                date: event.startDate,
+                description: event.description,
+                location: event.location,
+                cost: event.price || 0
+            });
+        }
+    });
+    
+    // Ta bort den gamla events-arrayen
+    delete trip.events;
+}
+// Uppdaterad eventListener för knappen som bekräftar val av resa
+document.addEventListener('DOMContentLoaded', function() {
+    const confirmAddEventBtn = document.getElementById('confirmAddEventBtn');
+    if (confirmAddEventBtn) {
+        confirmAddEventBtn.addEventListener('click', function() {
+            const selectTripModal = document.getElementById('selectTripModal');
+            const selectTripDropdown = document.getElementById('selectTripDropdown');
+            
+            const selectedTripId = selectTripDropdown.value;
+            const eventId = parseInt(selectTripModal.dataset.eventId);
+            
+            if (!selectedTripId) {
+                showToast('Välj en resa först');
+                return;
+            }
+            
+            // Anropa funktionen för att lägga till evenemanget
+            addEventToSelectedTrip(eventId, selectedTripId);
+            
+            // Stäng modalen
+            selectTripModal.classList.remove('active');
+        });
+    }
+    
+    // Stäng modal när användaren klickar på krysset
+    const closeSelectTripModal = document.getElementById('closeSelectTripModal');
+    if (closeSelectTripModal) {
+        closeSelectTripModal.addEventListener('click', function() {
+            document.getElementById('selectTripModal').classList.remove('active');
+        });
+    }
+    
+    // Stäng modal när användaren klickar utanför
+    const selectTripModal = document.getElementById('selectTripModal');
+    if (selectTripModal) {
+        selectTripModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+    }
+});
+
+// Function to check if an event is already in a trip
+function isEventInTrip(eventId, trip) {
+    console.log("Checking if event", eventId, "is in trip", trip.id);
+    
+    // Convert eventId to number to ensure consistent comparison
+    const eventIdNum = parseInt(eventId);
+    
+    let found = false;
+    
+    // Loop through all destinations in the trip
+    if (trip.destinations && Array.isArray(trip.destinations)) {
+        for (const dest of trip.destinations) {
+            // Skip destinations without activities
+            if (!dest.activities || !Array.isArray(dest.activities)) {
+                continue;
+            }
+            
+            // Check each activity in this destination
+            for (const activity of dest.activities) {
+                // Check if this activity has the same eventId
+                if (activity.eventId && parseInt(activity.eventId) === eventIdNum) {
+                    console.log("Match found by eventId");
+                    found = true;
+                    break;
+                }
+            }
+            
+            if (found) break;
+        }
+    }
+    
+    console.log("Is event in trip?", found);
+    return found;
+}
+
+
+
+// Function to add event to selected trip - should ONLY be called when user clicks the "Lägg till" button
+function confirmAddEventToTrip() {
+    const selectTripModal = document.getElementById('selectTripModal');
+    const selectTripDropdown = document.getElementById('selectTripDropdown');
+    
+    const selectedTripId = selectTripDropdown.value;
+    const eventId = parseInt(selectTripModal.dataset.eventId);
+    
+    console.log("Confirming to add event", eventId, "to trip", selectedTripId);
+    
+    if (!selectedTripId) {
+        showToast('Välj en resa först');
+        return;
+    }
+    
+    // Nu gör vi tillägget utan duplikatkontroll
+    addEventToSelectedTrip(eventId, selectedTripId);
+    
+    // Stäng modalen
+    selectTripModal.classList.remove('active');
+}
+
+// Function to display trip info
+function displayTripInfo(trip) {
+    const tripInfoElement = document.getElementById('trip-info');
+    const tripStartDate = document.getElementById('trip-start-date');
+    const tripEndDate = document.getElementById('trip-end-date');
+    const tripDestinationsElement = document.getElementById('trip-destinations');
+    const tripDurationElement = document.querySelector('.trip-duration');
+    
+    // Formatera datum med lokalisering
+    tripStartDate.textContent = formatDate(trip.startDate);
+    tripEndDate.textContent = formatDate(trip.endDate);
+    
+    // Sätt rese-längd
+    if (trip.days) {
+        tripDurationElement.textContent = `${trip.days} dagar`;
+    } else {
+        // Beräkna dagar om det inte finns
+        const start = new Date(trip.startDate);
+        const end = new Date(trip.endDate);
+        const diffTime = Math.abs(end - start);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        tripDurationElement.textContent = `${diffDays} dagar`;
+    }
+    
+    // Hantera både gamla och nya reseformat för destinationer
+    tripDestinationsElement.innerHTML = '';
+    
+    if (Array.isArray(trip.destinations)) {
+        // Få alla giltiga destinationsnamn
+        const validDestinations = trip.destinations
+            .map(dest => typeof dest === 'object' ? dest.name : dest)
+            .filter(name => name && name.trim() !== '');
+        
+        if (validDestinations.length > 0) {
+            validDestinations.forEach(destName => {
+                tripDestinationsElement.innerHTML += `
+                    <span class="destination-tag">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        ${destName}
+                    </span>
+                `;
+            });
+        } else {
+            tripDestinationsElement.innerHTML = `
+                <span class="destination-tag">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    Ingen destination angiven
+                </span>
+            `;
+        }
+    } else if (trip.destination) {
+        tripDestinationsElement.innerHTML = `
+            <span class="destination-tag">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                ${trip.destination}
+            </span>
+        `;
+    } else {
+        tripDestinationsElement.innerHTML = `
+            <span class="destination-tag">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                Okänd destination
+            </span>
+        `;
+    }
+    
+    // Visa trip-info elementet
+    tripInfoElement.classList.add('visible');
+}
+
+// Function to filter events by trip
+function filterEventsByTrip(trip) {
+    const tripStart = new Date(trip.startDate);
+    const tripEnd = new Date(trip.endDate);
+    
+    return events.filter(event => {
+        const eventStart = new Date(event.startDate);
+        const eventEnd = new Date(event.endDate);
+
+        // Kontrollera om datumen överlappar
+        const dateOverlap = eventEnd >= tripStart && eventStart <= tripEnd;
+        
+        // Förbättrad platsmatchning
+        let locationMatch = false;
+        
+        // Hantera både det nya och det gamla formatet för destinationer
+        if (Array.isArray(trip.destinations)) {
+            // Nytt format med destinations-array
+            locationMatch = trip.destinations.some(dest => {
+                // Kontrollera om dest är ett objekt eller en sträng
+                const destName = typeof dest === 'object' ? dest.name : dest;
+                
+                // Om destName inte finns eller är tom, hoppa över
+                if (!destName) return false;
+                
+                // Kontrollera om event.location innehåller destinationsnamnet
+                // Eller om event.country eller event.city matchar
+                return event.location?.toLowerCase().includes(destName.toLowerCase()) ||
+                       event.country?.toLowerCase().includes(destName.toLowerCase()) ||
+                       event.city?.toLowerCase().includes(destName.toLowerCase());
+            });
+        } else if (trip.destination) {
+            // Gammalt format med enskild destination
+            locationMatch = event.location?.toLowerCase().includes(trip.destination.toLowerCase()) ||
+                           event.country?.toLowerCase().includes(trip.destination.toLowerCase()) ||
+                           event.city?.toLowerCase().includes(trip.destination.toLowerCase());
+        }
+
+        // Ett event matchar om det sker under resan och på samma plats
+        return dateOverlap && locationMatch;
+    });
+}
+
+// Function to load profile picture
+function loadProfilePicture() {
+    const savedProfilePic = localStorage.getItem('profilePic');
+    const navProfilePic = document.getElementById('navProfilePic');
+    if (savedProfilePic && navProfilePic) {
+        navProfilePic.src = savedProfilePic;
+    }
+}
+
+// Function to show toast notification with animation
+function showToast(message, duration = 3000) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    
+    // Stoppa eventuell pågående timeout
+    if (toast.timeoutId) {
+        clearTimeout(toast.timeoutId);
+    }
+    
+    // Uppdatera meddelande och visa toast
+    toast.textContent = message;
+    toast.style.display = 'block';
+    
+    // Nollställ animation om den redan körs
+    toast.style.animation = 'none';
+    void toast.offsetHeight; // Trigga reflow
+    toast.style.animation = 'toastSlideIn 0.3s ease';
+    
+    // Dölj toast efter angiven tid
+    toast.timeoutId = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100px)';
+        
+        setTimeout(() => {
+            toast.style.display = 'none';
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateX(0)';
+        }, 300);
+    }, duration);
+}
+
+// Initialize the page
+function initializePage() {
+    // Load saved trips
+    loadSavedTrips();
+    
+    // Display all events by default
+    displayEvents(events);
+    
+    // Load profile picture
+    loadProfilePicture();
+    
+    // Initialize all event handlers
+    initializeEventHandlers();
+}
+
+// Initialize the page when DOM is fully loaded
+document.addEventListener('DOMContentLoaded', initializePage);
+
+// Function to add event to selected trip
+// Updated addEventToSelectedTrip to prevent multiple additions
+// Final fix: No duplicate checking whatsoever
+function addEventToSelectedTrip(eventId, tripId) {
+    console.log("Adding event", eventId, "to trip", tripId);
+    
+    // Get data from localStorage
+    const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+    const events = JSON.parse(localStorage.getItem('events') || '[]');
+    
+    // Find selected trip and event
+    const selectedTrip = savedTrips[tripId];
+    const eventIdNum = parseInt(eventId);
+    const event = events.find(e => e.id === eventIdNum);
+    
+    if (!selectedTrip || !event) {
+        showToast('Kunde inte lägga till evenemang - resan eller evenemanget hittades inte');
+        return;
+    }
+    
+    // Find appropriate destination to add the activity to
+    let targetDestination = null;
+    
+    // Try to find a destination matching the event location
+    if (Array.isArray(selectedTrip.destinations)) {
+        for (const dest of selectedTrip.destinations) {
+            if (!dest || !dest.name) continue;
+            
+            const destName = dest.name.toLowerCase();
+            const eventCity = event.city ? event.city.toLowerCase() : '';
+            const eventCountry = event.country ? event.country.toLowerCase() : '';
+            const eventLocation = event.location ? event.location.toLowerCase() : '';
+            
+            if ((eventCity && destName.includes(eventCity)) || 
+                (eventCountry && destName.includes(eventCountry)) || 
+                (eventLocation && destName.includes(eventLocation.split(',')[0].trim()))) {
+                targetDestination = dest;
+                break;
+            }
+        }
+        
+        // If no matching destination found, use the first destination
+        if (!targetDestination && selectedTrip.destinations.length > 0) {
+            targetDestination = selectedTrip.destinations.find(d => d && d.name) || selectedTrip.destinations[0];
+        }
+    }
+    
+    // If no valid destination exists, show message and abort
+    if (!targetDestination) {
+        showToast('Kunde inte lägga till evenemang - ingen giltig destination i resan');
+        return;
+    }
+    
+    // Make sure the activities array exists
+    if (!targetDestination.activities) {
+        targetDestination.activities = [];
+    }
+    
+    // Create activity based on the event
+    const eventActivity = {
+        id: Date.now(), // Create a unique ID for the activity
+        eventId: eventIdNum, // Save event ID for tracking
+        name: event.title,
+        category: "Event", // Set category to "Event"
+        date: event.startDate,
+        time: "", // Event might not have a specific time
+        description: event.description,
+        location: event.location,
+        cost: event.price || 0,
+    };
+    
+    // Add the event as an activity to the selected destination - no checking
+    targetDestination.activities.push(eventActivity);
+    
+    // Save updated trip back to localStorage
+    localStorage.setItem('savedTrips', JSON.stringify(savedTrips));
+    
+    // Show confirmation message
+    showToast('Evenemanget har lagts till som aktivitet i din resa!');
+}
+
+// Fix for event listener duplication
+document.addEventListener('DOMContentLoaded', function() {
+    const confirmAddEventBtn = document.getElementById('confirmAddEventBtn');
+    if (confirmAddEventBtn) {
+        // Remove any existing event listeners first
+        const newBtn = confirmAddEventBtn.cloneNode(true);
+        confirmAddEventBtn.parentNode.replaceChild(newBtn, confirmAddEventBtn);
+        
+        // Add the event listener just once
+        newBtn.addEventListener('click', function() {
+            const selectTripModal = document.getElementById('selectTripModal');
+            const selectTripDropdown = document.getElementById('selectTripDropdown');
+            
+            const selectedTripId = selectTripDropdown.value;
+            const eventId = parseInt(selectTripModal.dataset.eventId);
+            
+            if (!selectedTripId) {
+                showToast('Välj en resa först');
+                return;
+            }
+            
+            // Call addEventToSelectedTrip once
+            addEventToSelectedTrip(eventId, selectedTripId);
+            
+            // Close the modal
+            selectTripModal.classList.remove('active');
+        });
+    }
+});
+</script>
+<script>
+    function handleLogout() {
+        localStorage.removeItem('currentUser');
+        window.location.href = 'index.html';
+    }
+    
+    // Uppdatera profil namn om inloggad
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (currentUser) {
+            // Uppdatera profilnamn i headern
+            const profileNameElements = document.querySelectorAll('.profile-name, #displayName');
+            profileNameElements.forEach(element => {
+                if (element) {
+                    element.textContent = currentUser.username;
+                }
+            });
+            
+            // Omdirigera till login om inte inloggad och inte på login-sidan
+            if (!currentUser && !window.location.pathname.includes('index.html')) {
+                window.location.href = 'index.html';
+            }
+        }
+    });
+
+    // Skapa den nya toggleTripSelection-funktionen:
+function toggleTripSelection(eventId) {
+    const eventCard = document.querySelector(`.event-card[data-event-id="${eventId}"]`);
+    if (!eventCard) return;
+    
+    const tripSelectionContainer = eventCard.querySelector('.trip-selection-container');
+    
+    // Dölj alla andra öppna resvaljare först
+    document.querySelectorAll('.trip-selection-container').forEach(container => {
+        if (container !== tripSelectionContainer) {
+            container.style.display = 'none';
+        }
+    });
+    
+    // Visa/dölj den här resvaljaren
+    if (tripSelectionContainer.style.display === 'none' || !tripSelectionContainer.style.display) {
+        // Uppdatera resor i dropdown innan vi visar den
+        const tripDropdown = tripSelectionContainer.querySelector('.trip-select-dropdown');
+        populateTripDropdown(tripDropdown);
+        tripSelectionContainer.style.display = 'block';
+    } else {
+        tripSelectionContainer.style.display = 'none';
+    }
+}
+
+// Funktion för att fylla dropdown-menyn med resor
+function populateTripDropdown(dropdown) {
+    // Rensa dropdown först
+    dropdown.innerHTML = '<option value="">Välj resa</option>';
+    
+    // Hämta sparade resor
+    const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
+    
+    if (savedTrips.length === 0) {
+        const option = document.createElement('option');
+        option.disabled = true;
+        option.textContent = 'Inga sparade resor hittades';
+        dropdown.appendChild(option);
+        return;
+    }
+    
+    // Lägg till varje resa som ett alternativ
+    savedTrips.forEach((trip, index) => {
+        if (!trip) return; // Skip empty/undefined trips
+        
+        const option = document.createElement('option');
+        option.value = index;
+        
+        // Hantera olika format för destinationer
+        let destinations = "";
+        if (Array.isArray(trip.destinations)) {
+            destinations = trip.destinations
+                .filter(d => d && (typeof d === 'string' || d.name))
+                .map(d => typeof d === 'string' ? d : d.name)
+                .filter(Boolean)
+                .join(' → ');
+        } else if (trip.destination) {
+            destinations = trip.destination;
+        }
+        
+        option.textContent = `${destinations || 'Resa'} (${formatDate(trip.startDate)} - ${formatDate(trip.endDate)})`;
+        dropdown.appendChild(option);
+    });
+}
+
+// Lägg också till global event listener för att stänga resvaljare när användaren klickar utanför
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.event-card') || 
+        (e.target.closest('.event-card') && !e.target.closest('.trip-selection-container') && !e.target.closest('.event-add-btn'))) {
+        
+        document.querySelectorAll('.trip-selection-container').forEach(container => {
+            container.style.display = 'none';
+        });
+    }
+});
+    </script>
+<script src="chatbot.js"></script>
+</body>
+</html
+
+
